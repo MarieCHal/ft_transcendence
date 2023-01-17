@@ -1,10 +1,10 @@
 
-# AvatarBotton
+# AvatarButton
 - optionel
 - if select
     ??
 
-# LoginBotton PswBotton
+# LoginBotton PwdButton
 - link with intra 42
 - 
 
