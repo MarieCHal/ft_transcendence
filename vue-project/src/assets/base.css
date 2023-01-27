@@ -58,3 +58,7 @@
   position: relative;
   font-weight: normal;
 }
+
+body {
+  background-color: #fffefe;
+}

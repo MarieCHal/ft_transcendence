@@ -1,3 +1,13 @@
+<template> <ouais/> </template>
+
+<script lang="ts">
+  import ouais from "./components/login.vue";
+export default {
+    name: 'App',
+    components: {ouais}
+  }
+</script>
+<!--
 <template>
     <div>
       <form action="" method="get">
@@ -7,10 +17,9 @@
       </form>
       <form action="" method="get">
         <input type="password" id="code" name="code"
-              minlength="4" required placeholder="code">
+        minlength="4" required placeholder="code">
       </form>
     </div>
-
 </template>
 
 <style scoped>
@@ -42,3 +51,4 @@ input{
   background-color: rgb(232, 4, 232);
 }
 </style>
+-->
