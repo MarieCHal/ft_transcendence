@@ -1,13 +1,16 @@
-<template> <RouterView/> </template>
-
-<script lang="ts">
-  import login from "./components/login.vue";
-  import { RouterView } from "vue-router";
-export default {
-    name: 'App',
-    components: {RouterView}
-  }
+<script setup lang="ts">
+import { RouterLink, RouterView } from "vue-router";
+import LoginView from "./views/LoginView.vue";
+import HomeView from "./views/HomeView.vue";
+import wellcombutton from "./components/wellcome.vue";
 </script>
+
+<template>
+  <main>
+    <RouterView />
+  </main>
+</template>
+
 <!--
 <template>
     <div>

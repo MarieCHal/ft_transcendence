@@ -1,9 +1,6 @@
 <script setup lang="ts">
-import login from '../components/login.vue'
+import wellcombutton from "../components/wellcome.vue";
 </script>
-
 <template>
-  <main>
-    <login />
-  </main>
+  <wellcombutton/>
 </template>
