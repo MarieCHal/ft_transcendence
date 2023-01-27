@@ -1,10 +1,11 @@
-<template> <ouais/> </template>
+<template> <RouterView/> </template>
 
 <script lang="ts">
-  import ouais from "./components/login.vue";
+  import login from "./components/login.vue";
+  import { RouterView } from "vue-router";
 export default {
     name: 'App',
-    components: {ouais}
+    components: {RouterView}
   }
 </script>
 <!--

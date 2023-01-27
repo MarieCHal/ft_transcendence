@@ -1,7 +1,3 @@
-<script setup lang="ts">
-  import { RouterLink, RouterView } from 'vue-router';
-</script>
-
 <template>
     <div>
         <form @submit.prevent="submitfonction">
@@ -19,8 +15,6 @@
 </template>
 
 <script lang="ts">
-import { RouterLink } from 'vue-router';
-
     export default{
         data(){
             return{
@@ -35,10 +29,11 @@ import { RouterLink } from 'vue-router';
         console.log('salut')
       },
       codefonction: function(event: any){
+        console.log(this.code)
         if (this.code == '1234'){
-          
+          console.log('log ')
+          this.$router.push('/about')
         }
-          
       }
     }
   }
