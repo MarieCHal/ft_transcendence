@@ -4,7 +4,7 @@
       <h2>Lausanne</h2>
       <nav>
         <button v-on:click="clicklogin"> Login </button>
-        <RouterLink to="/home">Sign In</RouterLink>
+        <button v-on:click="clickSigne_In"> Sign In </button>
       </nav>
     </div>
   </template>
@@ -19,7 +19,10 @@
       methods:{ 
         clicklogin(){
             this.$router.push('/login')
-          }
+        },
+        clickSigne_In(){
+            this.$router.push('/signe_in')
+        }
         }
       }
   </script>
