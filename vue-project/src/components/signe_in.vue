@@ -8,9 +8,13 @@
             <input type="Nickname" name="Nickname" placeholder="Nickname" required v-model="Nickname">
             <input type="email" name="Email" placeholder="Email" required v-model="Email">
             <input type="Password" name="Password" placeholder="Password"  required v-model="Password">
-            <p>confirme password </p>
-            <input type="Password" name="Password" placeholder="Password"  required v-model="VerifPassword">
-            <button> submit </button>
+            <input type="Password" name="Password" placeholder="VerifPassword"  required v-model="VerifPassword">
+            <button class="glow-button">
+            <div class="gradient"></div>
+            <span>
+              submit 
+            </span> 
+            </button>
         </form>
     </div> 
 </template>
@@ -39,44 +43,13 @@
     }
 </script>
 
-<style scoped>
-div{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-form{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-input{
-  height: 50px;
-  width: 200px;
-  border-radius: 30px;
-  background-color: aquamarine;
-  margin-top: 10px;
-}
-::placeholder{
-  text-align: center;
-}
-button{
-  margin-top: 10px;
-  border-radius: 30px;
-  height: 50px;
-  width: 100px;
-  color: white;
-  font-weight: bold;
-  background-color: rgb(232, 4, 232);
-}
-p{
-    color: rgb(250, 3, 3);
-    margin-top: 10px;
-}
-#image{
-    margin-top: 10px;
+<style scoped lang="scss">
+
+img{
     max-width: 100px;
     border-radius: 50px;
-
+    display: block;
+    margin: auto;
+    
 }
 </style>

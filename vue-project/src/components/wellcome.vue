@@ -1,12 +1,16 @@
 <template>
-    <div class="wrapper">
-      <h1>42</h1>
-      <h2>Lausanne</h2>
-      <nav>
-        <button v-on:click="clicklogin"> Login </button>
-        <button v-on:click="clickSigne_In"> Sign In </button>
-      </nav>
-    </div>
+    <button class="glow-button" v-on:click="clicklogin"> 
+      <div class="gradient"></div>
+    <span>
+      Login 
+    </span>
+    </button>
+    <button class="glow-button" v-on:click="clickSigne_In">
+      <div class="gradient"></div>
+    <span>
+      Sign In 
+    </span>
+    </button>
   </template>
   
   <script lang="ts">
@@ -26,16 +30,7 @@
         }
       }
   </script>
-  
-  <style scoped>
-  .wrapper{
-    height: 200px;
-    width: 200px;
-    margin: auto;
-    border-radius: 50%;
-    background-color:rgb(25, 187, 168);
-  }
-  .wrapper:hover {
-      background-color: hsla(38, 85%, 46%, 0.2);
-    }
-  </style>
+
+<style scoped lang="scss">
+
+</style>
