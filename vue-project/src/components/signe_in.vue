@@ -1,8 +1,13 @@
 <template>
     <div>
         <form @submit.prevent="submitfonction">
-            <img type="image" id="image" alt="Login"
-            src="../assets/1.webp">
+          <label class="file-select">
+              <div class="select-button">
+                <img :src="image" v-if="image"/>
+                <img src="../assets/1.webp" v-else="image"/>
+              </div>
+              <input type="file" ref="file" @change="setImage"/>
+            </label>
             <input type="Firstname" name="Firstname" placeholder="Firstname" required v-model="Firstname">
             <input type="Lastname" name="Lastname" placeholder="Lastname" required v-model="Lastname">
             <input type="Nickname" name="Nickname" placeholder="Nickname" required v-model="Nickname">
@@ -23,6 +28,7 @@
     export default{
         data(){
             return{
+                image: '',
                 Firstname: '',
                 Lastname: '',
                 Nickname: '',
@@ -34,13 +40,17 @@
 
     methods:{ 
       submitfonction(){
-        console.log('salut')
+        if (this.Password == this.VerifPassword)
+          console.log(this.image, this.Firstname, this.Lastname, this.Nickname, this.Email, this.Password)
       },
       codefonction: function(event: any){
           this.$router.push('/about')
-        }
+      },
+        setImage(event) {
+        this.image = URL.createObjectURL(event.target.files[0])
       }
     }
+  }
 </script>
 
 <style scoped lang="scss">
@@ -51,5 +61,15 @@ img{
     display: block;
     margin: auto;
     
+}
+.file-select > .select-button {
+  height: 100px;
+  width: 100px;
+  border-radius: 50px;
+  display: block;
+  margin: auto;
+}
+.file-select > input {
+  display: none;
 }
 </style>
