@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import signe_in from '../components/signe_in.vue'
+import signe_in from '../components/sign_in.vue'
 </script>
 
 <template>
   <main>
-    <signe_in />
+    <signe_in/>
   </main>
 </template>

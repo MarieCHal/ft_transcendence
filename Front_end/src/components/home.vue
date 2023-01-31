@@ -14,7 +14,7 @@
     },
     methods: {
         clicklogin() {
-            this.$router.push("/welcome");
+            this.$router.push("/register");
         },
     },
 }

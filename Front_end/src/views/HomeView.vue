@@ -1,9 +1,9 @@
 <script setup lang="ts">
     import music from "@/components/music.vue";
-    import first from "../components/first.vue";
+    import home from "../components/home.vue";
 </script>
 
 <template>
     <music/>
-    <first/>
+    <home/>
 </template>

@@ -43,10 +43,7 @@
         if (this.Password == this.VerifPassword)
           console.log(this.image, this.Firstname, this.Lastname, this.Nickname, this.Email, this.Password)
       },
-      codefonction: function(event: any){
-          this.$router.push('/about')
-      },
-        setImage(event) {
+      setImage(event) {
         this.image = URL.createObjectURL(event.target.files[0])
       }
     }
@@ -54,15 +51,14 @@
 </script>
 
 <style scoped lang="scss">
-
-img{
-    height: 100px;
-    width: 100px;
-    border-radius: 50px;
-    display: block;
-    margin: auto;
-}
-.file-select > input {
-  display: none;
-}
+  img{
+      height: 100px;
+      width: 100px;
+      border-radius: 50px;
+      display: block;
+      margin: auto;
+  }
+  .file-select > input {
+    display: none;
+  }
 </style>
