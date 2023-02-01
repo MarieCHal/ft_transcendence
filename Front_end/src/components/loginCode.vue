@@ -15,7 +15,7 @@
         console.log(this.code)
         if (this.code == '1234'){
           console.log('log ')
-          this.$router.push('/')
+          this.$router.push('/main')
         }
       }
     }

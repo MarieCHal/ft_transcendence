@@ -1,19 +1,37 @@
+<script setup lang="ts">
+  import mainNav from '../components/mainNav.vue'
+  import mainMain from '../components/mainMain.vue'
+  import mainChat from '../components/mainChat.vue'
+</script>
+
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
+  <div id="main_div">
+    <div class="div_component" id="mainNav">
+      <mainNav/>
+    </div>
+    <div class="div_component" id="mainMain">
+      <mainMain/>
+    </div>
+    <div class="div_component" id="mainChat">
+      <mainChat/>
+    </div>
   </div>
 </template>
 
-<style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
+<style scoped lang="scss">
+  #main_div{
+    position: absolute;
+    top: 50%;
+    left: 0;
     display: flex;
-    align-items: center;
+    justify-content: space-between;
+    width: 100%;
   }
-}
-</style>
 
-<!--
-  main page du siteweb 
--->
+  @media screen and (max-width: 780px)
+  {
+    #main_div{
+      flex-direction: column;
+    }
+  }
+</style>

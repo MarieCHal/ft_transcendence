@@ -3,6 +3,8 @@ import LoginView from '../views/LoginView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import SigneInView from '../views/SigneInView.vue'
 import HomeView from '../views/HomeView.vue'
+import MainView from '../views/MainView.vue'
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -25,6 +27,11 @@ const router = createRouter({
       path: '/sign_in',
       name: 'sign_in',
       component: SigneInView
+    },
+    {
+      path: '/main',
+      name: 'main',
+      component: MainView
     }
   ]
 })
