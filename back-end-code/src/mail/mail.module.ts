@@ -12,7 +12,7 @@ import { join } from 'path';
         secure: false,
         auth: {
           user: 'apikey',
-          pass: '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',
+          pass: '',
         },
       },
       defaults: {
