@@ -30,7 +30,7 @@ export class users {
 
     @Column({
         //name: 'email_address',
-        nullable: false,
+        //nullable: true,
         default: '',
     })
     email: string;

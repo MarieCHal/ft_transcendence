@@ -9,7 +9,7 @@ Post,
 UsePipes,
 ValidationPipe,
 } from '@nestjs/common'; 
-import { CreateUserDto } from 'src/users/dto/users_signin.dto';
+import { CreateUserDto } from 'src/users/dto/createUser.dto';
 import { LoginUserDto } from 'src/users/dto/users_login.dto';
 import { UsersService } from 'src/users/services/users/users.service';
 
@@ -23,15 +23,15 @@ export class UsersController {
         return this.usersService.showAllUsers();
     }
 
-    @Get('login')
+    @Post('login')
     @UsePipes(ValidationPipe)
     UserLogin(@Body() loginUserDto: LoginUserDto) {
         return this.usersService.UserLogin(loginUserDto);
     }
 
-    @Post('create')
+    @Post('sign_in')
     @UsePipes(ValidationPipe) // checks if the body corresponds to the defined rules in the dto
-    UserSignin(@Body() createUserDto: CreateUserDto) {
-        return this.usersService.UserSignin(createUserDto);
+    userSignin(@Body() createUserDto: CreateUserDto) {
+        return this.usersService.userSigninService(createUserDto);
     }
 }
