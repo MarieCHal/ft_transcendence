@@ -11,7 +11,7 @@ import { join } from 'path';
         host: 'smtp.sendgrid.net',
         secure: false,
         auth: {
-          user: 'apikey',
+          user: '',
           pass: '',
         },
       },
