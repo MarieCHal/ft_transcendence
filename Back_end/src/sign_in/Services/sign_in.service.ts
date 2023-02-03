@@ -5,6 +5,6 @@ import { CreateUserDto } from '../DTO/create-user.dto';
 @Injectable()
 export class SignInService {
     creatuserService(createUserDto: CreateUserDto) {
-        console.log("coucou");
+        return("coucou");
     }
 }

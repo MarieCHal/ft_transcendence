@@ -21,6 +21,9 @@
             <input type="password" name="Password" placeholder="VerifPassword" autocomplete="off" required v-model="VerifPassword">
             <submit/>
         </form>
+        <div id="statuscode" v-if="StatusCode">
+          <p> {{ MessageError }} </p>
+        </div>
     </div> 
 </template>
 
@@ -34,7 +37,9 @@
                 Nickname: '',
                 Email: '',
                 Password: '',
-                VerifPassword: ''
+                VerifPassword: '',
+                StatusCode: false,
+                MessageError: ''
             }
         },
 
@@ -42,7 +47,7 @@
       submitfonction(){
         if (this.Password == this.VerifPassword)
         {
-          console.log(this.image, this.Firstname, this.Lastname, this.Nickname, this.Email, this.Password)
+          //console.log(this.image, this.Firstname, this.Lastname, this.Nickname, this.Email, this.Password)
           const newData = {
             Firstname: this.Firstname,
             Lastname: this.Lastname,
@@ -53,10 +58,26 @@
           }
           this.__submitAxiosSignIn(newData);
         }
+        else{
+
+        }
       },
 
-      __submitAxiosSignIn(data: any){
-        axios.post("http://localhost:3000/sign_in", data);
+      async __submitAxiosSignIn(data: any){
+        try {
+          const response = await axios.post("http://localhost:3000/sign_in", data);
+          if (response.status == 201){
+            this.$router.push("/login")
+          }
+          else if (response.status == 400){
+          }
+        } catch (error) {
+          if (error.response.status != 201)
+          {
+            this.MessageError = error.response.data.message ;
+            this.StatusCode = true;
+          }
+        }
       },
 
       setImage(event: any) {
@@ -78,5 +99,8 @@
   }
   .file-select > input {
     display: none;
+  }
+  #statuscode{
+    position: relative;
   }
 </style>
