@@ -1,3 +1,7 @@
+<script setup lang="ts">
+  import axios from 'axios'
+</script>
+
 <template>
     <div>
         <form @submit.prevent="submitfonction">
@@ -27,7 +31,7 @@
 <script lang="ts">
     export default{
         data(){
-            return{
+          return{
                 image: '',
                 Firstname: '',
                 Lastname: '',
@@ -42,8 +46,29 @@
       submitfonction(){
         if (this.Password == this.VerifPassword)
           console.log(this.image, this.Firstname, this.Lastname, this.Nickname, this.Email, this.Password)
+          const newdata ={
+            Firstname: this.Firstname,
+              Lastname: this.Lastname,
+              Nickname: this.Nickname,
+              Email: this.Email,
+              Password: this.Password
+          }
+          this.submitAxioSignin(newdata);
       },
-      setImage(event) {
+
+      async submitAxioSignin(data: any){
+        try {
+          const reponse = await axios.post("http://localhost:3000/sign_in", data);
+          console.log(reponse.status);
+          if(reponse.status = 201){
+            this.$router.push("/login");
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      },
+
+      setImage(event: any) {
         this.image = URL.createObjectURL(event.target.files[0])
       }
     }
