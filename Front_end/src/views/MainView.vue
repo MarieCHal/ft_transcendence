@@ -9,18 +9,50 @@
   <div id="main_div">
     <music/>
     <div class="div_component" id="mainNav">
-      <mainNav/>
+      <div class="glow-button">
+        <div class="gradient"></div>
+          <div class="span">
+            <!-- <mainNav/> -->
+          </div>
+      </div>
     </div>
     <div class="div_component" id="mainMain">
-      <mainMain/>
+      <div class="glow-button">
+        <div class="gradient"></div>
+          <div class="span">
+            <!-- <mainMain/> -->
+          </div>
+      </div>
     </div>
     <div class="div_component" id="mainChat">
-      <mainChat/>
+      
+      <div class="glow-button">
+        <div class="gradient"></div>
+          <div class="span">
+            <!--<mainChat/> -->
+          </div>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
+
+.glow-button{
+  margin: auto;
+  height: 100vh;
+}
+.gradient{
+  display: flex;
+  align-items: center;
+  &:before{
+    justify-content: flex-start;
+    width: 100vh;
+    height: 100vh;
+    margin-right: auto;
+  }
+
+}
 #main_div{
   display:flex;
   //position: relative;
@@ -28,7 +60,6 @@
 }
 #mainNav{
   height: 98vh;
-
   background-color: aliceblue;
 }
 #mainMain{
