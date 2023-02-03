@@ -1,6 +1,7 @@
 <template>
     <input type="text" name="code"
-    minlength="4" placeholder="code" v-model="code" @keyup="codefonction">
+      minlength="4" placeholder="code"
+      v-model="code" @keyup="codefonction">
 </template>
 
 <script lang="ts">
@@ -21,3 +22,9 @@
     }
   }
 </script>
+
+<style scoped lang="scss">
+div{
+
+}
+</style>

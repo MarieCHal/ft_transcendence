@@ -16,10 +16,8 @@ html {
 
 body {
   min-height: 100vh;
-  display: flex;
+  position: relative;
   font-family: "Inter", Arial;
-  justify-content: center;
-  align-items: center;
   background-color: #ffffff;
   overflow: hidden;
   background-color: #020112;

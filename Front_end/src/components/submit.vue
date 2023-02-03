@@ -2,7 +2,7 @@
     <button class="glow-button">
         <div class="gradient"></div>
         <span class="span">
-            mainMain 
+            submit 
         </span>
     </button>
 </template>

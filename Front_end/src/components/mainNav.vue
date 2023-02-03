@@ -1,8 +1,8 @@
 <template>
     <button class="glow-button">
         <div class="gradient"></div>
-        <span>
+        <span class="span">
             mainNav
         </span>
-    </button>button>
+    </button>
 </template>

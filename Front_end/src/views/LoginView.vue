@@ -4,6 +4,17 @@ import logincode from '../components/loginCode.vue'
 </script>
 
 <template>
-    <loginform/>
-    <logincode/>
+    <div>
+        <loginform/>
+    </div>
 </template>
+
+<style scoped lang="scss">
+div{
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+</style>
