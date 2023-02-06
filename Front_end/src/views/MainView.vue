@@ -33,9 +33,13 @@
   //background-color: aqua;
 }
 #mainNav{
+  position: absolute;
+  height: 100vh;
   background-color: aliceblue;
 }
 #mainMain{
+  position: relative;
+  left: 15%;
   width: 100px;
   background-color: rgb(212, 37, 197);
 }

@@ -35,6 +35,12 @@ body {
   }
 }
 
+#statuscode{
+  text-align: center;
+  color: red;
+  position: relative;
+}
+
 @keyframes rotate {
   to {
       transform: scale(1.05) translateY(-44px) rotate(360deg) translateZ(0);

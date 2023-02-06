@@ -1,30 +1,55 @@
+<script setup lang="ts">
+  import axios from 'axios';
+</script>
+
 <template>
-    <input type="text" name="code"
-      minlength="4" placeholder="code"
-      v-model="code" @keyup="codefonction">
+  <div>
+    <form>
+      <input type="text" name="code" autocomplete="off"
+        minlength="4" placeholder="code"
+        v-model="Code" @keyup="submitfonction">
+    </form>
+    <div id="statuscode" v-if="StatusCode">
+      <p> {{ MessageError }} </p>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
     export default{
         data(){
             return{
-                code: ''
+                Code: '',
+                StatusCode: false,
+                MessageError: ''
             }
         },
+
     methods:{ 
-      codefonction: function(event: any){
-        console.log(this.code)
-        if (this.code == '1234'){
-          console.log('log ')
-          this.$router.push('/main')
+      submitfonction(){
+          const newData = {
+            Code: this.Code
+          }
+          this.checkCode(newData);
+      },
+
+      async checkCode(data: any)
+      {
+        try {
+          if (this.Code.length === 4){
+            const response = await axios.post("http://c1r2s3:3000/login/code", data);
+            if (response.status == 201){
+              this.$router.push("/main")
+            }
+          }
+        } catch (error) {
+          if (error.response.status != 201)
+          {
+            this.MessageError = error.response.data.message ;
+            this.StatusCode = true;
+          }
         }
       }
     }
   }
 </script>
-
-<style scoped lang="scss">
-div{
-
-}
-</style>

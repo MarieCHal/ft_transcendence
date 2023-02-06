@@ -54,22 +54,16 @@
             Nickname: this.Nickname,
             Email: this.Email,
             Password: this.Password,
-            VerifPassword: this.VerifPassword
           }
           this.__submitAxiosSignIn(newData);
-        }
-        else{
-
         }
       },
 
       async __submitAxiosSignIn(data: any){
         try {
-          const response = await axios.post("http://localhost:3000/sign_in", data);
+          const response = await axios.post("http://c1r2s3:3000/sign-in", data);
           if (response.status == 201){
             this.$router.push("/login")
-          }
-          else if (response.status == 400){
           }
         } catch (error) {
           if (error.response.status != 201)
@@ -99,8 +93,5 @@
   }
   .file-select > input {
     display: none;
-  }
-  #statuscode{
-    position: relative;
   }
 </style>
