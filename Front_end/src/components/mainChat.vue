@@ -1,8 +1,18 @@
+<script setup lang="ts">
+    import chatPrompt from "../components/chatPrompt.vue"
+</script>
+
 <template>
-    <button class="glow-button">
-        <div class="gradient"></div>
-        <span class="span">
-            mainChat 
-        </span>
-    </button>
+    <div id="mainChat">
+        <chatPrompt/>
+    </div>
 </template>
+
+<style scoped lang="scss">
+    #mainChat{
+        position: relative;
+        margin-left: auto;
+        //background-color: rgb(3, 202, 53);
+
+    }
+</style>
