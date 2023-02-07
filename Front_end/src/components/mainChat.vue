@@ -1,11 +1,14 @@
 <script setup lang="ts">
     import chatPrompt from "../components/chatPrompt.vue"
-    import chatMsg from "../components/chatMsg.vue"
+    import chatMsgSelf from "./chatMsgSelf.vue"
+    import chatMsgOther from "./chatMsgOther.vue"
+
 </script>
 
 <template>
     <div id="mainChat">
-        <chatMsg/>
+        <chatMsgOther/>
+        <chatMsgSelf/>
         <chatPrompt/>
     </div>
 </template>

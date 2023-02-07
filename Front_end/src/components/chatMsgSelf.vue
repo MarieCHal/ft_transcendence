@@ -35,6 +35,7 @@ div.glow-button{
 }
 div.gradient{
     transform: scaleY(1.02) scaleX(1.005) rotate(0deg);
+    border-radius: 11px 11px 0 11px;
     
     &:before{
         top: -10vh;
@@ -45,10 +46,11 @@ div.gradient{
     }
 }
 div.span{
+    padding: 5px;
+    border-radius: 11px 11px 0 11px;
     width: inherit;
     text-align: right;
-    padding-right: 12px;
-    padding-left: 12px;
     overflow-wrap: break-word;
+    background-color: rgb(139, 13, 61,);
 }
 </style>
