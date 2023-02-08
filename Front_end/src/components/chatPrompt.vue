@@ -3,7 +3,7 @@
         <div class="glow-button">
             <div class="gradient"></div>
             <div class="span">
-                prompt
+                promptdsdfgdsfsdfsdfsdfsdfsadfsdfsadfasdf
             </div>
         </div>
     </div>
@@ -11,8 +11,14 @@
 
 <style scoped lang="scss">
 #prompt{
-    
+    display: flex;
+
 }
+div.glow-button{
+
+
+}
+
 div.gradient{
     transform: scaleY(1.02) scaleX(1.005) rotate(0deg);
     &:before{
@@ -28,6 +34,6 @@ div.span{
     padding-right: 12px;
     padding-left: 12px;
     overflow-wrap: break-word;
-    width: 25rem;
+    max-width: 25rem;
 }
 </style>

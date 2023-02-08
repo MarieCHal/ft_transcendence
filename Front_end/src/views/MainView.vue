@@ -1,26 +1,21 @@
 <script setup lang="ts">
   import music from "@/components/music.vue";
   import mainNav from '../components/mainNav.vue'
-  import mainMain from '../components/mainMain.vue'
   import mainChat from '../components/mainChat.vue'
+  import navButton from '../components/navButton.vue'
+  import mainMainHelp from '../components/mainHelp.vue'
+  import mainMainProfile from '../components/mainProfile.vue'
+  import mainMainStats from '../components/mainStats.vue'
 </script>
 
 <template>
   <div id="main_div">
     <music/>
-    <div class="div_component" id="mainNav">
-      <div class="glow-button">
-        <div class="gradient"></div>
-          <div class="span">
-            <!-- <mainNav/> -->
-          </div>
-      </div>
-    </div>
-    <div class="div_component" id="mainMain">
-      <!-- <mainMain/> -->
-    </div>
+    <mainNav @toggleAdditionalButton="toggleAdditionalButton" />
+    <mainMainHelp v-if="showMain == 'Help'"/>
+    <mainMainProfile v-if="showMain == 'Profile'"/>
+    <mainMainStats v-if="showMain == 'Stats'"/>
     <mainChat/>
-
   </div>
 </template>
 
@@ -28,20 +23,29 @@
 
 #main_div{
   display:flex;
+  justify-content: space-between;
   height: 100vh;
-  position: relative;
   //background-color: aqua;
 }
-#mainNav{
-  position: absolute;
-  height: 100vh;
-  background-color: aliceblue;
-}
-#mainMain{
-  position: relative;
-  left: 15%;
-  width: 100px;
-  background-color: rgb(212, 37, 197);
-}
-
 </style>
+
+<script scoped lang="ts">
+export default {
+  components: {
+    navButton
+  },
+  methods: {
+      toggleAdditionalButton(buttonName: any) {
+        if (this.showMain == buttonName)
+          this.showMain = null;
+        else
+          this.showMain = buttonName;
+      }
+  },
+  data() {
+    return {
+      showMain: null
+    }
+  }
+}
+  </script>

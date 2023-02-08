@@ -27,7 +27,7 @@
 
 <style scoped lang="scss">
 #msg{
-    
+    align-self: flex-start;
 }
 div.glow-button{
     max-width: 25rem;
@@ -35,7 +35,7 @@ div.glow-button{
 }
 div.gradient{
     transform: scaleY(1.02) scaleX(1.005) rotate(0deg);
-    border-radius: 11px 11px 0 11px;
+    border-radius: 0 11px 11px 11px;
     
     &:before{
         top: -10vh;
@@ -47,10 +47,10 @@ div.gradient{
 }
 div.span{
     padding: 3px;
-    border-radius: 11px 11px 0 11px;
+    border-radius: 0 11px 11px 11px;
     width: inherit;
     text-align: right;
     overflow-wrap: break-word;
-    background-color: rgb(139, 13, 61,);
+    background-color: rgb(13, 139, 45);
 }
 </style>

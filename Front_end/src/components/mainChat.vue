@@ -16,12 +16,8 @@
 <style scoped lang="scss">
 #mainChat{
     display: flex;
-    align-items: flex-end;
+    align-self: flex-end;
     flex-direction: column;
-    justify-content: end;
-    position: absolute;
-    right: 0%;
-    height: 100vh;
-   // background-color: bisque;
+    align-items: flex-end;
 }
 </style>

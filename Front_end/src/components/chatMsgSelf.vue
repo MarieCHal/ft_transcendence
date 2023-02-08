@@ -27,7 +27,7 @@
 
 <style scoped lang="scss">
 #msg{
-    
+    align-self: flex-end;
 }
 div.glow-button{
     max-width: 25rem;
