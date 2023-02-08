@@ -3,7 +3,7 @@
         <div class="glow-button">
             <div class="gradient"></div>
             <div class="span">
-                c
+                Ouais, alors là où je vois que je suis vraiment à cran, c'est que quand vous avez dit malédiction, j'ai fait une série de tout petits pets comme ça : pft pft pft pft pft pft.
             </div>
         </div>
     </div>
@@ -11,7 +11,7 @@
         <div class="glow-button">
             <div class="gradient"></div>
             <div class="span">
-                cassdsDfszdfzsdfd
+                Je dirais que ma vie ne représente pas la période la plus captivante de mon existence.
             </div>
         </div>
     </div>
@@ -19,7 +19,7 @@
         <div class="glow-button">
             <div class="gradient"></div>
             <div class="span">
-                cassdfgsdfgsdfgsdfgsdfgsdfgsdgdsfgsdfgsdfgdsfgfghfghdfghdfghdfghdfghdfghdfghdfhdfghdfghdfghdfghdfghdfghfghgdhdfg
+                Non mais c'est à se coincer les parties dans une porte !
             </div>
         </div>
     </div>
@@ -51,6 +51,6 @@ div.span{
     width: inherit;
     text-align: right;
     overflow-wrap: break-word;
-    background-color: rgb(13, 139, 45);
+    background-color: rgba(4, 139, 38, 0.703);
 }
 </style>

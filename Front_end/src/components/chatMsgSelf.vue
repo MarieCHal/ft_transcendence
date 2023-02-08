@@ -3,7 +3,7 @@
         <div class="glow-button">
             <div class="gradient"></div>
             <div class="span">
-                c
+                Vil félon, où as-tu dissimulé le Graal Sacré ? Dans ton cul ! Tu paieras pour cet affront !
             </div>
         </div>
     </div>
@@ -11,7 +11,7 @@
         <div class="glow-button">
             <div class="gradient"></div>
             <div class="span">
-                cassdsDfszdfzsdfd
+                Mais je ne suis pas romain, merde !
             </div>
         </div>
     </div>
@@ -19,7 +19,7 @@
         <div class="glow-button">
             <div class="gradient"></div>
             <div class="span">
-                cassdfgsdfgsdfgsdfgsdfgsdfgsdgdsfgsdfgsdfgdsfgfghfghdfghdfghdfghdfghdfghdfghdfhdfghdfghdfghdfghdfghdfghfghgdhdfg
+                Les placards sont fermés ! Vous allez retourner dans votre canfouine, au trot, et si la faim persiste, mangez des moustiques : c'est nourrissant, ça coûte rien, et ça débarrasse !
             </div>
         </div>
     </div>
@@ -51,6 +51,6 @@ div.span{
     width: inherit;
     text-align: right;
     overflow-wrap: break-word;
-    background-color: rgb(139, 13, 61,);
+    background-color: rgba(33, 3, 15, 0.7);
 }
 </style>

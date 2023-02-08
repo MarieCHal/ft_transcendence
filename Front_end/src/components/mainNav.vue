@@ -28,14 +28,12 @@
 <style scoped lang="scss">
 div.glow-button{
     width: 100px;
-    min-height: 50vh;
-    max-height: 60vh;
 }
 div.gradient{
     transform: scaleY(1.003) scaleX(1.01) rotate(0deg);
     &:before {
-        height: 900px;
-        width: 900px;
+        height: 1000px;
+        width: 1000px;
         left: -400%;
     }
 }
@@ -43,9 +41,6 @@ div.span{
     display: flex;
     flex-direction: column;
     align-items: center;
-}
-.navButton{
-
 }
 </style>
 

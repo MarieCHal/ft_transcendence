@@ -1,18 +1,16 @@
 <template>
-    <div class="mainMain">
-        <div class="glow-button">
-            <div class="gradient"></div>
-            <div class="span">
-                stats
-            </div>
-        </div>
-    </div>
+    <h1>Arthour ! On est fort en pomme.</h1>
 </template>
 
 <style scoped lang="scss">
-.mainMain{
-    display: flex;
-    flex-grow: 1;
-    background-color: antiquewhite;
+h1{
+    margin: auto;
+    align-items: center;
+    color: rgb(245, 235, 235);
+}
+p{
+    margin: auto;
+    align-items: center;
+    color: rgb(245, 235, 235);
 }
 </style>

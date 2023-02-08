@@ -11,11 +11,25 @@
 <template>
   <div id="main_div">
     <music/>
-    <mainNav @toggleAdditionalButton="toggleAdditionalButton" />
-    <mainMainHelp v-if="showMain == 'Help'"/>
-    <mainMainProfile v-if="showMain == 'Profile'"/>
-    <mainMainStats v-if="showMain == 'Stats'"/>
-    <mainChat/>
+    <div id="mainNav">
+      <mainNav @toggleAdditionalButton="toggleAdditionalButton" />
+    </div>
+
+    <div id="mainMain">
+      <div id="mainMainHelp">
+        <mainMainHelp v-if="showMain == 'Help'"/>
+      </div>
+      <div id="mainMainProfile">
+        <mainMainProfile v-if="showMain == 'Profile'"/>
+      </div>
+      <div id="mainMainStats">
+        <mainMainStats v-if="showMain == 'Stats'"/>
+      </div>
+    </div>
+
+    <div id="mainChat">
+      <mainChat/>
+    </div>
   </div>
 </template>
 
@@ -24,8 +38,33 @@
 #main_div{
   display:flex;
   justify-content: space-between;
+  align-self: center;
   height: 100vh;
-  //background-color: aqua;
+  //background-color: aliceblue;
+}
+#mainNav{
+  margin: 20% 0 0 0;
+}
+#mainMain{
+  flex-grow: 1;
+}
+#mainMainHelp{
+  display: block;
+  margin-top: 20%;
+  margin-left: 3%;
+}
+#mainMainProfile{
+
+}
+#mainMainStats{
+
+}
+#mainChat{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    align-self: flex-end;
+    margin-bottom: 3%;
 }
 </style>
 

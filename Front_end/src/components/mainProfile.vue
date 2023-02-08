@@ -1,16 +1,11 @@
+<script setup lang="ts">
+  import signIn from "../components/sign_in.vue";
+</script>
+
 <template>
-        <div class="glow-button">
-            <div class="gradient"></div>
-            <div class="span">
-                Profile
-            </div>
-        </div>
+    <signIn/>
 </template>
 
 <style scoped lang="scss">
-.mainMain{
-    display: flex;
-    flex-grow: 1;
-    background-color: antiquewhite;
-}
+
 </style>
