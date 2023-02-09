@@ -27,8 +27,10 @@
 
     methods:{ 
       submitfonction(){
+          var mynameIs = localStorage.getItem('login');
           const newData = {
-            Code: this.Code
+            username: mynameIs,
+            password: this.Code
           }
           this.checkCode(newData);
       },
@@ -37,12 +39,16 @@
       {
         try {
           if (this.Code.length === 4){
-            const response = await axios.post("http://c1r2s3:3000/login/code", data);
+            const response = await axios.post("http://c1r2s3:3000/auth/code", data);
             if (response.status == 201){
+              var accessToken = response.data.access_token;
+              var avatar = response.data.Avatar;
+              localStorage.setItem('accessToken', accessToken);
+              localStorage.setItem('Avatar', avatar);
               this.$router.push("/main")
             }
           }
-        } catch (error) {
+        } catch (error: any) {
           if (error.response.status != 201)
           {
             this.MessageError = error.response.data.message ;
