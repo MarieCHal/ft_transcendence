@@ -1,0 +1,48 @@
+@import './input.scss';
+@import './glow.scss';
+
+html {
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: inherit;
+  &:before,
+  &:after {
+      box-sizing: inherit;
+  }
+}
+
+body {
+  min-height: 100vh;
+  position: relative;
+  font-family: "Inter", Arial;
+  background-color: #ffffff;
+  overflow: hidden;
+  background-color: #020112;
+  &:before {
+      z-index: -4;
+      content: "";
+      position: absolute;
+      inset: 40% -60% 0 -60%;
+      background-image: radial-gradient(
+          ellipse at bottom,
+          #301771 0%,
+          #020112 50%
+      );
+      opacity: 0.4;
+  }
+}
+
+#statuscode{
+  text-align: center;
+  color: red;
+  position: relative;
+}
+
+@keyframes rotate {
+  to {
+      transform: scale(1.05) translateY(-44px) rotate(360deg) translateZ(0);
+  }
+}
