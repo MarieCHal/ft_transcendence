@@ -33,11 +33,12 @@ const router = createRouter({
       name: 'main',
       component: MainView,
       beforeEnter:(to, from, next) => {
+        console.log(localStorage.getItem('accessToken'));
         if(localStorage.getItem('accessToken')){
           next();
         }
         else {
-          next('/login');
+          next({ name: 'login' });
         }
       }
     }
