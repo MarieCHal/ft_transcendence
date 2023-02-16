@@ -9,12 +9,10 @@ import { MailModule } from './mail/mail.module';
 import { config } from 'process';
 import { RegisterController } from './register/controllers/register.controller';
 import { RegisterModule } from './register/register.module';
-import { LoginModule } from './login/login.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
-import { CodeModule } from './code/code.module';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { typeOrmConfigAsync } from './config/typeorm.config';
@@ -29,10 +27,8 @@ import { typeOrmConfigAsync } from './config/typeorm.config';
     TypeOrmModule.forRootAsync (typeOrmConfigAsync),
     MailModule,
     RegisterModule,
-    LoginModule,
     AuthModule,
     UsersModule,
-    CodeModule,
   ],
   controllers: [AppController],
   providers: [AppService, 

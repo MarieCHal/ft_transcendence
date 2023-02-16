@@ -1,5 +1,4 @@
 import { Column, Entity, PrimaryGeneratedColumn, JoinColumn, OneToOne } from "typeorm";
-import { AvatarDatabase } from './avatarDatabase.entity'
 
 @Entity()
 export class users {
@@ -9,6 +8,12 @@ export class users {
     })
     id: number;
 
+    @Column({
+        nullable: true,
+        type: 'bytea'
+    })
+    Avatar: Buffer;
+    
     @Column({
         nullable: false,
         default: '',
@@ -42,15 +47,4 @@ export class users {
     })
     Password: string; 
     
-    @JoinColumn({ name: 'avatarId'})
-    @OneToOne(
-        () => AvatarDatabase,
-        {
-            nullable: true
-        }
-    )
-    public avatar?: AvatarDatabase;
-    
-    @Column({ nullable: true})
-    public avatarId?: number;
 }

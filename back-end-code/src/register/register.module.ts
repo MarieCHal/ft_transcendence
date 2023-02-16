@@ -5,6 +5,7 @@ import { users } from 'src/typeorm';
 import { RegisterController } from './controllers/register.controller';
 
 
+
 @Module({
   imports: [TypeOrmModule.forFeature([users])],
   controllers: [RegisterController],

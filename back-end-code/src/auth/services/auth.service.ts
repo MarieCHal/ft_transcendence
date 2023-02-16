@@ -1,14 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
-import { CodeInterface } from 'src/code/code.interface';
+import { CodeInterface } from '../code.interface';
 import { LoginUserDto } from '../dto/login.dto';
+import { MailService } from 'src/mail/mail.service';
 
 
 @Injectable()
 export class AuthService {
     constructor(private usersService: UsersService, 
         private jwtService: JwtService, 
+        private mailService: MailService
         ) {}
         
     private verifCode: CodeInterface [] = []
@@ -16,15 +18,22 @@ export class AuthService {
     async validateUser(loginUserDto: LoginUserDto) {
         console.log('coucou')
         const user = await this.usersService.findOne(loginUserDto.Nickname);
+        console.log(user)
         if (user && user.Password === loginUserDto.Password)
         {
+            for (let i = 0; i < this.verifCode.length; i++)
+            {
+                const tmp = this.verifCode[i];
+                if (this.verifCode[i].Nickname == loginUserDto.Nickname)
+                    this.verifCode.splice(i, 1)
+            }
             const rdmNumber = Math.floor(4000 + (Math.random() * 5000))
             console.log(rdmNumber)
             this.verifCode.push({
                 Nickname: loginUserDto.Nickname,
                 Code: rdmNumber,
             });
-            //await this.mailService.sendUserConfirmation(loginUserDto.Nickname, userEmail[0].Email, rdmNumber);
+            await this.mailService.sendUserConfirmation(loginUserDto.Nickname, user.Email, rdmNumber);
             return rdmNumber;
         }
         return 'Invalid username or password';

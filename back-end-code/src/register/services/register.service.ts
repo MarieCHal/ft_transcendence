@@ -1,16 +1,17 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { users } from 'src/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { RegisterDto } from '../dto/register.dto';
 
 @Injectable()
 export class RegisterService {
 
     constructor (
-        @InjectRepository(users) private readonly usersRepository: Repository<users>) {}
+        @InjectRepository(users) private readonly usersRepository: Repository<users>,
+        ) {}
 
-    async RegisterServ(registerDto: RegisterDto) {
+    async RegisterServ(registerDto: RegisterDto, avatar: Buffer) {
         const checkNick = await this.usersRepository.find({
             where: {
                 Nickname: registerDto.Nickname
@@ -31,9 +32,43 @@ export class RegisterService {
         }
         else
         {
-            const newUser = this.usersRepository.create(registerDto);
-            this.usersRepository.save(registerDto);
-            return "Sign in successful";
+            if (avatar.length < 1)
+            {
+                const newUser = await this.usersRepository.
+                            createQueryBuilder()
+                            .insert()
+                            .into(users)
+                            .values([
+                                {
+                                    Firstname: registerDto.Firstname,
+                                    Lastname: registerDto.Lastname,
+                                    Nickname: registerDto.Nickname,
+                                    Email: registerDto.Email,
+                                    Password: registerDto.Password},
+                            ])
+                            .execute()
+                            return newUser;
+            }
+            else {
+                const newUser = await this.usersRepository.
+                                createQueryBuilder()
+                                .insert()
+                                .into(users)
+                                .values([
+                                    {
+                                        Firstname: registerDto.Firstname,
+                                        Lastname: registerDto.Lastname,
+                                        Nickname: registerDto.Nickname,
+                                        Email: registerDto.Email,
+                                        Password: registerDto.Password,
+                                        Avatar: avatar},
+                                ])
+                                .execute()
+                                return newUser;
+            }
+            //this.usersRepository.save(newUser);
+            /*const newUser = this.usersRepository.create(registerDto);
+            this.usersRepository.save(registerDto);*/
         }
     }
 }
