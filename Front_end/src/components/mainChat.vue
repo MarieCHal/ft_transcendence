@@ -1,8 +1,16 @@
+<script setup lang="ts">
+    import chatPrompt from "../components/chatPrompt.vue"
+    import chatMsgSelf from "./chatMsgSelf.vue"
+    import chatMsgOther from "./chatMsgOther.vue"
+
+</script>
+
 <template>
-    <button class="glow-button">
-    <div class="gradient"></div>
-    <span>
-        mainChat 
-    </span>
-    </button>
+        <chatMsgOther/>
+        <chatMsgSelf/>
+        <chatPrompt/>
 </template>
+
+<style scoped lang="scss">
+
+</style>

@@ -1,41 +1,70 @@
+<script setup lang="ts">
+    import navChan from "./navChan.vue";
+    import navButton from "./navButton.vue";
+</script>
+
 <template>
-      <div class="glow-button">
-        <div class="gradient"></div>
-        <span>
-          <nav>
-          </nav>
-       </span>
-      </div>
+        <div class="glow-button">
+            <div class="gradient"></div>
+            <div class="span">
+                <navChan/>
+                <navButton class="navButton" title="Profile"  @click="toggleAdditionalButton('Profile')"/>
+                <navButton class="navButton"  title="Help"  @click="toggleAdditionalButton('Help')"/>
+                <navButton class="navButton"  title="Stats"  @click="toggleAdditionalButton('Stats')"/>
+            </div>
+        </div>
 </template>
 
 <script scoped lang="ts">
-  export default{
-    data() {
-        return {
-        isDropdownOpen: false,
-        IsDropdownOpen: false
+    export default {
+        methods: {
+            toggleAdditionalButton(buttonName: any) {
+            this.$emit('toggleAdditionalButton', buttonName)
+            }
         }
     }
-  }
 </script>
 
 <style scoped lang="scss">
-
-.glow-button{
+div.glow-button{
     width: 100px;
-    font-size: 32px;
-    border-radius: 2%;
-    height: 900px;
+}
+div.gradient{
+    transform: scaleY(1.003) scaleX(1.01) rotate(0deg);
+    &:before {
+        height: 1000px;
+        width: 1000px;
+        left: -400%;
+    }
+}
+div.span{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+</style>
 
-.gradient{
-  &:before {
-    height: 900px;
-    width: -900px;
+
+<!--
+    <style scoped lang="scss">
+.glow-button{
+  width: 100px;
+  top: 40px;
+  .gradient{
+    transform: scaleY(1.003) scaleX(1.01) rotate(0deg);
+    &:before {
+      height: 900px;
+      width: 900px;
+      left: -400%;
+      top: 5%;
+    }
+  }
+  .span{
+    height: 70vh;
+    display: flex;
+    flex-direction: column;
   }
 }
 
-span {
-    width: inherit;
-    }
-}
 </style>
+-->

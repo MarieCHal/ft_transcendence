@@ -3,13 +3,12 @@
 </script>
 
 <template>
-<div>
-    <home/>
-</div>
+    <div>
+        <home/>
+    </div>
 </template>
 
 <style scoped lang="scss">
-
 div{
     margin: 0;
     position: absolute;
@@ -17,5 +16,4 @@ div{
     left: 50%;
     transform: translate(-50%, -50%);
 }
-
 </style>

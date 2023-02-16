@@ -1,7 +1,7 @@
 <template>
     <div class="glow-button" v-on:click="clicklogin">
         <div class="gradient"></div>
-        <span>
+        <span class="span">
             42 Lausanne
         </span>
     </div>

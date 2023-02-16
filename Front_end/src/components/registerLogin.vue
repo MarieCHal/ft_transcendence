@@ -1,7 +1,7 @@
 <template>
     <button class="glow-button" v-on:click="clicklogin"> 
       <div class="gradient"></div>
-      <span>
+      <span class="span">
         Login 
       </span>
     </button>

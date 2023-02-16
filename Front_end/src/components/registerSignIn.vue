@@ -1,8 +1,8 @@
 <template>
     <button class="glow-button" v-on:click="clickSigne_In">
         <div class="gradient"></div>
-        <span>
-        Sign In 
+        <span class="span">
+            Sign In 
         </span>
     </button>
 </template>
