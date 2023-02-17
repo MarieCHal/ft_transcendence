@@ -3,9 +3,9 @@
   import mainNav from '../components/mainNav.vue'
   import mainChat from '../components/mainChat.vue'
   import navButton from '../components/navButton.vue'
-  import mainMainHelp from '../components/mainHelp.vue'
   import mainMainProfile from '../components/mainProfile.vue'
-  import mainMainStats from '../components/mainStats.vue'
+  import mainMainUsers from '../components/mainUsers.vue'
+  import mainMainChannel from '../components/mainChannel.vue'
 </script>
 
 <template>
@@ -16,14 +16,14 @@
     </div>
 
     <div id="mainMain">
-      <div id="mainMainHelp">
-        <mainMainHelp v-if="showMain == 'Help'"/>
-      </div>
       <div id="mainMainProfile">
         <mainMainProfile v-if="showMain == 'Profile'"/>
       </div>
-      <div id="mainMainStats">
-        <mainMainStats v-if="showMain == 'Stats'"/>
+      <div id="mainMainUsers">
+        <mainMainUsers v-if="showMain == 'Users'"/>
+      </div>
+      <div id="mainMainChannel">
+        <mainMainChannel v-if="showMain == 'Channel'"/>
       </div>
     </div>
 
@@ -43,7 +43,10 @@
   //background-color: aliceblue;
 }
 #mainNav{
-  margin: 20% 0 0 0;
+  display: flex;
+  align-items:baseline;
+  height: 10vh;
+  
 }
 #mainMain{
   flex-grow: 1;

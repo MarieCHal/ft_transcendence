@@ -1,5 +1,6 @@
 <script setup lang="ts">
-  import axios from 'axios';
+  import router from '@/router';
+import axios from 'axios';
 </script>
 
 <template>
@@ -42,9 +43,21 @@
             const response = await axios.post("http://c1r2s3:3000/auth/code", data);
             if (response.status == 201){
               var accessToken = response.data.access_token;
-              var avatar = response.data.Avatar;
+              var avatar = response.data.loginUser.Avatar;
+              var firstname = response.data.loginUser.Firstname;
+              var lastname = response.data.loginUser.Lastname;
+              var nickname = response.data.loginUser.Nickname;
+              var email = response.data.loginUser.Email;
+              var password = response.data.loginUser.Password;
               localStorage.setItem('accessToken', accessToken);
               localStorage.setItem('Avatar', avatar);
+              localStorage.setItem('Firstname', firstname);
+              localStorage.setItem('Lastname', lastname);
+              localStorage.setItem('Nickname', nickname);
+              localStorage.setItem('Email', email);
+              localStorage.setItem('Password', password);
+              console.log(accessToken);
+              console.log(localStorage.getItem('accessToken'))
               this.$router.push("/main")
             }
           }
@@ -57,5 +70,5 @@
         }
       }
     }
-  }
+    }
 </script>

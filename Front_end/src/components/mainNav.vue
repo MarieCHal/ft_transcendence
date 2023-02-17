@@ -1,18 +1,21 @@
 <script setup lang="ts">
-    import navChan from "./navChan.vue";
     import navButton from "./navButton.vue";
+    import navButtonImg from "./navButtonImg.vue";
 </script>
 
 <template>
-        <div class="glow-button">
-            <div class="gradient"></div>
-            <div class="span">
-                <navChan/>
-                <navButton class="navButton" title="Profile"  @click="toggleAdditionalButton('Profile')"/>
-                <navButton class="navButton"  title="Help"  @click="toggleAdditionalButton('Help')"/>
-                <navButton class="navButton"  title="Stats"  @click="toggleAdditionalButton('Stats')"/>
-            </div>
-        </div>
+    <div>
+        <navButton class="navButton" title="Channel"  @click="toggleAdditionalButton('Channel')"/>
+    </div>
+    <div>
+        <navButton class="navButton" title="Play"  @click="toggleAdditionalButton('Play')"/>
+    </div>
+    <div>
+        <navButton class="navButton"  title="Users"  @click="toggleAdditionalButton('Users')"/>
+    </div>
+    <div>
+        <navButtonImg class="navButton" title="Profile"  @click="toggleAdditionalButton('Profile')"/>
+    </div>
 </template>
 
 <script scoped lang="ts">
@@ -24,47 +27,3 @@
         }
     }
 </script>
-
-<style scoped lang="scss">
-div.glow-button{
-    width: 100px;
-}
-div.gradient{
-    transform: scaleY(1.003) scaleX(1.01) rotate(0deg);
-    &:before {
-        height: 1000px;
-        width: 1000px;
-        left: -400%;
-    }
-}
-div.span{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-</style>
-
-
-<!--
-    <style scoped lang="scss">
-.glow-button{
-  width: 100px;
-  top: 40px;
-  .gradient{
-    transform: scaleY(1.003) scaleX(1.01) rotate(0deg);
-    &:before {
-      height: 900px;
-      width: 900px;
-      left: -400%;
-      top: 5%;
-    }
-  }
-  .span{
-    height: 70vh;
-    display: flex;
-    flex-direction: column;
-  }
-}
-
-</style>
--->

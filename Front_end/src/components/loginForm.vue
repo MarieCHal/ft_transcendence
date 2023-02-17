@@ -2,6 +2,7 @@
   import submit from '../components/submit.vue'
   import logincode from '../components/loginCode.vue'
   import axios from 'axios';
+import { pushScopeId } from 'vue';
 </script>
 
 <template>

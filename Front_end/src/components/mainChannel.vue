@@ -1,0 +1,50 @@
+<template>
+    <div class="glow-button">
+        <div class="gradient"></div>
+            <div class="span">
+        </div>
+    </div>
+</template>
+
+<style scoped lang="scss">
+div.glow-button{
+    width: 100px;
+}
+div.gradient{
+    transform: scaleY(1.003) scaleX(1.01) rotate(0deg);
+    &:before {
+        height: 1000px;
+        width: 1000px;
+        left: -400%;
+    }
+}
+div.span{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+</style>
+
+
+
+    <style scoped lang="scss">
+.glow-button{
+  top: 100px;
+  position: absolute;
+  left: 5px;
+  .gradient{
+    transform: scaleY(1.003) scaleX(1.01) rotate(0deg);
+    &:before {
+      height: 900px;
+      width: 900px;
+      left: -400%;
+      top: 5%;
+    }
+  }
+  .span{
+    height: 50vh;
+    display: flex;
+    flex-direction: column;
+  }
+}
+</style>
