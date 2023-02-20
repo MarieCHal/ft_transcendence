@@ -1,7 +1,5 @@
 <template>
-    <div>
-        <h1>LoginPage</h1>
-    </div>
+    <h1>HomePage</h1>
 </template>
 
 <script setup lang="ts">
@@ -9,5 +7,5 @@
 </script>
 
 <style scoped lang="scss">
-
+    
 </style>
