@@ -14,8 +14,6 @@
     <div id="mainNav">
       <mainNav @toggleAdditionalButton="toggleAdditionalButton" />
     </div>
-
-    <div id="mainMain">
       <div id="mainMainProfile">
         <mainMainProfile v-if="showMain == 'Profile'"/>
       </div>
@@ -25,12 +23,10 @@
       <div id="mainMainChannel">
         <mainMainChannel v-if="showMain == 'Channel'"/>
       </div>
+      <div id="mainChat" v-show="show">
+          <mainChat/>
+      </div>
     </div>
-
-    <div id="mainChat">
-      <mainChat/>
-    </div>
-  </div>
 </template>
 
 <style scoped lang="scss">
@@ -48,17 +44,14 @@
   height: 10vh;
   
 }
-#mainMain{
-  flex-grow: 1;
-}
 #mainMainHelp{
   display: block;
   margin-top: 20%;
   margin-left: 3%;
 }
 #mainMainProfile{
-
 }
+
 #mainMainStats{
 
 }
@@ -76,17 +69,34 @@ export default {
   components: {
     navButton
   },
+  mounted() {
+    window.addEventListener("resize", this.handleResize);
+    this.handleResize();
+  },
   methods: {
       toggleAdditionalButton(buttonName: any) {
         if (this.showMain == buttonName)
           this.showMain = null;
         else
           this.showMain = buttonName;
+      },
+      handleResize() {
+      const largeurFenetre = window.innerWidth;
+      const hauteurFenetre = window.innerHeight;
+      if (largeurFenetre >= 500 && hauteurFenetre >= 800) { 
+        this.show = true;
+      } else {
+        this.show = false; 
       }
+    },
+    beforeDestroy() {
+    window.removeEventListener("resize", this.handleResize);
+  }
   },
   data() {
     return {
-      showMain: null
+      showMain: null,
+      show: false
     }
   }
 }

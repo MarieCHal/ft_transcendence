@@ -22,7 +22,7 @@ import axios from 'axios';
             return{
                 Code: '',
                 StatusCode: false,
-                MessageError: ''
+                MessageError: '',
             }
         },
 
@@ -43,22 +43,27 @@ import axios from 'axios';
             const response = await axios.post("http://c1r2s3:3000/auth/code", data);
             if (response.status == 201){
               var accessToken = response.data.access_token;
-              var avatar = response.data.loginUser.Avatar;
               var firstname = response.data.loginUser.Firstname;
               var lastname = response.data.loginUser.Lastname;
               var nickname = response.data.loginUser.Nickname;
               var email = response.data.loginUser.Email;
               var password = response.data.loginUser.Password;
               localStorage.setItem('accessToken', accessToken);
-              localStorage.setItem('Avatar', avatar);
               localStorage.setItem('Firstname', firstname);
               localStorage.setItem('Lastname', lastname);
               localStorage.setItem('Nickname', nickname);
               localStorage.setItem('Email', email);
               localStorage.setItem('Password', password);
+              const res = await axios.get("http://c1r2s3:3000/users/avatar", {
+                params: {nickname: localStorage.getItem('Nickname')},
+                responseType: 'blob'
+              });
+              const url = URL.createObjectURL(res.data);
+              var avatar = url;
+              localStorage.setItem('Avatar', avatar);
               console.log(accessToken);
-              console.log(localStorage.getItem('accessToken'))
-              this.$router.push("/main")
+              console.log("truc");
+              this.$router.push("/main");
             }
           }
         } catch (error: any) {

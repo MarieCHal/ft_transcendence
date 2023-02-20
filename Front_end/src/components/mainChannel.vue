@@ -48,3 +48,28 @@ div.span{
   }
 }
 </style>
+
+
+<!--
+<script scoped lang="ts">
+export default {
+  data(){
+    return{
+      prenoms: []
+  }
+},
+methods: {
+  async toggleAdditionalButton() {
+      const response = await axios.get("http://c1r2s3:3000/users/all");
+      this.prenoms = response.data;
+    }
+  }
+}
+</script>
+
+            <ul>
+              <li v-for="prenom in prenoms">{{ prenom }}</li>
+            </ul>
+
+
+-->

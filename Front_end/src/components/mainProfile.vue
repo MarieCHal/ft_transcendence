@@ -57,9 +57,11 @@
   }
   #all{
     display: flex;
+    position: absolute;
     align-items: center;
-    justify-content: center;
+    left: 0;
     height: 100vh;
+
   }
   .file-select > input {
     display: none;

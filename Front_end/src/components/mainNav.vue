@@ -1,4 +1,5 @@
 <script setup lang="ts">
+    import axios from 'axios';
     import navButton from "./navButton.vue";
     import navButtonImg from "./navButtonImg.vue";
 </script>
@@ -20,10 +21,15 @@
 
 <script scoped lang="ts">
     export default {
+        data(){
+            return{
+                prenoms: []
+        }
+        },
         methods: {
             toggleAdditionalButton(buttonName: any) {
             this.$emit('toggleAdditionalButton', buttonName)
             }
-        }
+        },
     }
 </script>

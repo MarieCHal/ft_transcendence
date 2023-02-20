@@ -15,7 +15,9 @@ html {
 }
 
 body {
+  max-width: 1000px;
   min-height: 100vh;
+  margin: auto;
   position: relative;
   font-family: "Inter", Arial;
   background-color: #ffffff;

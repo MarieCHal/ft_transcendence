@@ -29,9 +29,9 @@ export default {
   img{
     width: 100px;
     height: 100px;
-    background-position: center;
-    background-size: cover;
-    margin: auto;
+   // background-position: center;
+    //background-size: cover;
+    //margin: auto;
     border-radius: 50px;
   }
 
@@ -43,8 +43,10 @@ export default {
 }
 
   button{
-    position: fixed;
-    right: 10px;
-    border-radius: 100px;
+    display: flex;
+    position:absolute;
+    right: 0;
+    border-radius: 110px;
+    margin-top: -0;
   }
 </style>
