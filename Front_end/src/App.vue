@@ -1,35 +1,40 @@
 <script setup lang="ts">
   import { RouterView } from "vue-router";
+  import navButtonLogo from "./components/navComponents/navButtonLogo.vue"
   import navButtonUsers from "./components/navComponents/navButtonUsers.vue"
   import navButtonProfile from "./components/navComponents/navButtonProfile.vue"
-  import navButtonChan from "./components/navComponents/navButtonChan.vue"
+  import navButtonChat from "./components/navComponents/navButtonChat.vue"
   import navButtonPlay from "./components/navComponents/navButtonPlay.vue"
   import navLogin from "./components/navComponents/navLogin.vue"
-
 </script>
 
 <template>
-  <header>
-    <nav>
-      <div>
-        <navButtonPlay />
-        <navButtonUsers />
-        <navButtonChan />
-      </div>
-      <div v-if="checkToken()" >
-        <navButtonProfile />
-      </div>
-      <div v-else>
-        <navLogin />
-      </div>
-    </nav>
-  </header>
-  <main>
-    <RouterView />
-  </main>
-  <footer>
-    <p>coucou</p>
-  </footer>
+  <div class="mainDiv">
+    <header>
+      <nav>
+        <div>
+          <navButtonLogo />
+        </div>
+        <div>
+          <navButtonPlay />
+          <navButtonUsers />
+          <navButtonChat />
+        </div>
+        <div v-if="checkToken()" >
+          <navButtonProfile />
+        </div>
+        <div v-else>
+          <navLogin />
+        </div>
+      </nav>
+    </header>
+    <main>
+      <RouterView />
+    </main>
+    <footer>
+      <p>42 Lausanne</p>
+    </footer>
+  </div>
 </template>
 
 <script lang="ts">
@@ -54,10 +59,17 @@
 </script>
 
 <style scoped lang="scss">
+.mainDiv{
+  display: flex;
+  flex-direction: column;
+  background-color: burlywood;
+  height: 100vh;
+  max-width: 1000px;
+}
 header{
-  height: 10em;
-  //background-color: black;
-  padding: 1%;
+  //height: 10em;
+  background-color: black;
+  padding: 10px;
 }
 nav{
   display: flex;
@@ -65,12 +77,18 @@ nav{
 }
 main{
   display: flex;
-  //background-color: rgb(55, 47, 47);
+  height: 100%;
+  background-color: rgb(55, 47, 47);
 }
 footer{
   display: flex;
-  position: absolute;
+  //position: absolute;
   bottom: 0%;
-  //background-color: rgb(165, 91, 91);
+  max-width: 1000px;
+  width: 100%;
+  background-color: rgb(165, 91, 91);
+}
+p{
+  margin: auto;
 }
 </style>

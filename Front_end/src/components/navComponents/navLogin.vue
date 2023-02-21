@@ -15,7 +15,7 @@
 
         methods:{ 
             click(){
-                this.$router.push('/Login')
+                this.$router.push('/Login');
         }
     }
 }

@@ -1,7 +1,7 @@
 <template>
     <button class="navButton" v-on:click="click">
         <span>
-            Users
+            Chat
         </span>
     </button>
 </template>
@@ -15,7 +15,7 @@
 
         methods:{ 
             click(){
-                this.$router.push('/Users');
+                this.$router.push('/Chat');
         }
     }
 }

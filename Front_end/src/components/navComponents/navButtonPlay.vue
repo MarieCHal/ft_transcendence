@@ -10,12 +10,13 @@
     export default{
         data(){
             return{
+
             }
         },
 
         methods:{ 
             click(){
-                this.$router.push('/Play')
+                this.$router.push('/Play');
         }
     }
 }

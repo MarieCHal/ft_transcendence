@@ -15,7 +15,7 @@
 
         methods:{ 
             click(){
-                this.$router.push('/Profile')
+                this.$router.push('/Profile');
         }
     }
 }

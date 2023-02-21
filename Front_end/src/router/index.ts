@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import UsersView from '../views/UsersView.vue'
 import PlayView from '../views/PlayView.vue'
-import ChanView from '../views/ChanView.vue'
+import ChanView from '../views/ChatView.vue'
 import ProfileView from '../views/ProfileView.vue'
 import LoginView from '../views/LoginView.vue'
 
@@ -48,8 +48,8 @@ const router = createRouter({
       }
     },
     {
-      path: '/Chan',
-      name: 'chan',
+      path: '/Chat',
+      name: 'chat',
       component: ChanView,
       beforeEnter:(to, from, next) => {
         console.log(localStorage.getItem('accessToken'));

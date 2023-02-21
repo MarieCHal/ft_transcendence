@@ -1,7 +1,7 @@
 <template>
-    <button class="navButton" v-on:click="click">
+    <button class="navButton" id="navLoginButton" v-on:click="click">
         <span>
-            Chan
+            LOGo
         </span>
     </button>
 </template>
@@ -15,12 +15,19 @@
 
         methods:{ 
             click(){
-                this.$router.push('/Chan')
+                this.$router.push('/');
+
         }
     }
 }
 </script>
 
 <style scoped lang="scss">
-
+#navLoginButton{
+    background-color: rgb(0, 252, 38);
+}
+.navButton{
+    width: auto;
+    height: 3em;
+}
 </style>

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>ChanPage</h1>
+        <h1>ChatPage</h1>
     </div>
 </template>
 
