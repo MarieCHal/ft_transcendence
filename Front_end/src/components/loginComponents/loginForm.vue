@@ -8,21 +8,14 @@
         <h1>LoginPage</h1>
     </div>
     <div>
-        <form @submit.prevent="submitfonction">
-          <label class="file-select">
-            <div class="select-button">
-              <img :src="image" v-if="image"/>
-              <img src="../../assets/super.png" v-else="image"/>
-            </div>
-            <input accept="image/.jpeg,image/.png" type="file" ref="file" @change="fileUpload($event)"/>
-          </label>
-          <input type="text" name="Nickname" placeholder="Nickname" autocomplete="off" required v-model="Nickname">
-          <input type="password" name="Password" placeholder="Password" autocomplete="off" required v-model="Password">
-          <input type="submit" value="Send Request" />
-        </form>
-        <div id="statuscode" v-if="StatusCode">
-          <p> {{ MessageError }} </p>
-        </div>
+      <form @submit.prevent="submitfonction">
+        <input type="text" name="Nickname" placeholder="Nickname" autocomplete="off" required v-model="Nickname">
+        <input type="password" name="Password" placeholder="Password" autocomplete="off" required v-model="Password">
+        <input type="submit" value="Send Request" />
+      </form>
+      <div id="statuscode" v-if="StatusCode">
+        <p> {{ MessageError }} </p>
+      </div>
     </div>
 </template>
 
@@ -41,6 +34,7 @@
     },
 
     methods:{ 
+
       fileUpload(event: any){
         this.FILE = event.target.files[0];
         if (this.FILE)

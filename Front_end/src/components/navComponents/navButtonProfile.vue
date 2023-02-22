@@ -1,32 +1,31 @@
+<script  setup lang="ts">
+    import { useStore } from "vuex";
+    import router from '@/router';
+
+    const store = useStore();
+    var image = store.getters.getAvatar;
+    async function click(){
+
+        router.push('/Profile')
+    }
+</script>
+
 <template>
-    <button class="navButton" id="navProfileButton" v-on:click="click">
-        <span>
-            Profile
-        </span>
+    <button  id="navProfileButton" @click="click">
+        <img :src="image" v-if="image"/>
     </button>
 </template>
-
-<script lang="ts">
-    export default{
-        data(){
-            return{
-            }
-        },
-
-        methods:{ 
-            click(){
-                this.$router.push('/Profile');
-        }
-    }
-}
-</script>
 
 <style scoped lang="scss">
 #navProfileButton{
     width: 100px;
     height: 100px;
-    border-radius: 50%;
-    background-color: rgb(0, 252, 38);
-    margin-left: auto;
+    border-radius: 50px;
 }
+
+img{
+    width: 100px;
+    height: 100px;
+    border-radius: 50px;
+  }
 </style>

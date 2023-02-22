@@ -1,13 +1,17 @@
 <script setup lang="ts">
+    import Login42 from '@/components/loginComponents/login42.vue';
     import loginForm from '@/components/loginComponents/loginForm.vue';
 </script>
 
 <template>
-    <loginForm />
+    <div>
+        <!--<loginForm />-->
+        <Login42 /> 
+    </div>
 </template>
 
-<script setup lang="ts">
-    
+<script lang="ts">
+ 
 </script>
 
 <style scoped lang="scss">

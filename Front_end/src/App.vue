@@ -5,7 +5,15 @@
   import navButtonProfile from "./components/navComponents/navButtonProfile.vue"
   import navButtonChat from "./components/navComponents/navButtonChat.vue"
   import navButtonPlay from "./components/navComponents/navButtonPlay.vue"
-  import navLogin from "./components/navComponents/navLogin.vue"
+  import navLogin from "./components/navComponents/navButtonLogin.vue"
+  import { useStore } from "vuex";
+
+  const store = useStore();
+  function getlogin(){
+    console.log(store.getters.getAuthenticated);
+    return store.getters.getAuthenticated;
+  }
+
 </script>
 
 <template>
@@ -20,7 +28,7 @@
           <navButtonUsers />
           <navButtonChat />
         </div>
-        <div v-if="checkToken()" >
+        <div v-if="getlogin() == true">
           <navButtonProfile />
         </div>
         <div v-else>
@@ -36,27 +44,6 @@
     </footer>
   </div>
 </template>
-
-<script lang="ts">
-  export default{
-      data(){
-        return{
-          Token: ""
-        }
-      },
-      methods:{
-        checkToken(){
-          this.Token = localStorage.getItem('accessToken');
-          if (this.Token){
-            return true;
-          }
-          else{
-            return false;
-          }
-        }
-      }
-    }
-</script>
 
 <style scoped lang="scss">
 .mainDiv{
