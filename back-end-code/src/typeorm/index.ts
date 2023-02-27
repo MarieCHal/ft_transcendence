@@ -1,9 +1,9 @@
-import { database } from "./database.entity";
-import { users } from "./users.entity";
+import { Friends } from "./friends.entity";
+import { User } from "./users.entity";
+//import { Avatar } from "./avatar.entity";
 
-const entities = [database, users];
+const entities = [User, Friends];
 //const entities = [users,];
 
-export {database};
-export {users};
+export {User, Friends};
 export default entities;

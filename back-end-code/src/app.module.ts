@@ -1,37 +1,46 @@
 import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { DatabaseModule } from './database/database.module';
-import { UsersModule } from './users/users.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import entities from './typeorm';
+//import entities from './typeorm';
 import { MailerModule } from '@nestjs-modules/mailer';
-import { MailModule } from './mail/mail.module';
+//import { MailModule } from './mail/mail.module';
 import { config } from 'process';
+//import { RegisterController } from './register/controllers/register.controller';
+//import { RegisterModule } from './register/register.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+import { HttpModule } from '@nestjs/axios';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
+//import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { typeOrmConfigAsync } from './config/typeorm.config';
+import { ProfileModule } from './profile/profile.module';
+import { MailModule } from './mail/mail.module';
+
+
 
 @Module({
   imports: [
+    /*ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', '../Front_end/dist'), 
+    }),*/
     ConfigModule.forRoot({isGlobal: true}), // load and parse .env and imports it (true)
-    TypeOrmModule.forRootAsync ({
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-          type: 'postgres', //type of database
-          host: configService.get('POSGRES_HOST'),
-          port: configService.get('POSTGRES_PORT'),
-          username: configService.get('POSTGRES_USER'),
-          password: configService.get('POSTGRES_PASSWORD'),
-          database: configService.get('POSTGRES_DB'),
-          entities: entities, //entities are used to create table in you database
-          synchronize: true,  // update table in realtime
-      }),
-      inject: [ConfigService],
-    }),
-    DatabaseModule,
-    UsersModule,
+    TypeOrmModule.forRootAsync (typeOrmConfigAsync),
     MailModule,
+    AuthModule,
+    UsersModule,
+    ProfileModule,
+    HttpModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, 
+    /*{
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard
+    }, */
+  ],
 })
 export class AppModule {}
