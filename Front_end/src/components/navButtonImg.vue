@@ -1,7 +1,7 @@
 <template>
-    <button class="glow-button" @click="toggleAdditionalButton">
-      <div class="gradient"></div>
-      <div class="span">
+    <button @click="toggleAdditionalButton">
+      <div ></div>
+      <div>
               <img :src="image" v-if="image"/>
       </div>
       </button>
@@ -11,14 +11,13 @@
 export default {
   data(){
     return{
-      image: localStorage.getItem('Avatar')
+      image: localStorage.getItem('avatar')
       }
   },
   props:['title'],
   methods: {
     
     toggleAdditionalButton() {
-      console.log(localStorage.getItem('accessToken'));
       this.$emit('toggleAdditionalButton')
     }
   }
@@ -29,9 +28,6 @@ export default {
   img{
     width: 100px;
     height: 100px;
-   // background-position: center;
-    //background-size: cover;
-    //margin: auto;
     border-radius: 50px;
   }
 

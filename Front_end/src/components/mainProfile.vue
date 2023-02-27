@@ -11,11 +11,7 @@
                 <img :src="image" v-if="image"/>
               </div>
             </label>
-            <input type="text" name="Firstname" placeholder="Firstname" autocomplete="off" required v-model="Firstname">
-            <input type="text" name="Lastname" placeholder="Lastname" autocomplete="off" required v-model="Lastname">
-            <input type="text" name="Nickname" placeholder="Nickname" autocomplete="off" required v-model="Nickname">
-            <input type="email" name="Email" placeholder="Email" autocomplete="off" required v-model="Email">
-            <input type="password" name="Password" placeholder="Password" autocomplete="off" required v-model="Password">
+            <input type="text" name="login" placeholder="Login" autocomplete="off" required v-model="login">
         </form>
         <div id="statuscode" v-if="StatusCode">
           <p> {{ MessageError }} </p>
@@ -27,21 +23,18 @@
     export default{
         data(){
             return{
-              image: localStorage.getItem('Avatar'),
-              Firstname: localStorage.getItem('Firstname'),
-              Lastname: localStorage.getItem('Lastname'),
-              Nickname: localStorage.getItem('Nickname'),
-              Email: localStorage.getItem('Email'),
-              Password: localStorage.getItem('Password'),
+              image: localStorage.getItem('avatar'),
+              login: localStorage.getItem('login'),
               StatusCode: false,
               MessageError: ''
+              
             }
         },
 
     methods:{ 
       submitfonction(){
       },
-      setImage(event: any) {
+        setImage(event: any) {
         this.image = URL.createObjectURL(event.target.files[0])
       }
     }

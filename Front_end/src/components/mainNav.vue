@@ -17,6 +17,9 @@
     <div>
         <navButtonImg class="navButton" title="Profile"  @click="toggleAdditionalButton('Profile')"/>
     </div>
+    <div>
+        <navButton class="navButton" title="Chat"  @click="toggleAdditionalButton('Chat')"/>
+    </div>
 </template>
 
 <script scoped lang="ts">

@@ -29,7 +29,7 @@
     </div> 
 </template>
 
-<script lang="ts">
+ <script lang="ts">
     export default{
         data(){
             return{
@@ -76,6 +76,7 @@
 
       async __submitAxiosSignIn(formData: any, config: any){
         try {
+          console.log(this.$route.query.code)
           const response = await axios.post("http://c1r2s3:3000/sign-in", formData, config);
           if (response.status == 201){
             this.$router.push("/login")

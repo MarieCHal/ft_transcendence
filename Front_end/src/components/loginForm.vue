@@ -12,7 +12,6 @@ import { pushScopeId } from 'vue';
             <input type="password" name="password" placeholder="Password" autocomplete="off" required v-model="password">
             <submit/>
         </form>
-        <logincode/>
         <div id="statuscode" v-if="StatusCode">
           <p> {{ MessageError }} </p>
         </div>
@@ -34,8 +33,8 @@ import { pushScopeId } from 'vue';
     methods:{ 
       submitfonction(){
           const newData = {
-            Nickname: this.login,
-            Password: this.password,
+          login: this.login,
+          password: this.password,
           }
           this.submitAxiosSignIn(newData);
       },
@@ -43,16 +42,33 @@ import { pushScopeId } from 'vue';
       async submitAxiosSignIn(data: any){
         try {
           const response = await axios.post("http://c1r2s3:3000/auth/login", data);
-          if (response.status == 201){
-            localStorage.setItem('login', this.login);
+          if (response.data.doubleAuth == false){
+              var accessToken = response.data.access_token;
+              var nickname = response.data.user.nickname;
+              var id = response.data.user.id;
+              localStorage.setItem('accessToken', accessToken);
+              localStorage.setItem('nickname', nickname);
+              localStorage.setItem('id', id);
+
+              const res = await axios.get("http://c1r2s3:3000/users/avatar", {
+                params: {nickname: localStorage.getItem('Nickname')},
+                responseType: 'blob'
+              });
+              const url = URL.createObjectURL(res.data);
+              var avatar = url;
+              localStorage.setItem('avatar', avatar);
+              this.$router.push("/main")
           }
-        } catch (error: any) {
-          if (error.response.status != 201)
-          {
-            this.MessageError = error.response.data.message ;
-            this.StatusCode = true;
+          /*if (response.data.doubleAuth == true){
+            faire une div pour le code
+          }*/
+          } catch (error: any) {
+            if (error.response.doubleAuth != 201)
+            {
+              this.MessageError = error.response.data.message ;
+              this.StatusCode = true;
+            }
           }
-        }
       },
     }
   }

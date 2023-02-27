@@ -5,10 +5,13 @@
 <template>
   <div class="glow-button" @click='toggleAdditionalButton'>
       <div class="gradient"></div>
-          <div class="span">
-            <ul>
-              <li v-for="Nickname in prenoms">{{ prenoms }}</li>
-            </ul>
+        <div class="span">
+          <ul>
+            <li v-for="Nickname in prenoms">{{ Nickname.Nickname }}</li>         
+          </ul>
+          <ul>
+            <li v-for="Avatar in Aatar">{{ Avatar.Avatar }}</li>         
+          </ul>
       </div>
   </div>
 </template>
@@ -17,13 +20,23 @@
 export default {
   data(){
     return{
-      prenoms: []
-  }
-},
-methods: {
-  async toggleAdditionalButton() {
-      const response = await axios.get("http://c1r2s3:3000/users/all");
+      prenoms: [],
+      avatar: [],
+      Aatar: ''
+    }
+  },
+  methods: {
+    async toggleAdditionalButton() {
+      const response = await axios.get("http://c1r2s3:3000/users/all/profile");
       this.prenoms = response.data
+      console.log(response.data)
+      const res = await axios.get("http://c1r2s3:3000/users/all/avatar", {
+        responseType: 'blob'
+      });
+      const url = URL.createObjectURL(res.data.Avatar);
+      this.Aatar = url;
+      console.log("res =", url)
+      //this.prenoms = response.data.map(user => ({Nickname: user.Nickname}));
     }
   }
 }

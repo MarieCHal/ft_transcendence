@@ -1,12 +1,11 @@
 <script setup lang="ts">
   import registerlogin from "../components/registerLogin.vue";
-  import registersignin from "../components/registerSignIn.vue";
+  //import registersignin from "../components/registerSignIn.vue";
 </script>
 
 <template>
       <div>
         <registerlogin/>
-        <registersignin/>
       </div>
 </template>
 

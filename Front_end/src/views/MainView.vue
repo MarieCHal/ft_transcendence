@@ -23,7 +23,7 @@
       <div id="mainMainChannel">
         <mainMainChannel v-if="showMain == 'Channel'"/>
       </div>
-      <div id="mainChat" v-show="show">
+      <div id="mainChat" v-show="show" v-if="showMain == 'Chat'">
           <mainChat/>
       </div>
     </div>
