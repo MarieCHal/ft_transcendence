@@ -15,8 +15,8 @@ const router = createRouter({
       component: HomeView
     },
     {
-      path: '/Login',
-      name: 'login',
+      path: '/register',
+      name: 'register',
       component: LoginView
     },
     {
@@ -29,7 +29,7 @@ const router = createRouter({
           next();
         }
         else {
-          next({ name: 'login' });
+          next({ name: 'register' });
         }
       }
     },
@@ -43,7 +43,7 @@ const router = createRouter({
           next();
         }
         else {
-          next({ name: 'login' });
+          next({ name: 'register' });
         }
       }
     },
@@ -57,7 +57,7 @@ const router = createRouter({
           next();
         }
         else {
-          next({ name: 'login' });
+          next({ name: 'register' });
         }
       }
     },
@@ -71,7 +71,7 @@ const router = createRouter({
           next();
         }
         else {
-          next({ name: 'login' });
+          next({ name: 'register' });
         }
       }
     }

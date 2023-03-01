@@ -11,7 +11,6 @@
   const store = useStore();
   
   function getlogin(){
-    console.log(store.getters.getAuthenticated);
     return store.getters.getAuthenticated;
   }
 
