@@ -1,26 +1,18 @@
+<script setup lang="ts">
+    import router from '@/router';
+    
+    function click(){
+        router.push('/Play');
+    }
+</script>
+
 <template>
-    <button class="navButton"  v-on:click="click">
+    <button class="navButton"  @click="click">
         <span>
             Play
         </span>
     </button>
 </template>
-
-<script lang="ts">
-    export default{
-        data(){
-            return{
-
-            }
-        },
-
-        methods:{ 
-            click(){
-                this.$router.push('/Play');
-        }
-    }
-}
-</script>
 
 <style scoped lang="scss">
 

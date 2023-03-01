@@ -1,25 +1,18 @@
+<script setup lang="ts">
+    import router from '@/router';
+    
+    function click(){
+        router.push('/Login');
+    }
+</script>
+
 <template>
-    <button class="navButton" id="navLoginButton" v-on:click="click">
+    <button class="navButton" id="navLoginButton" @click="click">
         <span>
             LOGIN
         </span>
     </button>
 </template>
-
-<script lang="ts">
-    export default{
-        data(){
-            return{
-            }
-        },
-
-        methods:{ 
-            click(){
-                this.$router.push('/Login');
-        }
-    }
-}
-</script>
 
 <style scoped lang="scss">
 #navLoginButton{
