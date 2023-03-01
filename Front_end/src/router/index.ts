@@ -5,6 +5,15 @@ import PlayView from '../views/PlayView.vue'
 import ChanView from '../views/ChatView.vue'
 import ProfileView from '../views/ProfileView.vue'
 import LoginView from '../views/LoginView.vue'
+import store  from '../store';
+    
+function isAuthenticated(){
+  let isConnect = store.getters.getAuthenticated;
+  if (isConnect == true)
+    return true;
+  else
+    return false;
+}
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -24,8 +33,8 @@ const router = createRouter({
       name: 'users',
       component: UsersView,
       beforeEnter:(to, from, next) => {
-        console.log(localStorage.getItem('accessToken'));
-        if(localStorage.getItem('accessToken')){
+        console.log(isAuthenticated());
+        if(isAuthenticated() == true){
           next();
         }
         else {
@@ -38,8 +47,8 @@ const router = createRouter({
       name: 'play',
       component: PlayView,
       beforeEnter:(to, from, next) => {
-        console.log(localStorage.getItem('accessToken'));
-        if(localStorage.getItem('accessToken')){
+        console.log(isAuthenticated());
+        if(isAuthenticated() == true){
           next();
         }
         else {
@@ -52,8 +61,8 @@ const router = createRouter({
       name: 'chat',
       component: ChanView,
       beforeEnter:(to, from, next) => {
-        console.log(localStorage.getItem('accessToken'));
-        if(localStorage.getItem('accessToken')){
+        console.log(isAuthenticated());
+        if(isAuthenticated() == true){
           next();
         }
         else {
@@ -66,8 +75,8 @@ const router = createRouter({
       name: 'profile',
       component: ProfileView,
       beforeEnter:(to, from, next) => {
-        console.log(localStorage.getItem('accessToken'));
-        if(localStorage.getItem('accessToken')){
+        console.log(isAuthenticated());
+        if(isAuthenticated() == true){
           next();
         }
         else {

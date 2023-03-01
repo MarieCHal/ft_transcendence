@@ -3,16 +3,20 @@
     import router from '@/router';
 
     const store = useStore();
-    var image = store.getters.getAvatar;
+    
     async function click(){
 
         router.push('/Profile')
+    }
+
+    function getAvatar(){
+        return store.getters.getAvatar;
     }
 </script>
 
 <template>
     <button  id="navProfileButton" @click="click">
-        <img :src="image" v-if="image"/>
+        <img :src="getAvatar()" v-if="getAvatar()"/>
     </button>
 </template>
 
