@@ -1,21 +1,30 @@
 <script setup lang="ts">
     import modifProfileButton from '../components/profileComponents/modifProfileButton.vue'
-    import { useRouter } from 'vue-router';
-    import { useStore } from "vuex";
+    import { useRouter } from 'vue-router'
+    import { useStore } from "vuex"
     
     const router = useRouter();
     const store = useStore();
+    let login = store.getters.getLogin;
+
     function click(){
-        router.push('/Profile/modif')
+        router.push('/Profile/modif');
+    }
+    function getAvatar(){
+        return store.getters.getAvatar;
     }
 </script>
 
 <template>
 
     <div>
-        <Span>avatar</Span>
+        <div >
+            <img :src="getAvatar()"/>
+        </div>
         <br>
-        <Span>login</Span>
+        <Span>
+            {{ login }}
+        </Span>
         <br>
         <Span>stats</Span>
         <modifProfileButton @click="click()"/>
@@ -23,5 +32,11 @@
 </template>
 
 <style scoped lang="scss">
-
+  img{
+    width: 100px;
+    height: 100px;
+    display: block;
+    margin: auto;
+    border-radius: 50px;
+  }
 </style>

@@ -1,12 +1,12 @@
 <script setup lang="ts">
-  import { RouterView } from "vue-router";
+  import { RouterView } from "vue-router"
   import navButtonLogo from "./components/navComponents/navButtonLogo.vue"
   import navButtonUsers from "./components/navComponents/navButtonUsers.vue"
   import navButtonProfile from "./components/navComponents/navButtonProfile.vue"
   import navButtonChat from "./components/navComponents/navButtonChat.vue"
   import navButtonPlay from "./components/navComponents/navButtonPlay.vue"
   import navLogin from "./components/navComponents/navButtonLogin.vue"
-  import { useStore } from "vuex";
+  import { useStore } from "vuex"
 
   const store = useStore();
   

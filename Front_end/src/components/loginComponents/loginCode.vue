@@ -1,8 +1,8 @@
 <script setup lang="ts">
-  import axios from 'axios';
-  import { useRouter } from 'vue-router';
-  import { useStore } from "vuex";
-  
+  import axios from 'axios'
+  import { useRouter } from 'vue-router'
+  import { useStore } from "vuex"
+
   const router = useRouter();
   const store = useStore();
   let codeMail = '';

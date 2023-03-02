@@ -1,6 +1,6 @@
 <script  setup lang="ts">
-    import { useStore } from "vuex";
-    import router from '@/router';
+    import { useStore } from "vuex"
+    import router from '@/router'
 
     const store = useStore();
     

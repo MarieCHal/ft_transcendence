@@ -1,40 +1,55 @@
 <script setup lang="ts">
-    import Login42 from '@/components/loginComponents/login42.vue';
-    import loginCode from '@/components/loginComponents/loginCode.vue';
-    import axios from 'axios';
-    import { onMounted } from 'vue';
-    import { useRouter } from 'vue-router';
-    import { useStore } from "vuex";
+    import Login42 from '@/components/loginComponents/login42.vue'
+    import loginCode from '@/components/loginComponents/loginCode.vue'
+    import axios from 'axios'
+    import { onMounted } from 'vue'
+    import { useRouter } from 'vue-router'
+    import { useStore } from "vuex"
     
     const router = useRouter();
     const store = useStore();
+    let msgError = '';
+
     onMounted(() => {
       checkCode()
     });
+
     const checkCode = async () => {
-      await router.isReady();
-      const code = router.currentRoute.value.query.code;
-      if (code)
-      {
-        const response = await axios.post('http://c1r2s3:3000/wellcome', {code: code});
-        if (response.data.doubleAuth == false)
+        await router.isReady();
+        store.commit('setStatusCode', false);
+        const code = router.currentRoute.value.query.code;
+        if (code)
         {
-            console.log(response.data);
-            store.commit('setAuthenticated', true);
-            store.commit('setDoubleAuth', false);
-            store.commit('setAvatar', response.data.user.avatar);
-            store.commit('setLogin', response.data.user.login);
-            store.commit('setToken', response.data.accessToken);
-            router.push('/');
+            try {
+                const response = await axios.post('http://c1r2s3:3000/wellcome', {code: code});
+                if (response.data.doubleAuth == false)
+                {
+                    console.log(response.data);
+                    store.commit('setAuthenticated', true);
+                    store.commit('setDoubleAuth', false);
+                    store.commit('setAvatar', response.data.user.avatar);
+                    store.commit('setLogin', response.data.user.login);
+                    store.commit('setToken', response.data.accessToken);
+                    router.push('/');
+                }
+                else
+                {
+                    store.commit('setLogin', response.data.login);
+                    store.commit('setDoubleAuth', true);
+                }
+            } catch (error: any) {
+                if (error.response.status != 201)
+                {
+                    msgError = error.response.data.message ;
+                    store.commit('setStatusCode', true);
+                }
+            }
         }
-        else
-        {
-            store.commit('setLogin', response.data.login);
-            store.commit('setDoubleAuth', true);
-        }
-      }
     }
 
+    function getStatusCode(){
+        return store.getters.getStatusCode;
+    }
     async function clicklogin(){
         window.location.href = ('https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-1efc18e2af44e4362df56b7995925e5e7f0a1407f1a30048e6a4516faff25622&redirect_uri=http%3A%2F%2Flocalhost%3A5173%2Fregister&response_type=code&%60')
     }
@@ -51,6 +66,9 @@
     </div>
     <div v-else>
         <loginCode />
+    </div>
+    <div id="statuscode" v-if="getStatusCode()">
+      <p> {{ msgError }} </p>
     </div>
 </template>
 
