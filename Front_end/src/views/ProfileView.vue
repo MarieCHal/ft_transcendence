@@ -5,7 +5,7 @@
     
     const router = useRouter();
     const store = useStore();
-    let login = store.getters.getLogin;
+    let nickname = store.getters.getNickname;
 
     function click(){
         router.push('/Profile/modif');
@@ -23,7 +23,7 @@
         </div>
         <br>
         <Span>
-            {{ login }}
+            {{ nickname }}
         </Span>
         <br>
         <Span>stats</Span>

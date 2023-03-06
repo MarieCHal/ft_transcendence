@@ -5,8 +5,9 @@
     
     const router = useRouter();
     const store = useStore();
+
     //let image = store.getters.getAvatar;
-    let login = store.getters.getLogin;
+    let nickname = store.getters.getNickname;
     let msgError = '';
 
     function getStatusCode(){
@@ -18,11 +19,22 @@
     }
     const fileUpload = async (event: any) => {
         store.commit('setStatusCode', false); 
-        let avatar = URL.createObjectURL(event.target.files[0]);
+        const file = event.target.files[0];
+        const avatar = URL.createObjectURL(file);
+        
         if (store.getters.getAvatar != avatar)
         {
             try {
-                const response = await axios.post('http://c1r2s3:3000/profile/modify/avatar', {headers: {"Authorization": `Bearer ${store.getters.getToken}`}, avatar: avatar})
+                const formData = new FormData();
+                formData.append("avatar", file);
+                const headers = {
+                    "Content-Type": "multipart/form-data",
+                    Authorization: `Bearer ${store.getters.getToken}`
+                };
+                const response = await axios.post('http://c1r2s3:3000/profile/modify/avatar',
+                formData,
+                { headers }
+                );
                 if (response.status == 201)
                 {
                     store.commit('setAvatar', avatar);
@@ -36,14 +48,16 @@
             }
         }
     }
-    const loginUpload = async () => {
+    const nicknameUpload = async () => {
         store.commit('setStatusCode', false); 
-        if (store.getters.getLogin != login){
+        if (store.getters.getNickname != nickname){
             try {
-                const response = await axios.post('http://c1r2s3:3000/profile/modify/login', {headers: {"Authorization": `Bearer ${store.getters.getToken}`}, login: login})
+                const headers = {"Authorization": `Bearer ${store.getters.getToken}`};
+                const data = {nickname: nickname};
+                const response = await axios.post('http://c1r2s3:3000/profile/modify/nickname', data, {headers})
                 if (response.status == 201)
                 {
-                    store.commit('setLogin', login);
+                    store.commit('setNickname', nickname);
                 }
             } catch (error: any) {
                 if (error.response.status != 201)
@@ -58,14 +72,14 @@
 
 <template>
     <div>
-        <form @submit.prevent="loginUpload">
+        <form @submit.prevent="nicknameUpload">
             <label class="file-select">
                 <div class="select-button">
                     <img :src="getAvatar()" v-if="getAvatar()"/>
                 </div>
                 <input accept="image/.jpeg,image/.png" type="file" ref="file" @change="fileUpload($event)"/>
             </label>
-            <input type="text" name="login" placeholder="Login" autocomplete="off" required v-model="login">
+            <input type="text" name="Nickname" placeholder="Nickname" autocomplete="off" required v-model="nickname">
             <button>
                 submit
             </button>

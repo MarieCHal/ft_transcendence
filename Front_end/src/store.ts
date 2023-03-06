@@ -5,25 +5,28 @@ const store = createStore({
         isAuthenticated: false,
         isDoubleAuth: false,
         isAvatar: "",
-        isLogin: "",
+        isNickname: "",
         isToken : "",
-        isStatusCode: false
+        isStatusCode: false,
+        isUsers: []
       },
       mutations: {
         setAuthenticated(state, isAuthenticated) {state.isAuthenticated = isAuthenticated},
         setDoubleAuth(state, isDoubleAuth) {state.isDoubleAuth = isDoubleAuth},
         setAvatar(state, isAvatar) {state.isAvatar = isAvatar},
-        setLogin(state, isLogin) {state.isLogin = isLogin},
+        setNickname(state, isNickname) {state.isNickname = isNickname},
         setToken(state, isToken) {state.isToken = isToken},
-        setStatusCode(state,  isStatusCode) {state.isStatusCode =  isStatusCode}
+        setStatusCode(state,  isStatusCode) {state.isStatusCode =  isStatusCode},
+        setUsers(state,  isUsers) {state.isUsers =  isUsers}
       },
       getters: {
         getAuthenticated: state => state.isAuthenticated,
         getDoubleAuth: state => state.isDoubleAuth,
         getAvatar: state => state.isAvatar,
-        getLogin: state => state.isLogin,
+        getNickname: state => state.isNickname,
         getToken: state => state.isToken,
-        getStatusCode: state => state.isStatusCode
+        getStatusCode: state => state.isStatusCode,
+        getUsers: state => state.isUsers
       }    
 });
 

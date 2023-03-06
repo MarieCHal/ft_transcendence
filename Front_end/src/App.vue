@@ -40,7 +40,7 @@
       <RouterView />
     </main>
     <footer>
-      <p>42 Lausanne</p>
+      <p><a href="https://42lausanne.ch/" target="_blank">42 Lausanne</a></p>
     </footer>
   </div>
 </template>
@@ -64,6 +64,7 @@ nav{
 }
 main{
   display: flex;
+  justify-content: center;
   height: 100%;
   background-color: rgb(55, 47, 47);
 }
@@ -77,5 +78,8 @@ footer{
 }
 p{
   margin: auto;
+}
+a{
+  text-decoration : none;
 }
 </style>

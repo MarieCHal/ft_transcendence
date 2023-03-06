@@ -32,8 +32,8 @@ const router = createRouter({
     {
       path: '/Users',
       name: 'users',
-      component: UsersView,
-      beforeEnter:(to, from, next) => {
+      component: UsersView
+      /*beforeEnter:(to, from, next) => {
         console.log(isAuthenticated());
         if(isAuthenticated() == true){
           next();
@@ -41,7 +41,7 @@ const router = createRouter({
         else {
           next({ name: 'register' });
         }
-      }
+      }*/
     },
     {
       path: '/Play',

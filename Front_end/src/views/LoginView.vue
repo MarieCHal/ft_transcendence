@@ -28,13 +28,13 @@
                     store.commit('setAuthenticated', true);
                     store.commit('setDoubleAuth', false);
                     store.commit('setAvatar', response.data.user.avatar);
-                    store.commit('setLogin', response.data.user.login);
+                    store.commit('setNickname', response.data.user.nickname);
                     store.commit('setToken', response.data.accessToken);
                     router.push('/');
                 }
                 else
                 {
-                    store.commit('setLogin', response.data.login);
+                    store.commit('setNickname', response.data.nickname);
                     store.commit('setDoubleAuth', true);
                 }
             } catch (error: any) {

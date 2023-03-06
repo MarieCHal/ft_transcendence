@@ -6,19 +6,19 @@
   const router = useRouter();
   const store = useStore();
   let codeMail = '';
-  let statusCode = false;
   let msgError = '';
 
   const checkCodeMail = async () => {
     if (codeMail.length == 4)
     {
+      store.commit('setStatusCode', false);
       try {
-        let login = store.getters.getLogin;
-        const response = await axios.post("http://c1r2s3:3000/auth/code", {codeMail: codeMail, login: login});
+        let nickname = store.getters.getNickname;
+        const response = await axios.post("http://c1r2s3:3000/auth/code", {codeMail: codeMail, nickname: nickname});
         if (response.status == 201){
           store.commit('setAuthenticated', true);
           store.commit('setAvatar', response.data.user.avatar);
-          store.commit('setLogin', response.data.user.login);
+          store.commit('setNickname', response.data.user.nickname);
           store.commit('setToken', response.data.accessToken);
           router.push("/");
         }
