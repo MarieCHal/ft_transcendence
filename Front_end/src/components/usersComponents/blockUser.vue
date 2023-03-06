@@ -3,7 +3,7 @@
 </script>
 
 <template>
-    <h1>block users !</h1>
+    <p>block users !</p>
 </template>
 
 <style scoped lang="scss">

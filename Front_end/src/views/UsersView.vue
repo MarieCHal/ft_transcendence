@@ -13,38 +13,56 @@
     
     onMounted(async () => {
         console.log("je suis la"); 
-        const response = await axios.get("http://c1r2s3:3000/users/avatars");//FAIRE TRY CATCH
+        const response = await axios.get("http://c1r2s3:3000/users/all");//FAIRE TRY CATCH
         //const response = await axios.get("http://localhost:3000/users");
         store.commit('setUsers', response.data);
-        console.log(store.getters.getUsers[0].avatar);
+        console.log(store.getters.getUsers);
     });
     function getUsers(){
         return store.getters.getUsers;
     }
+
+    const sendFriendRequest = async (userId: any) => {
+        console.log(userId);
+        const headers = {
+            Authorization: `Bearer ${store.getters.getToken}`
+        };
+        const data = {id: userId};
+        const response = await axios.post('http://c1r2s3:3000/users/friend-request', data, {headers})
+        .then(response => {
+            console.log('Demande d\'amis envoyée avec succès');
+        })
+        .catch(error => {
+            console.error('Erreur lors de l\'envoi de la demande d\'amis', error);
+        });
+    }
 </script>
 
 <template>
-    <div id="mainUsers">
+    <div id="mainUsers" >
         <div id="capsule" v-for="(user, index) in getUsers()" :key="index">
-            <div class="elementCaps" id="avatar">
-                <img :src="user.avatar" alt="">
+            <div class="dataUser">
+                <div class="nicknameStatus">
+                    <div class="status-indicator" :class="{ 'status-online': user.status, 'status-offline': !user.status }"></div>
+                    <div id="nickname">
+                        {{ user.nickname }}
+                    </div>
+                </div>
+                <div class="elementCaps">
+                    <div id="nbParties">
+                        nb parties: {{ user.nbParties }}
+                    </div>
+                    <div id="nbVictory">
+                        nb victory: {{ user.nbVictory }}
+                    </div>
+                    <div id="nbDefeat">
+                        nb defeat: {{ user.nbDefeat }}
+                    </div>
+                </div>
             </div>
-            <div class="elementCaps">
-                <div id="nickname">
-                    {{ user.nickname }}
-                </div>
-                <div class="status-indicator" :class="{ 'status-online': user.status, 'status-offline': !user.status }"></div>
-            </div>
-            <div class="elementCaps">
-                <div id="nbParties">
-                    nb parties: {{ user.nbParties }}
-                </div>
-                <div id="nbVictory">
-                    nb victory: {{ user.nbVictory }}
-                </div>
-                <div id="nbDefeat">
-                    nb defeat: {{ user.nbDefeat }}
-                </div>
+            <div class="buttonUser">
+                <invitPlay />
+                <invitFriends @click="sendFriendRequest(user.id)"/>
             </div>
         </div>
     </div>
@@ -55,42 +73,57 @@
     overflow-x: hidden;
     display: flex;
     flex-wrap: wrap;
+    color: black;
 }
-  img{
+img{
     width: 100px;
     height: 100px;
     display: block;
     margin: auto;
     border-radius: 50px;
   }
-  #capsule{
+#capsule{
+    width: 15em;
+    max-height: 5em;
+    //background-color: aquamarine;
+}
+#nickname{
+    padding-left: 10px;
+}
+.dataUser{
     display: flex;
     justify-content: space-between;
-    position: relative;
     align-items: center;
-    border-radius: 10px;
-    width: 20em;
-    max-height: 8em;
+    margin-left: 10px;
     background-color: aqua;
-    color: black;
-    margin: 5px;
-  }
-  .elementCaps{
+}
+.buttonUser{
+    display: flex;
+    justify-content: flex-end;
+    margin-left: 10px;
+    color: lightgrey;
+    //background-color: burlywood;
+}
+.elementCaps{
     margin: 5px;
     align-items: center;
   }
-  .status-indicator {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  margin-right: 5px;
+.nicknameStatus{
+    display: flex;
+    padding-left: 5px;
+}
+.status-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin: auto;
 }
 
 .status-online {
-  background-color: green;
+    background-color: green;
 }
 
 .status-offline {
-  background-color: red;
+    background-color: red;
 }
 </style>

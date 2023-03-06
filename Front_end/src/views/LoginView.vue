@@ -9,9 +9,9 @@
     const router = useRouter();
     const store = useStore();
     let msgError = '';
-
+    
     onMounted(() => {
-      checkCode()
+        checkCode();
     });
 
     const checkCode = async () => {
@@ -27,7 +27,8 @@
                     console.log(response.data);
                     store.commit('setAuthenticated', true);
                     store.commit('setDoubleAuth', false);
-                    store.commit('setAvatar', response.data.user.avatar);
+                    store.commit('setId', response.data.user.id);
+                    console.log(store.getters.getId, 'coucou')
                     store.commit('setNickname', response.data.user.nickname);
                     store.commit('setToken', response.data.accessToken);
                     router.push('/');
@@ -35,7 +36,10 @@
                 else
                 {
                     store.commit('setNickname', response.data.nickname);
+                    store.commit('setId', response.data.id);
+                    console.log(store.getters.getId, 'coucou2')
                     store.commit('setDoubleAuth', true);
+                    router.push('/');
                 }
             } catch (error: any) {
                 if (error.response.status != 201)
@@ -44,6 +48,13 @@
                     store.commit('setStatusCode', true);
                 }
             }
+            const response = await fetch(`http://c1r2s3:3000/users/avatar/${store.getters.getId}`);
+            const arrayBuffer = await response.arrayBuffer();
+            const blob = new Blob([arrayBuffer], { type: 'image/jpeg' });
+            const url = URL.createObjectURL(blob);
+            store.commit('setAvatar', url);
+            store.dispatch('initWebSocket');
+            console.log(store.getters.getWebSocket)
         }
     }
 

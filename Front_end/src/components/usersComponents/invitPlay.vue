@@ -3,9 +3,13 @@
 </script>
 
 <template>
-    <h1>invite play !</h1>
+    <button>
+        Play
+    </button>
 </template>
 
 <style scoped lang="scss">
-    
+button{
+
+}
 </style>

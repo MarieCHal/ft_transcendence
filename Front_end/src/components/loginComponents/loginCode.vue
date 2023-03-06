@@ -17,7 +17,7 @@
         const response = await axios.post("http://c1r2s3:3000/auth/code", {codeMail: codeMail, nickname: nickname});
         if (response.status == 201){
           store.commit('setAuthenticated', true);
-          store.commit('setAvatar', response.data.user.avatar);
+          store.commit('setId', response.data.user.id);
           store.commit('setNickname', response.data.user.nickname);
           store.commit('setToken', response.data.accessToken);
           router.push("/");
@@ -29,6 +29,11 @@
           store.commit('setStatusCode', true);
         }
       }
+      const response = await fetch(`http://c1r2s3:3000/users/avatar/${store.getters.getNickname}`);
+      const arrayBuffer = await response.arrayBuffer();
+      const blob = new Blob([arrayBuffer], { type: 'image/jpeg' });
+      const url = URL.createObjectURL(blob);
+      store.commit('setAvatar', url);
     }
   }
 
