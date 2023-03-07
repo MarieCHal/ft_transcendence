@@ -1,4 +1,5 @@
 import { createStore } from 'vuex'
+import io from 'socket.io-client';
 
 const store = createStore({
     state: {
@@ -21,7 +22,7 @@ const store = createStore({
         setToken(state, isToken) {state.isToken = isToken},
         setStatusCode(state,  isStatusCode) {state.isStatusCode =  isStatusCode},
         setUsers(state,  isUsers) {state.isUsers =  isUsers},
-        setWebSocket(state, isWebSocket) {state.isWebSocket = isWebSocket}
+        setWebSocket(state, isWebSocket) {state.isWebSocket = isWebSocket},
       },
       getters: {
         getAuthenticated: state => state.isAuthenticated,
@@ -36,8 +37,11 @@ const store = createStore({
       },
       actions: {
         initWebSocket({ commit }) {
-          const webSocket = new WebSocket('ws://localhost:5173')
-          commit('setWebSocket', webSocket)
+          const webSocket = io('ws://c1r2s3:80/');//mettre le port 443 si ssl
+          commit('setWebSocket', webSocket);
+          webSocket.on('connect', () => {
+            console.log('Socket connected');
+          });
         }
       }   
 });

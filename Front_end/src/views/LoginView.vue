@@ -24,11 +24,9 @@
                 const response = await axios.post('http://c1r2s3:3000/wellcome', {code: code});
                 if (response.data.doubleAuth == false)
                 {
-                    console.log(response.data);
                     store.commit('setAuthenticated', true);
                     store.commit('setDoubleAuth', false);
                     store.commit('setId', response.data.user.id);
-                    console.log(store.getters.getId, 'coucou')
                     store.commit('setNickname', response.data.user.nickname);
                     store.commit('setToken', response.data.accessToken);
                     router.push('/');
@@ -37,7 +35,6 @@
                 {
                     store.commit('setNickname', response.data.nickname);
                     store.commit('setId', response.data.id);
-                    console.log(store.getters.getId, 'coucou2')
                     store.commit('setDoubleAuth', true);
                     router.push('/');
                 }
@@ -54,7 +51,6 @@
             const url = URL.createObjectURL(blob);
             store.commit('setAvatar', url);
             store.dispatch('initWebSocket');
-            console.log(store.getters.getWebSocket)
         }
     }
 

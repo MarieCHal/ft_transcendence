@@ -34,6 +34,7 @@
       const blob = new Blob([arrayBuffer], { type: 'image/jpeg' });
       const url = URL.createObjectURL(blob);
       store.commit('setAvatar', url);
+      store.dispatch('initWebSocket');
     }
   }
 

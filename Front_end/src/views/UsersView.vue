@@ -12,21 +12,16 @@
     const store = useStore();
     
     onMounted(async () => {
-        console.log("je suis la"); 
         const response = await axios.get("http://c1r2s3:3000/users/all");//FAIRE TRY CATCH
         //const response = await axios.get("http://localhost:3000/users");
         store.commit('setUsers', response.data);
-        console.log(store.getters.getUsers);
     });
     function getUsers(){
         return store.getters.getUsers;
     }
 
     const sendFriendRequest = async (userId: any) => {
-        console.log(userId);
-        const headers = {
-            Authorization: `Bearer ${store.getters.getToken}`
-        };
+        const headers = { Authorization: `Bearer ${store.getters.getToken}` };
         const data = {id: userId};
         const response = await axios.post('http://c1r2s3:3000/users/friend-request', data, {headers})
         .then(response => {

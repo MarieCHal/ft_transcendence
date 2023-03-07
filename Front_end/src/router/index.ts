@@ -47,7 +47,7 @@ const router = createRouter({
       path: '/Play',
       name: 'play',
       component: PlayView,
-      beforeEnter:(to, from, next) => {
+      /*beforeEnter:(to, from, next) => {
         console.log(isAuthenticated());
         if(isAuthenticated() == true){
           next();
@@ -55,13 +55,13 @@ const router = createRouter({
         else {
           next({ name: 'register' });
         }
-      }
+      }*/
     },
     {
       path: '/Chat',
       name: 'chat',
       component: ChanView,
-      beforeEnter:(to, from, next) => {
+      /*beforeEnter:(to, from, next) => {
         console.log(isAuthenticated());
         if(isAuthenticated() == true){
           next();
@@ -69,7 +69,7 @@ const router = createRouter({
         else {
           next({ name: 'register' });
         }
-      }
+      }*/
     },
     {
       path: '/Profile',
