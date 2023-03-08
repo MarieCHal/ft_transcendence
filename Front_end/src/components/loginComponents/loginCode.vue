@@ -17,7 +17,7 @@
         const response = await axios.post("http://c1r2s3:3000/auth/code", {codeMail: codeMail, nickname: nickname});
         if (response.status == 201){
           store.commit('setAuthenticated', true);
-          store.commit('setId', response.data.user.id);
+          store.commit('setId', response.data.user.user_id);
           store.commit('setNickname', response.data.user.nickname);
           store.commit('setToken', response.data.accessToken);
           router.push("/");

@@ -1,11 +1,25 @@
 <script setup lang="ts">
     import modifProfileButton from '../components/profileComponents/modifProfileButton.vue'
+    import axios from 'axios'
     import { useRouter } from 'vue-router'
     import { useStore } from "vuex"
-    
+    import { onMounted } from 'vue'
+    import stats from '../components/profileComponents/stats.vue'
+    import doubleAuth from '../components/profileComponents/doubleAuthButton.vue'
+    import friendRequest from '../components/profileComponents/friendRequest.vue'
+    import logout from '../components/profileComponents/logout.vue'
+
     const router = useRouter();
     const store = useStore();
     let nickname = store.getters.getNickname;
+    let userMe = [];
+
+    onMounted(async () => {
+        const headers = { Authorization: `Bearer ${store.getters.getToken}` };
+        const response = await axios.get("http://c1r2s3:3000/users/me", {headers});//FAIRE TRY CATCH
+        userMe = response.data;
+        console.log(userMe);
+    });
 
     function click(){
         router.push('/Profile/modif');
@@ -16,18 +30,28 @@
 </script>
 
 <template>
-
     <div>
         <div >
             <img :src="getAvatar()"/>
         </div>
-        <br>
-        <Span>
+        <div>
             {{ nickname }}
-        </Span>
-        <br>
-        <Span>stats</Span>
-        <modifProfileButton @click="click()"/>
+        </div>
+        <div>
+            <stats />
+        </div>
+        <div>
+            <doubleAuth />
+        </div>
+        <div>
+            <friendRequest />
+        </div>
+        <div>
+            <logout />
+        </div>
+        <div>
+            <modifProfileButton @click="click()"/>
+        </div>
     </div> 
 </template>
 

@@ -75,7 +75,7 @@ const router = createRouter({
       path: '/Profile',
       name: 'profile',
       component: ProfileView,
-      beforeEnter:(to, from, next) => {
+      /*beforeEnter:(to, from, next) => {
         console.log(isAuthenticated());
         if(isAuthenticated() == true){
           next();
@@ -83,13 +83,13 @@ const router = createRouter({
         else {
           next({ name: 'register' });
         }
-      }
+      }*/
     },
     {
       path: '/Profile/modif',
       name: 'profileModif',
       component: ProfileModifView,
-      beforeEnter:(to, from, next) => {
+      /*beforeEnter:(to, from, next) => {
         console.log(isAuthenticated());
         if(isAuthenticated() == true){
           next();
@@ -97,7 +97,7 @@ const router = createRouter({
         else {
           next({ name: 'register' });
         }
-      }
+      }*/
     }
   ]
 })

@@ -21,12 +21,13 @@
         if (code)
         {
             try {
+                console.log('coucou')
                 const response = await axios.post('http://c1r2s3:3000/wellcome', {code: code});
                 if (response.data.doubleAuth == false)
                 {
                     store.commit('setAuthenticated', true);
                     store.commit('setDoubleAuth', false);
-                    store.commit('setId', response.data.user.id);
+                    store.commit('setId', response.data.user.user_id);
                     store.commit('setNickname', response.data.user.nickname);
                     store.commit('setToken', response.data.accessToken);
                     router.push('/');
@@ -34,11 +35,12 @@
                 else
                 {
                     store.commit('setNickname', response.data.nickname);
-                    store.commit('setId', response.data.id);
+                    store.commit('setId', response.data.user_id);
                     store.commit('setDoubleAuth', true);
                     router.push('/');
                 }
-            } catch (error: any) {
+            }
+            catch (error: any) {
                 if (error.response.status != 201)
                 {
                     msgError = error.response.data.message ;

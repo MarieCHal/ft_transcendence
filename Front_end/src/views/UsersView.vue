@@ -12,7 +12,8 @@
     const store = useStore();
     
     onMounted(async () => {
-        const response = await axios.get("http://c1r2s3:3000/users/all");//FAIRE TRY CATCH
+        const headers = { Authorization: `Bearer ${store.getters.getToken}` };
+        const response = await axios.get("http://c1r2s3:3000/users/all", {headers});//FAIRE TRY CATCH
         //const response = await axios.get("http://localhost:3000/users");
         store.commit('setUsers', response.data);
     });
@@ -57,7 +58,7 @@
             </div>
             <div class="buttonUser">
                 <invitPlay />
-                <invitFriends @click="sendFriendRequest(user.id)"/>
+                <invitFriends @click="sendFriendRequest(user.user_id)"/>
             </div>
         </div>
     </div>
