@@ -10,12 +10,12 @@
         if(doubleAuthStore == true){
             doubleAuthStore = false;
         }
-        else if (doubleAuthStore == false){
+        else{
             doubleAuthStore = true
         }
         const headers = { Authorization: `Bearer ${store.getters.getToken}` };
         const data = {doubleAuth: doubleAuthStore};
-        const response = await axios.post('http://c1r2s3:3000/doubleAuth', data, {headers})
+        const response = await axios.post('http://c1r2s3:3000/users/doubleAuth', data, {headers})
         .then(response => {
             console.log('Demande de doubleAuth envoyée avec succès');
         })
@@ -31,10 +31,10 @@
             doubleAuth
         </button>
         <div v-if="doubleAuthStore == true">
-            activer
+            cliquer pour desactiver
         </div>
         <div v-else>
-            desactiver
+            cliquer pour activer
         </div>
     </div>
 </template>

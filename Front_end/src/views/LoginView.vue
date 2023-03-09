@@ -37,7 +37,7 @@
                     store.commit('setNickname', response.data.nickname);
                     store.commit('setId', response.data.user_id);
                     store.commit('setDoubleAuth', true);
-                    router.push('/');
+                    router.push('/register');
                 }
             }
             catch (error: any) {

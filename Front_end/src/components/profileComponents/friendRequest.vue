@@ -1,20 +1,23 @@
 <script setup lang="ts">
-    import { useRouter } from 'vue-router'
     import { useStore } from "vuex"
-    import { onMounted } from 'vue'
     import axios from 'axios'
 
-    const router = useRouter();
     const store = useStore();
+    
 
-    function getMe(){//getMyFriends?
-        return store.getters.getItIsMe;// trouver le tableau de friends-request?
+    const removeCapsule = (pending: any) => {
+        const capsule = document.getElementById(`capsule-${pending.id}`);
+        if (capsule) {
+            capsule.remove();
+        }
     }
-
-    const yesMyFriends = async (userId: any) => {
+    const friendsValidate = async (userId: number, decision: boolean) => {
         const headers = { Authorization: `Bearer ${store.getters.getToken}` };
-        const data = {id: userId};
-        const response = await axios.post('http://c1r2s3:3000/users/friend-request/accept', data, {headers})
+        const data = {
+            id: userId,
+            decision: decision
+        };
+        const response = await axios.post('http://c1r2s3:3000/users/friend-accept', data, {headers})
         .then(response => {
             console.log('Demande d\'amis acceptee avec succès');
         })
@@ -23,28 +26,21 @@
         });
     }
 
-    const noMyFriends = async (userId: any) => {
-        const headers = { Authorization: `Bearer ${store.getters.getToken}` };
-        const data = {id: userId};
-        const response = await axios.post('http://c1r2s3:3000/users/friend-request/refuse', data, {headers})
-        .then(response => {
-            console.log('Demande d\'amis refusee avec succès');
-        })
-        .catch(error => {
-            console.error('Erreur lors de l\'envoi du refus d\'amis', error);
-        });
+    function getMyFriends(){
+        const me = store.getters.getItIsMe;
+        return me.pending;
     }
 </script>
 
 <template>
-    <div id="capsule" v-for="(me, index) in getMe()" :key="index">
+    <div v-for="(pending, index) in getMyFriends()" :key="index" :id="`capsule-${pending.id}`">
         <div>
-            {{ me.friend-request.nickname }} vous demande en amis<!--trouver le tableau de friends-request?-->
+            {{ pending.friend_one_nickname}} vous demande en amis<!--trouver le tableau de friends-request?-->
         </div>
-        <button @click="yesMyFriends(me.user_id)">
+        <button @click="friendsValidate(pending.friend_one_user_id, true); removeCapsule(pending)">
             oui je le veux
         </button>
-        <button @click="noMyFriends(me.user_id)">
+        <button @click="friendsValidate(pending.friend_one_user_id, false); removeCapsule(pending)">
             non je ne le veux pas
         </button>
     </div>
