@@ -1,11 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinTable } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinTable, ManyToMany } from "typeorm"
 import { Friends } from "./Friends"
+import { Chat } from "./Chat"
 
 @Entity()
 export class User {
 
     @PrimaryGeneratedColumn()
-    id: number
+    user_id: number
 
     @Column()
     firstName: string
@@ -18,4 +19,7 @@ export class User {
 
     @OneToMany((type) => Friends, (friends) => friends.friend_one)
     friends: Friends[];
+
+    @ManyToMany((type) => Chat, (chat) => chat.users)
+    channel: Chat[]; 
 }

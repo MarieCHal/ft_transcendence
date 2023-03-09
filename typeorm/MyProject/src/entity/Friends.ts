@@ -8,7 +8,7 @@ export class Friends {
         type: 'bigint',
         name: 'friend_request',
     })
-    id: number;
+    friends_id: number;
 
     // the user'id of the one that requested
     @ManyToOne((type) => User, user => user.friends)
