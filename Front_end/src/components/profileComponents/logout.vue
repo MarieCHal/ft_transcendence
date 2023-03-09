@@ -9,7 +9,8 @@
         const socket = store.getters.getWebSocket;
         socket.disconnect();
         store.replaceState({});
-        router.push('/')
+        store.commit('setDoubleAuth', false);
+        router.push('/');
     }
 </script>
 

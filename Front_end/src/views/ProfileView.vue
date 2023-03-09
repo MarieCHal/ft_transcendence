@@ -12,13 +12,12 @@
     const router = useRouter();
     const store = useStore();
     let nickname = store.getters.getNickname;
-    let userMe = [];
 
     onMounted(async () => {
         const headers = { Authorization: `Bearer ${store.getters.getToken}` };
         const response = await axios.get("http://c1r2s3:3000/users/me", {headers});//FAIRE TRY CATCH
-        userMe = response.data;
-        console.log(userMe);
+        store.commit('setItIsMe', response.data);
+        console.log(store.getters.getItIsMe);
     });
 
     function click(){

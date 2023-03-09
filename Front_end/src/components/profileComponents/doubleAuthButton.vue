@@ -1,11 +1,46 @@
 <script setup lang="ts">
-    
+    import { useRouter } from 'vue-router'
+    import { useStore } from "vuex"
+    import axios from 'axios'
+
+    const router = useRouter();
+    const store = useStore();
+    let doubleAuthStore = store.getters.getDoubleAuth
+    const doubleAuth = async () => {
+        if(doubleAuthStore == true){
+            doubleAuthStore = false;
+        }
+        else if (doubleAuthStore == false){
+            doubleAuthStore = true
+        }
+        const headers = { Authorization: `Bearer ${store.getters.getToken}` };
+        const data = {doubleAuth: doubleAuthStore};
+        const response = await axios.post('http://c1r2s3:3000/doubleAuth', data, {headers})
+        .then(response => {
+            console.log('Demande de doubleAuth envoyée avec succès');
+        })
+        .catch(error => {
+            console.error('Erreur lors de l\'envoi de la demande de doubleAuth ', error);
+        });
+    }
 </script>
 
 <template>
-    <p>doubleAuth !</p>
+    <div>
+        <button @click="doubleAuth()">
+            doubleAuth
+        </button>
+        <div v-if="doubleAuthStore == true">
+            activer
+        </div>
+        <div v-else>
+            desactiver
+        </div>
+    </div>
 </template>
 
 <style scoped lang="scss">
-    
+    button{
+        background-color: rgb(28, 248, 101);
+    }
 </style>

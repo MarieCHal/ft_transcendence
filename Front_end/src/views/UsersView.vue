@@ -17,6 +17,7 @@
         //const response = await axios.get("http://localhost:3000/users");
         store.commit('setUsers', response.data);
     });
+    
     function getUsers(){
         return store.getters.getUsers;
     }
