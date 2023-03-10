@@ -2,7 +2,9 @@
   import axios from 'axios'
   import { useRouter } from 'vue-router'
   import { useStore } from "vuex"
-
+  import fetchAvatar from '../../avatar';
+  import Cookies from 'js-cookie';
+  
   const router = useRouter();
   const store = useStore();
   let codeMail = '';
@@ -19,7 +21,8 @@
           store.commit('setAuthenticated', true);
           store.commit('setId', response.data.user.user_id);
           store.commit('setNickname', response.data.user.nickname);
-          store.commit('setToken', response.data.accessToken);
+          Cookies.set('auth_token', response.data.accessToken, {secure: false});
+          fetchAvatar(store);
           router.push("/");
         }
       } catch (error: any) {
@@ -29,12 +32,6 @@
           store.commit('setStatusCode', true);
         }
       }
-      const response = await fetch(`http://c1r2s3:3000/users/avatar/${store.getters.getId}`);
-      const arrayBuffer = await response.arrayBuffer();
-      const blob = new Blob([arrayBuffer], { type: 'image/jpeg' });
-      const url = URL.createObjectURL(blob);
-      store.commit('setAvatar', url);
-      store.dispatch('initWebSocket');
     }
   }
 

@@ -5,56 +5,51 @@
     import { onMounted } from 'vue'
     import { useRouter } from 'vue-router'
     import { useStore } from "vuex"
-    
+    import fetchAvatar from '../avatar';
+    import Cookies from 'js-cookie';
+
     const router = useRouter();
     const store = useStore();
     let msgError = '';
-    
+    let code: any = null;
+
     onMounted(() => {
         checkCode();
     });
 
+    const welcome = async () => {
+        try {
+            console.log('code42 = ',code);
+            const response = await axios.post('http://c1r2s3:3000/wellcome', {code: code});
+            if (response.data.doubleAuth == true) {
+                store.commit('setDoubleAuth', true);
+                router.push('/register');
+            }
+            else {
+                store.commit('setAuthenticated', true);
+                store.commit('setDoubleAuth', false);
+                store.commit('setId', response.data.user.user_id);
+                store.commit('setNickname', response.data.user.nickname);
+                Cookies.set('auth_token', response.data.accessToken, {secure: false});
+                fetchAvatar(store);
+                router.push('/');
+            }
+
+        } catch (error: any) {
+            msgError = error.response.data.message ;
+            store.commit('setStatusCode', true);
+        }
+    }
+
     const checkCode = async () => {
         await router.isReady();
         store.commit('setStatusCode', false);
-        const code = router.currentRoute.value.query.code;
-        if (code)
-        {
-            try {
-                console.log('coucou')
-                const response = await axios.post('http://c1r2s3:3000/wellcome', {code: code});
-                if (response.data.doubleAuth == false)
-                {
-                    store.commit('setAuthenticated', true);
-                    store.commit('setDoubleAuth', false);
-                    store.commit('setId', response.data.user.user_id);
-                    store.commit('setNickname', response.data.user.nickname);
-                    store.commit('setToken', response.data.accessToken);
-                    router.push('/');
-                }
-                else
-                {
-                    store.commit('setNickname', response.data.nickname);
-                    store.commit('setId', response.data.user_id);
-                    store.commit('setDoubleAuth', true);
-                    router.push('/register');
-                }
-            }
-            catch (error: any) {
-                if (error.response.status != 201)
-                {
-                    msgError = error.response.data.message ;
-                    store.commit('setStatusCode', true);
-                }
-            }
-            const response = await fetch(`http://c1r2s3:3000/users/avatar/${store.getters.getId}`);
-            const arrayBuffer = await response.arrayBuffer();
-            const blob = new Blob([arrayBuffer], { type: 'image/jpeg' });
-            const url = URL.createObjectURL(blob);
-            store.commit('setAvatar', url);
-            store.dispatch('initWebSocket');
+        code = router.currentRoute.value.query.code;
+        if (code) {
+            welcome();
         }
     }
+
 
     function getStatusCode(){
         return store.getters.getStatusCode;
