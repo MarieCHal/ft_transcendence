@@ -1,14 +1,15 @@
 import { createStore } from 'vuex'
 import { io } from 'socket.io-client';
+import createPersistedState from 'vuex-persistedstate'
 
 const store = createStore({
+  plugins: [createPersistedState()],
   state: {
     isAuthenticated: false,
     isDoubleAuth: false,
     isId: 0,
     isAvatar: "",
     isNickname: "",
-    isToken : "",
     isStatusCode: false,
     isUsers: [],
     isItIsMe: [],
@@ -20,7 +21,6 @@ const store = createStore({
     setId(state, isId) {state.isId = isId},
     setAvatar(state, isAvatar) {state.isAvatar = isAvatar},
     setNickname(state, isNickname) {state.isNickname = isNickname},
-    setToken(state, isToken) {state.isToken = isToken},
     setStatusCode(state,  isStatusCode) {state.isStatusCode =  isStatusCode},
     setUsers(state,  isUsers) {state.isUsers =  isUsers},
     setItIsMe(state,  isItIsMe) {state.isItIsMe =  isItIsMe},
@@ -32,7 +32,6 @@ const store = createStore({
     getId: state => state.isId,
     getAvatar: state => state.isAvatar,
     getNickname: state => state.isNickname,
-    getToken: state => state.isToken,
     getStatusCode: state => state.isStatusCode,
     getUsers: state => state.isUsers,
     getItIsMe: state => state.isItIsMe,

@@ -2,7 +2,8 @@
     import { useRouter } from 'vue-router'
     import { useStore } from "vuex"
     import axios from 'axios'
-
+    import Cookies from 'js-cookie';
+    
     const router = useRouter();
     const store = useStore();
     let doubleAuthStore = store.getters.getDoubleAuth
@@ -13,7 +14,7 @@
         else{
             doubleAuthStore = true
         }
-        const headers = { Authorization: `Bearer ${store.getters.getToken}` };
+        const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}` };
         const data = {doubleAuth: doubleAuthStore};
         const response = await axios.post('http://c1r2s3:3000/users/doubleAuth', data, {headers})
         .then(response => {

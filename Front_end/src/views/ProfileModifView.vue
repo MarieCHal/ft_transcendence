@@ -2,7 +2,8 @@
     import axios from 'axios'
     import { useRouter } from 'vue-router'
     import { useStore } from "vuex"
-    
+    import Cookies from 'js-cookie';
+
     const router = useRouter();
     const store = useStore();
 
@@ -29,7 +30,7 @@
                 formData.append("avatar", file);
                 const headers = {
                     "Content-Type": "multipart/form-data",
-                    Authorization: `Bearer ${store.getters.getToken}`
+                    Authorization: `Bearer ${Cookies.get('auth_token')}`
                 };
                 const response = await axios.post('http://c1r2s3:3000/profile/modify/avatar',
                 formData,
@@ -52,7 +53,7 @@
         store.commit('setStatusCode', false); 
         if (store.getters.getNickname != nickname){
             try {
-                const headers = {"Authorization": `Bearer ${store.getters.getToken}`};
+                const headers = {"Authorization": `Bearer ${Cookies.get('auth_token')}`};
                 const data = {nickname: nickname};
                 const response = await axios.post('http://c1r2s3:3000/profile/modify/nickname', data, {headers})
                 if (response.status == 201)

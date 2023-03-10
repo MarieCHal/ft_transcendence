@@ -8,13 +8,14 @@
     import doubleAuth from '../components/profileComponents/doubleAuthButton.vue'
     import friendRequest from '../components/profileComponents/friendRequest.vue'
     import logout from '../components/profileComponents/logout.vue'
+    import Cookies from 'js-cookie';
 
     const router = useRouter();
     const store = useStore();
     let nickname = store.getters.getNickname;
 
     onMounted(async () => {
-        const headers = { Authorization: `Bearer ${store.getters.getToken}` };
+        const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}` };
         const response = await axios.get("http://c1r2s3:3000/users/me", {headers});//FAIRE TRY CATCH
         store.commit('setItIsMe', response.data);
         console.log('itsme ',store.getters.getItIsMe);

@@ -10,6 +10,7 @@
         socket.disconnect();
         store.replaceState({});
         store.commit('setDoubleAuth', false);
+        localStorage.clear();
         router.push('/');
     }
 </script>

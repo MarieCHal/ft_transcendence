@@ -1,10 +1,10 @@
 <script setup lang="ts">
     import { useStore } from "vuex"
     import axios from 'axios'
+    import Cookies from 'js-cookie';
 
     const store = useStore();
     
-
     const removeCapsule = (pending: any) => {
         const capsule = document.getElementById(`capsule-${pending.id}`);
         if (capsule) {
@@ -12,7 +12,7 @@
         }
     }
     const friendsValidate = async (userId: number, decision: boolean) => {
-        const headers = { Authorization: `Bearer ${store.getters.getToken}` };
+        const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}` };
         const data = {
             id: userId,
             decision: decision
