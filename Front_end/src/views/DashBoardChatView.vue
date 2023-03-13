@@ -34,7 +34,7 @@
             return [];
         }
     }
-
+    
     function getChansPrivate(){
         const chansPrivate = store.getters.getChans;
         if (chansPrivate && chansPrivate.privMsg){

@@ -9,13 +9,19 @@
 
     let newChanel = '';
     let Pwd = '';
-    let code = false;
+    let statuscode = false;
 
     const submmit = async () => {
         try {
             const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}` };
             console.log(newChanel);
-            const data = {protected: code, private: false, name: newChanel, pwd: Pwd}
+            if (Pwd){
+                statuscode = true;
+            }
+            else{
+                statuscode = false;
+            }
+            const data = {protected: statuscode, private: false, name: newChanel, pwd: Pwd}
             const response = await axios.post('http://c1r2s3:3000/chat/create', data,  {headers})
             if (store.getters.getStatusCode == false)
             {
@@ -24,12 +30,13 @@
         } catch (error: any) {
             if (error.response.status != 201)
             {
-               code = false;
+              
             }
         }
     }
 
 </script>
+
 
 <template>
     <div>
@@ -38,10 +45,6 @@
             <input type="text" name="codeChat" autocomplete="off"
             placeholder="Name channel" v-model="newChanel">
             obligatoire
-        </div>
-        <div>
-            <input type="checkbox" id="subscribe" name="subscribe" value="subscribe" v-model="code">
-            <label for="subscribe"> mot de passe ?</label>
         </div>
         <div>
             <input type="text" name="code" autocomplete="off"
