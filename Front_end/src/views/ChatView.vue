@@ -13,8 +13,13 @@
     });
 
     const sendMessage = () => {
+      if (socket){
         socket.emit('chat', newMessage.value);
         newMessage.value = '';
+      }
+      else{
+        store.dispatch('initWebSocket');
+      }
     }
 </script>
 

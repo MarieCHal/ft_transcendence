@@ -5,6 +5,7 @@
     import axios from 'axios';
     import invitFriends from '@/components/usersComponents/invitFriends.vue';
     import invitPlay from '@/components/usersComponents/invitPlay.vue';
+    import sendMsg from '@/components/usersComponents/sendMsg.vue'
     
     const router = useRouter();
     const store = useStore();
@@ -23,6 +24,12 @@
         .catch(error => {
             console.error('Erreur lors de l\'envoi de la demande d\'amis', error);
         });
+    }
+
+    const SendMsg = async(Myfriends: any) =>{
+        store.commit("setChanContext", Myfriends)
+        router.push('/chat')
+        // avant de commit il faut faire une requete 
     }
 </script>
 
@@ -50,6 +57,7 @@
             </div>
         </div>
         <div class="buttonUser">
+            <sendMsg @click="SendMsg(Myfriends)"/>
             <invitPlay />
             <invitFriends @click="sendFriendRequest(Myfriends.user_user_id)"/>
         </div>

@@ -2,7 +2,7 @@
     import router from '@/router'
     
     function click(){
-        router.push('/Chat');
+        router.push('/DashBoardChan');
     }
 </script>
 

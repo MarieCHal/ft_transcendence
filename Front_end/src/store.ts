@@ -1,22 +1,26 @@
 import { createStore } from 'vuex'
 import { io } from 'socket.io-client';
 import createPersistedState from 'vuex-persistedstate'
+import Cookies from 'js-cookie';
+const persistedState = createPersistedState({
+  paths: ['isAuthenticated', 'isDoubleAuth', 'isId', 'isAvatar', 'isNickname', 'isStatusCode', 'isUsers', 'isItIsMe']
+});
 
 const store = createStore({
-  //plugins: [createPersistedState()],
+  plugins: [persistedState],
   state: {
     isAuthenticated: false,
     isDoubleAuth: false,
     isId: 0,
     isAvatar: "",
     isNickname: "",
+    isNewChanel: "",
     isStatusCode: false,
     isUsers: [],
-    isMyFriends: [],
     isItIsMe: [],
-    isWebSocket: null,
-
-    isShowUsers: false,
+    isChans: [],
+    isChanContext: [],
+    isWebSocket: null
   },
   mutations: {
     setAuthenticated(state, isAuthenticated) {state.isAuthenticated = isAuthenticated},
@@ -25,12 +29,12 @@ const store = createStore({
     setAvatar(state, isAvatar) {state.isAvatar = isAvatar},
     setNickname(state, isNickname) {state.isNickname = isNickname},
     setStatusCode(state,  isStatusCode) {state.isStatusCode =  isStatusCode},
-    setUsers(state,  isUsers) {state.isUsers = isUsers},
-    setMyFriends(state,  isMyFriends) {state.isMyFriends = isMyFriends},
+    setUsers(state,  isUsers) {state.isUsers =  isUsers},
     setItIsMe(state,  isItIsMe) {state.isItIsMe =  isItIsMe},
-    setWebSocket(state, isWebSocket) {state.isWebSocket = isWebSocket},
-
-    setShowUsers(state, isShowUsers) {state.isShowUsers = isShowUsers},
+    setChans(state,  isChans) {state.isChans =  isChans},
+    setChanContext(state,  isChanContext) {state.isChanContext =  isChanContext},
+    setWebSocket(state, isWebSocket) {state.isWebSocket = isWebSocket;},
+    setNewChanel(state, isNewChanel) {state.isNewChanel = isNewChanel;},
   },
   getters: {
     getAuthenticated: state => state.isAuthenticated,
@@ -40,28 +44,32 @@ const store = createStore({
     getNickname: state => state.isNickname,
     getStatusCode: state => state.isStatusCode,
     getUsers: state => state.isUsers,
-    getMyFriends: state => state.isMyFriends,
     getItIsMe: state => state.isItIsMe,
+    getChans: state => state.isChans,
+    getChanContext: state => state.isChanContext,
     getWebSocket: state => state.isWebSocket,
-
-    getShowUsers: state => state.isShowUsers,
+    getNewChanel: state => state.isNewChanel
   },
   actions: {
     initWebSocket({ commit }) {
       const myId = store.getters.getId;
-      console.log(myId);
       const webSocket = io('http://c1r2s3:3000/', {
         auth: {
           myId: myId
         }
       });
-      console.log(webSocket);
-      commit('setWebSocket', webSocket);
-      webSocket.on('chat', () => {
+
+      webSocket.on('connect', () => {
         console.log('Socket connected');
+        commit('setWebSocket', webSocket);
       });
-    }
-  }   
-});
+
+      webSocket.on('disconnect', () => {
+        console.log('Socket disconnected');
+        commit('setWebSocket', null);
+      });
+    },
+  }
+})
 
 export default store;
