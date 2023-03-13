@@ -1,50 +1,35 @@
-@import './input.scss';
-@import './glow.scss';
-
 html {
   box-sizing: border-box;
   -webkit-font-smoothing: antialiased;
 }
 
 * {
-    box-sizing: inherit;
-    &:before,
-    &:after {
+  box-sizing: inherit;
+  &:before,
+  &:after {
       box-sizing: inherit;
   }
 }
 
 body {
   max-width: 1000px;
-  min-height: 100vh;
-  margin: auto;
-  position: relative;
-  font-family: "Inter", Arial;
-  background-color: #ffffff;
-  overflow: hidden;
-  background-color: #020112;
-  &:before {
-      z-index: -4;
-      content: "";
-      position: absolute;
-      inset: 40% -60% 0 -60%;
-      background-image: radial-gradient(
-          ellipse at bottom,
-          #301771 0%,
-          #020112 50%
-      );
-      opacity: 0.4;
-  }
+  max-height: 100vh;
+  margin: 0 auto 0 auto;
+  font-family: "papyrus";
+  background-color: rgb(27, 26, 26);
+  color: aliceblue;
+}
+
+.navButton{
+  width: 50px;
+  height: 25px;
+  color: rgb(250, 250, 250);
+  background-color: rgb(227, 61, 185);
+  border-radius: 25px;
 }
 
 #statuscode{
   text-align: center;
   color: red;
   position: relative;
-}
-
-@keyframes rotate {
-  to {
-      transform: scale(1.05) translateY(-44px) rotate(360deg) translateZ(0);
-  }
 }

@@ -1,9 +1,20 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import LoginView from '../views/LoginView.vue'
-import RegisterView from '../views/RegisterView.vue'
-import SigneInView from '../views/SigneInView.vue'
 import HomeView from '../views/HomeView.vue'
-import MainView from '../views/MainView.vue'
+import UsersView from '../views/UsersView.vue'
+import PlayView from '../views/PlayView.vue'
+import ChanView from '../views/ChatView.vue'
+import ProfileView from '../views/ProfileView.vue'
+import ProfileModifView from '../views/ProfileModifView.vue'
+import LoginView from '../views/LoginView.vue'
+import store  from '../store';
+    
+function isAuthenticated(){
+  let isConnect = store.getters.getAuthenticated;
+  if (isConnect == true)
+    return true;
+  else
+    return false;
+}
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -16,29 +27,75 @@ const router = createRouter({
     {
       path: '/register',
       name: 'register',
-      component: RegisterView
-    },
-    {
-      path: '/login',
-      name: 'login',
       component: LoginView
     },
     {
-      path: '/sign_in',
-      name: 'sign_in',
-      component: SigneInView
-    },
-    {
-      path: '/main',
-      name: 'main',
-      component: MainView
+      path: '/Users',
+      name: 'users',
+      component: UsersView
       /*beforeEnter:(to, from, next) => {
-        console.log(localStorage.getItem('accessToken'));
-        if(localStorage.getItem('accessToken')){
+        console.log(isAuthenticated());
+        if(isAuthenticated() == true){
           next();
         }
         else {
-          next({ name: 'login' });
+          next({ name: 'register' });
+        }
+      }*/
+    },
+    {
+      path: '/Play',
+      name: 'play',
+      component: PlayView,
+      /*beforeEnter:(to, from, next) => {
+        console.log(isAuthenticated());
+        if(isAuthenticated() == true){
+          next();
+        }
+        else {
+          next({ name: 'register' });
+        }
+      }*/
+    },
+    {
+      path: '/Chat',
+      name: 'chat',
+      component: ChanView,
+      /*beforeEnter:(to, from, next) => {
+        console.log(isAuthenticated());
+        if(isAuthenticated() == true){
+          next();
+        }
+        else {
+          next({ name: 'register' });
+        }
+      }*/
+    },
+    {
+      path: '/Profile',
+      name: 'profile',
+      component: ProfileView,
+      /*beforeEnter:(to, from, next) => {
+        console.log(isAuthenticated());
+        if(isAuthenticated() == true){
+          next();
+        }
+        else {
+          next({ name: 'register' });
+        }
+      }*/
+    },
+    {
+      path: '/Profile/modif',
+      name: 'profileModif',
+      component: ProfileModifView,
+      /*beforeEnter:(to, from, next) => {
+        console.log(isAuthenticated());
+        if(isAuthenticated() == true){
+          next();
+        }
+        else {
+          next({ name: 'register' });
         }
       }*/
     }
