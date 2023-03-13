@@ -16,7 +16,7 @@
         const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}` };
         const response = await axios.get("http://c1r2s3:3000/users/all", {headers});//FAIRE TRY CATCH
         //const response = await axios.get("http://localhost:3000/users");
-        store.commit('setUsers', response.data);
+        store.commit('setUsers', response.data.allUsers);
     });
     
     function getUsers(){
@@ -24,7 +24,7 @@
     }
 
     const sendFriendRequest = async (userId: any) => {
-        const headers = { Authorization: `Bearer ${store.getters.getToken}` };
+        const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}` };
         const data = {id: userId};
         const response = await axios.post('http://c1r2s3:3000/users/friend-request', data, {headers})
         .then(response => {
@@ -41,26 +41,26 @@
         <div id="capsule" v-for="(user, index) in getUsers()" :key="index">
             <div class="dataUser">
                 <div class="nicknameStatus">
-                    <div class="status-indicator" :class="{ 'status-online': user.status, 'status-offline': !user.status }"></div>
+                    <div class="status-indicator" :class="{ 'status-online': user.users_isActive, 'status-offline': !user.users_isActive }"></div>
                     <div id="nickname">
-                        {{ user.nickname }}
+                        {{ user.users_nickname }}
                     </div>
                 </div>
                 <div class="elementCaps">
                     <div id="nbParties">
-                        nb parties: {{ user.nbParties }}
+                        nb parties: {{ user.stats_games }}
                     </div>
                     <div id="nbVictory">
-                        nb victory: {{ user.nbVictory }}
+                        nb victory: {{ user.stats_victories }}
                     </div>
                     <div id="nbDefeat">
-                        nb defeat: {{ user.nbDefeat }}
+                        nb defeat: {{ user.stats_defeats }}
                     </div>
                 </div>
             </div>
             <div class="buttonUser">
                 <invitPlay />
-                <invitFriends @click="sendFriendRequest(user.user_id)"/>
+                <invitFriends @click="sendFriendRequest(user.users_user_id)"/>
             </div>
         </div>
     </div>

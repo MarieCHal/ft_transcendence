@@ -8,13 +8,13 @@
 <template>
     <div id="capsule">
         <div>
-            vous avez joué {{ me.nbParties}} parties!
+            vous avez joué {{ me.stats_games}} parties!
         </div>
         <div>
-            vous avez gagné {{ me.nbVictory }} parties!
+            vous avez gagné {{ me.stats_victories }} parties!
         </div>
         <div>
-            vous avez perdu {{ me.nbDefeat }} parties!
+            vous avez perdu {{ me.stats_defeats }} parties!
         </div>
     </div>
 

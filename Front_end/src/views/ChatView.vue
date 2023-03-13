@@ -7,14 +7,24 @@
     const newMessage = ref('');
     const socket = store.getters.getWebSocket;
     onMounted(() => {
+      if (socket){
         socket.on('chat', (message: string) => {
             chatMessages.value.push(message);
         });
+      }
+      else {
+        store.dispatch('initWebSocket');
+      }
     });
 
     const sendMessage = () => {
+      if (socket){
         socket.emit('chat', newMessage.value);
         newMessage.value = '';
+      }
+      else{
+        store.dispatch('initWebSocket');
+      }
     }
 </script>
 

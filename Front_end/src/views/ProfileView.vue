@@ -18,7 +18,6 @@
         const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}` };
         const response = await axios.get("http://c1r2s3:3000/users/me", {headers});//FAIRE TRY CATCH
         store.commit('setItIsMe', response.data);
-        console.log('itsme ',store.getters.getItIsMe);
     });
 
     function click(){

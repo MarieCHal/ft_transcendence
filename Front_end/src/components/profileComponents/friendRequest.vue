@@ -28,19 +28,24 @@
 
     function getMyFriends(){
         const me = store.getters.getItIsMe;
-        return me.pending;
+        if (me && me.pending) {
+            return me.pending;
+        }
+        else {
+            return [];
+        }
     }
 </script>
 
 <template>
     <div v-for="(pending, index) in getMyFriends()" :key="index" :id="`capsule-${pending.id}`">
         <div>
-            {{ pending.friend_one_nickname}} vous demande en amis<!--trouver le tableau de friends-request?-->
+            {{ pending.friend_one.nickname}} vous demande en amis<!--trouver le tableau de friends-request?-->
         </div>
-        <button @click="friendsValidate(pending.friend_one_user_id, true); removeCapsule(pending)">
+        <button @click="friendsValidate(pending.friend_one.user_id, true); removeCapsule(pending)">
             oui je le veux
         </button>
-        <button @click="friendsValidate(pending.friend_one_user_id, false); removeCapsule(pending)">
+        <button @click="friendsValidate(pending.friend_one.user_id, false); removeCapsule(pending)">
             non je ne le veux pas
         </button>
     </div>

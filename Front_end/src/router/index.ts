@@ -6,6 +6,8 @@ import ChanView from '../views/ChatView.vue'
 import ProfileView from '../views/ProfileView.vue'
 import ProfileModifView from '../views/ProfileModifView.vue'
 import LoginView from '../views/LoginView.vue'
+import DashBoardChatView from '../views/DashBoardChatView.vue'
+import CodeChatView from '../views/CodeChatView.vue'
 import store  from '../store';
     
 function isAuthenticated(){
@@ -47,6 +49,34 @@ const router = createRouter({
       path: '/Play',
       name: 'play',
       component: PlayView,
+      /*beforeEnter:(to, from, next) => {
+        console.log(isAuthenticated());
+        if(isAuthenticated() == true){
+          next();
+        }
+        else {
+          next({ name: 'register' });
+        }
+      }*/
+    },
+    {
+      path: '/dashBoardChat',
+      name: 'dashBoardChat',
+      component: DashBoardChatView,
+      /*beforeEnter:(to, from, next) => {
+        console.log(isAuthenticated());
+        if(isAuthenticated() == true){
+          next();
+        }
+        else {
+          next({ name: 'register' });
+        }
+      }*/
+    },
+    {
+      path: '/codeChat',
+      name: 'codeChat',
+      component: CodeChatView,
       /*beforeEnter:(to, from, next) => {
         console.log(isAuthenticated());
         if(isAuthenticated() == true){

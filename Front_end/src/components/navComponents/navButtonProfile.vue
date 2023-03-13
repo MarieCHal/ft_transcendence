@@ -3,10 +3,9 @@
     import router from '@/router'
 
     const store = useStore();
-    
-    async function click(){
 
-        router.push('/Profile')
+    async function click(){
+        await router.push('/Profile');
     }
 
     function getAvatar(){
@@ -18,6 +17,9 @@
     <button  id="navProfileButton" @click="click">
         <img :src="getAvatar()" v-if="getAvatar()"/>
     </button>
+    <div>
+        {{ store.getters.getNickname }}
+    </div>
 </template>
 
 <style scoped lang="scss">

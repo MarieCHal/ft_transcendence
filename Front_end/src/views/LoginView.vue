@@ -17,9 +17,8 @@
         checkCode();
     });
 
-    const welcome = async () => {
+    const welcome = async (code: any) => {
         try {
-            console.log('code42 = ',code);
             const response = await axios.post('http://c1r2s3:3000/wellcome', {code: code});
             if (response.data.doubleAuth == true) {
                 store.commit('setDoubleAuth', true);
@@ -46,7 +45,7 @@
         store.commit('setStatusCode', false);
         code = router.currentRoute.value.query.code;
         if (code) {
-            welcome();
+            welcome(code);
         }
     }
 
