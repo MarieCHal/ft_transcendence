@@ -28,8 +28,15 @@
     }
 
     const SendMsg = async(user: any) =>{
-        store.commit("setChanContext", user)
-        router.push('/chat')
+        try{
+            const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}` };
+            const data = {private: true, name: "", otherId: user.users_user_id}
+            const response = await axios.post('http://c1r2s3:3000/chat/create', data,  {headers})
+            store.commit("setChanContext", user);
+            router.push('/chat');
+        }catch{
+            console.log("Erreur chatUsers")
+        }
         // avant de commit il faut faire une requete 
     }
 </script>
@@ -79,13 +86,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-left: 10px;
     background-color: aqua;
 }
 .buttonUser{
     display: flex;
     justify-content: flex-end;
-    margin-left: 10px;
+    //margin-left: 10px;
     color: lightgrey;
     //background-color: burlywood;
 }

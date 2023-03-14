@@ -13,24 +13,25 @@
 
     const submmit = async () => {
         try {
-            const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}` };
             console.log(newChanel);
             if (Pwd){
                 statuscode = true;
             }
+            
             else{
                 statuscode = false;
-            }
+            } 
+            const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}` };
             const data = {protected: statuscode, private: false, name: newChanel, pwd: Pwd}
             const response = await axios.post('http://c1r2s3:3000/chat/create', data,  {headers})
-            if (store.getters.getStatusCode == false)
-            {
+
+            if (store.getters.getStatusCode == false){
                 router.push('/chat')
             }
-        } catch (error: any) {
-            if (error.response.status != 201)
-            {
-              
+            
+            }catch (error: any) {
+            if (error.response.status != 201){
+                 console.log("Error serveur");
             }
         }
     }
@@ -49,7 +50,6 @@
         <div>
             <input type="text" name="code" autocomplete="off"
             placeholder="PWD" minlength="4" maxlength="4" v-model="Pwd">
-            obsessionnel code min 4 and max 4
         </div>
         <button>
             submit

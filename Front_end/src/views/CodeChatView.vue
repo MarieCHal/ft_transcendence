@@ -3,21 +3,28 @@
     import { useRouter } from 'vue-router'
     import axios from 'axios'
     import Cookies from 'js-cookie';
+
     const router = useRouter();
     const store = useStore();
-    let codeChan = '';
+    
+    let checkCode = '';
     let msgError = '';
 
+    const chanContext = store.getters.getChanContext;
     function getStatusCode(){
     return store.getters.getStatusCode;
   }
-
   const checkCodeChan = async () => {
-        if (codeChan.length == 4)
+        if (checkCode.length == 4)
         {
             store.commit('setStatusCode', false);
             try {
-                const response = await axios.post("http://c1r2s3:3000/chat/code", {codeChan: codeChan});
+                const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}` };
+                const data = {
+                  checkCode: checkCode,
+                  chanId: chanContext.chanel_chat_id,
+                }
+                const response = await axios.post("http://c1r2s3:3000/chat/code", data, {headers});
                 router.push("/chat");
             } catch (error: any) {
                 if (error.response.status != 201)
@@ -35,7 +42,7 @@
     <form>
       <input type="text" name="codeChat" autocomplete="off"
         minlength="4" placeholder="code"
-        v-model="codeChan" @keyup="checkCodeChan">
+        v-model="checkCode" @keyup="checkCodeChan">
     </form>
     <div id="statuscode" v-if="getStatusCode()">
       <p> {{ msgError }} </p>

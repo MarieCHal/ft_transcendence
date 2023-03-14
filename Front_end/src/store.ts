@@ -21,6 +21,7 @@ const store = createStore({
     isItIsMe: [],
     isChans: [],
     isChanContext: [],
+    isUserContext: [],
     isWebSocket: null
   },
   mutations: {
@@ -37,6 +38,7 @@ const store = createStore({
     setWebSocket(state, isWebSocket) {state.isWebSocket = isWebSocket;},
     setNewChanel(state, isNewChanel) {state.isNewChanel = isNewChanel;},
     setShowUsers(state, isShowUsers) {state.isShowUsers = isShowUsers;},
+    setUserContext(state, isUserContext) {state.isUserContext = isUserContext;},
   },
   getters: {
     getAuthenticated: state => state.isAuthenticated,
@@ -51,7 +53,8 @@ const store = createStore({
     getChanContext: state => state.isChanContext,
     getWebSocket: state => state.isWebSocket,
     getNewChanel: state => state.isNewChanel,
-    getShowUsers: state => state.isShowUsers
+    getShowUsers: state => state.isShowUsers,
+    getUserContext: state => state.isUserContext
   },
   actions: {
     initWebSocket({ commit }) {

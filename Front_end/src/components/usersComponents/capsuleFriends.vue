@@ -12,7 +12,7 @@
 
     function getMyFriends(){
         let friends = store.getters.getUsers;
-    return friends.Myfriends;
+    return friends.myFriends;
 }
 
     const sendFriendRequest = async (userId: any) => {
@@ -27,9 +27,16 @@
         });
     }
 
-    const SendMsg = async(Myfriends: any) =>{
-        store.commit("setChanContext", Myfriends)
-        router.push('/chat')
+    const SendMsg = async(myfriends: any) =>{
+        try{
+            const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}` };
+            const data = {private: true, name: "", otherId: myfriends.user_user_id}
+            const response = await axios.post('http://c1r2s3:3000/chat/create', data,  {headers})
+            store.commit("setChanContext", myfriends);
+            router.push('/chat');
+        }catch{
+            console.log("Erreur chatfriends")
+        }
         // avant de commit il faut faire une requete 
     }
 </script>
