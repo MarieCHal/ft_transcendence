@@ -18,7 +18,8 @@
         try {
             const headers = {"Authorization": `Bearer ${Cookies.get('auth_token')}`};
             const response = await axios.get('http://c1r2s3:3000/chat/all', {headers});//recuperation des channel
-            store.commit('setChans', response.data)
+            store.commit('setChansPublic', response.data.chanels);
+            store.commit('setChansPrivate', response.data.privMsg);
         } catch (error: any) {
             if (error.response.status != 200)
             {
@@ -29,9 +30,9 @@
     }
 
     function getChansPublic(){
-        const chansPublic = store.getters.getChans;
-        if (chansPublic && chansPublic.chanels){
-            return chansPublic.chanels;
+        const chansPublic = store.getters.getChansPublic;
+        if (chansPublic){
+            return chansPublic;
         }
         else{
             return [];
@@ -39,29 +40,38 @@
     }
 
     function getChansPrivate(){
-        const chansPrivate = store.getters.getChans;
-        if (chansPrivate && chansPrivate.privMsg){
-            return chansPrivate.privMsg;
+        const chansPrivate = store.getters.getChansPrivate;
+        if (chansPrivate){
+            return chansPrivate;
         }
         else{
             return [];
         }
     }
 
-    function clickChan(chan: any){
-        store.commit('setChanContext', chan);
-        //faire requete get pour recuperer info (isProtected, if banned, is mute)
-        console.log(chan);
-        if(chan.chanel_isProtected){
-            router.push('/codeChat')
-        }
-        else{
-            router.push("/chat");
+    const  clickChan = async (chan: any) =>{
+        try {
+            const headers = {"Authorization": `Bearer ${Cookies.get('auth_token')}`};
+            const response = await axios.get(`http://c1r2s3:3000/chat/join/${chan.chanel_chat_id}`, {headers});//faire requete get pour recuperer info (isProtected, if banned, is mute)
+            store.commit('setChanContext', chan);
+            
+            if(chan.chanel_isProtected){
+                router.push('/codeChat')
+            }
+            else{
+                router.push("/chat");
+            }
+        } catch (error: any) {
+            
         }
     }
 
-    function createMsg(){
-        router.push('/createMsg');//a faire
+    function createChan(){
+        router.push('/createChan');
+    }
+
+    function createPrivMsg(){
+        router.push('/Users');
     }
 
     function getStatusCode(){
@@ -71,14 +81,21 @@
 
 <template>
     <div class="main-dashboard">
-        <div class="create-msg">
-            <button class="create-msg-button" @click="createMsg()">
+        <h1>CHANNEL</h1>
+        <div class="create-chan">
+            <button class="create-chan-button" @click="createChan()">
                 +
             </button>
         </div>
         <div class="liste-chan-pub" v-for="(chanPublic, index) in getChansPublic()" :key="index">
             <button @click="clickChan(chanPublic)">
                 {{ chanPublic.chanel_name }}
+            </button>
+        </div>
+        <h1>PrivMsg</h1>
+        <div class="create-chan">
+            <button class="create-chan-button" @click="createPrivMsg()">
+                +
             </button>
         </div>
         <div class="liste-privMsg" v-for="(chanPrivate, index) in getChansPrivate()" :key="index">

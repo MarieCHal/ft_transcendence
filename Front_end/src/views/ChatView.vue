@@ -6,10 +6,13 @@
     const chatMessages = ref<string[]>([]);
     const newMessage = ref('');
     const socket = store.getters.getWebSocket;
+    const chanContext = store.getters.getChanContext;
+
+    console.log(chanContext);
     onMounted(() => {
       if (socket){
         socket.on('chat', (message: string) => {
-            chatMessages.value.push(message);
+        chatMessages.value.push(message);
         });
       }
       else {

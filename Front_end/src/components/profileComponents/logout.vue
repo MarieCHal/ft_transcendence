@@ -10,6 +10,7 @@
         const socket = store.getters.getWebSocket;
         if (socket){
             socket.disconnect();
+            console.log('socket is disconnect');
         }
         store.replaceState({});
         localStorage.clear();

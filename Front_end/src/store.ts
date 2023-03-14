@@ -11,13 +11,15 @@ const store = createStore({
   state: {
     isAuthenticated: false,
     isDoubleAuth: false,
+    isShowUsers: false,
     isId: 0,
     isAvatar: "",
     isNickname: "",
     isStatusCode: false,
     isUsers: [],
     isItIsMe: [],
-    isChans: [],
+    isChansPublic: [],
+    isChansPrivate: [],
     isChanContext: [],
     isWebSocket: null
   },
@@ -30,9 +32,11 @@ const store = createStore({
     setStatusCode(state,  isStatusCode) {state.isStatusCode =  isStatusCode},
     setUsers(state,  isUsers) {state.isUsers =  isUsers},
     setItIsMe(state,  isItIsMe) {state.isItIsMe =  isItIsMe},
-    setChans(state,  isChans) {state.isChans =  isChans},
+    setChansPublic(state,  isChansPublic) {state.isChansPublic =  isChansPublic},
+    setChansPrivate(state,  isChansPrivate) {state.isChansPrivate =  isChansPrivate},
     setChanContext(state,  isChanContext) {state.isChanContext =  isChanContext},
     setWebSocket(state, isWebSocket) {state.isWebSocket = isWebSocket;},
+    setShowUsers(state, isShowUsers) {state.isShowUsers = isShowUsers;},
   },
   getters: {
     getAuthenticated: state => state.isAuthenticated,
@@ -43,9 +47,11 @@ const store = createStore({
     getStatusCode: state => state.isStatusCode,
     getUsers: state => state.isUsers,
     getItIsMe: state => state.isItIsMe,
-    getChans: state => state.isChans,
+    getChansPublic: state => state.isChansPublic,
+    getChansPrivate: state => state.isChansPrivate,
     getChanContext: state => state.isChanContext,
-    getWebSocket: state => state.isWebSocket
+    getWebSocket: state => state.isWebSocket,
+    getShowUsers: state => state.isShowUsers
   },
   actions: {
     initWebSocket({ commit }) {

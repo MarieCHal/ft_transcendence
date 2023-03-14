@@ -8,7 +8,9 @@
     const store = useStore();
     let codeChan = '';
     let msgError = '';
+    const chanContext = store.getters.getChanContext;
 
+    console.log(chanContext);
     function getStatusCode(){
     return store.getters.getStatusCode;
   }
@@ -18,8 +20,13 @@
         {
             store.commit('setStatusCode', false);
             try {
-                const response = await axios.post("http://c1r2s3:3000/chat/code", {codeChan: codeChan});
-                router.push("/chat");
+                const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}` };
+                const data = {
+                  checkCode: codeChan,
+                  chanId: chanContext.chanel_chat_id
+                };
+                const response = await axios.post("http://c1r2s3:3000/chat/code", data, {headers});
+                router.push("/chat"); 
 
             } catch (error: any) {
                 if (error.response.status != 201)

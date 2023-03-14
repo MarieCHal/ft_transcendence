@@ -1,4 +1,3 @@
-import axios from 'axios'
 import Cookies from 'js-cookie';
 
 export async function fetchAvatar(store: any) {

@@ -8,6 +8,7 @@ import ProfileModifView from '../views/ProfileModifView.vue'
 import LoginView from '../views/LoginView.vue'
 import DashBoardChatView from '../views/DashBoardChatView.vue'
 import CodeChatView from '../views/CodeChatView.vue'
+import CreateChanView from '../views/CreateChanView.vue'
 import store  from '../store';
     
 function isAuthenticated(){
@@ -77,6 +78,20 @@ const router = createRouter({
       path: '/codeChat',
       name: 'codeChat',
       component: CodeChatView,
+      /*beforeEnter:(to, from, next) => {
+        console.log(isAuthenticated());
+        if(isAuthenticated() == true){
+          next();
+        }
+        else {
+          next({ name: 'register' });
+        }
+      }*/
+    },
+    {
+      path: '/createChan',
+      name: 'createChan',
+      component: CreateChanView,
       /*beforeEnter:(to, from, next) => {
         console.log(isAuthenticated());
         if(isAuthenticated() == true){
