@@ -10,7 +10,6 @@
     let msgError = '';
     const chanContext = store.getters.getChanContext;
 
-    console.log(chanContext);
     function getStatusCode(){
     return store.getters.getStatusCode;
   }
@@ -26,6 +25,7 @@
                   chanId: chanContext.chanel_chat_id
                 };
                 const response = await axios.post("http://c1r2s3:3000/chat/code", data, {headers});
+                console.log('axios/chat/code = ', response.data);
                 router.push("/chat"); 
 
             } catch (error: any) {

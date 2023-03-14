@@ -18,8 +18,8 @@
         try {
             const headers = {"Authorization": `Bearer ${Cookies.get('auth_token')}`};
             const response = await axios.get('http://c1r2s3:3000/chat/all', {headers});//recuperation des channel
-            store.commit('setChansPublic', response.data.chanels);
-            store.commit('setChansPrivate', response.data.privMsg);
+            console.log('axios/chat/all = ', response.data);
+            store.commit('setChans', response.data);
         } catch (error: any) {
             if (error.response.status != 200)
             {
@@ -29,32 +29,18 @@
         }
     }
 
-    function getChansPublic(){
-        const chansPublic = store.getters.getChansPublic;
-        if (chansPublic){
-            return chansPublic;
-        }
-        else{
-            return [];
-        }
-    }
-
-    function getChansPrivate(){
-        const chansPrivate = store.getters.getChansPrivate;
-        if (chansPrivate){
-            return chansPrivate;
-        }
-        else{
-            return [];
-        }
-    }
-
     const  clickChan = async (chan: any) =>{
         try {
             const headers = {"Authorization": `Bearer ${Cookies.get('auth_token')}`};
             const response = await axios.get(`http://c1r2s3:3000/chat/join/${chan.chanel_chat_id}`, {headers});//faire requete get pour recuperer info (isProtected, if banned, is mute)
+            console.log('axios/chat/join = ', response.data);//autorisation de l'utilisateur(si bloquer, si mute, si owner, si admin)
             store.commit('setChanContext', chan);
-            
+            store.commit('setUserContext', response.data);
+            const userContext = store.getters.getUserContext;
+            if (userContext.banned){
+                alert("YOU ARE BANNED");
+                return ;
+            }
             if(chan.chanel_isProtected){
                 router.push('/codeChat')
             }
@@ -62,7 +48,37 @@
                 router.push("/chat");
             }
         } catch (error: any) {
-            
+            console.log(error);
+        }
+    }
+
+    function getChansPublic(){
+        const chansPublic = store.getters.getChans;
+        if (chansPublic && chansPublic.chanels){
+            return chansPublic.chanels;
+        }
+        else{
+            return [];
+        }
+    }
+
+    function getChansJoined(){
+        const chansPublicJoined = store.getters.getChans;
+        if (chansPublicJoined && chansPublicJoined.chanels){
+            return chansPublicJoined.Mychanels;
+        }
+        else{
+            return [];
+        }
+    }
+    
+    function getChansPrivate(){
+        const chansPrivate = store.getters.getChans;
+        if (chansPrivate && chansPrivate.privMsg){
+            return chansPrivate.privMsg;
+        }
+        else{
+            return [];
         }
     }
 
@@ -87,6 +103,14 @@
                 +
             </button>
         </div>
+        <h3>myChannel</h3>
+        <div class="liste-chan-pub" v-for="(chanPublicJoined, index) in getChansJoined()" :key="index">
+            sasa
+            <button @click="clickChan(chanPublicJoined)">
+                {{ chanPublicJoined.chanel_name }}
+            </button>
+        </div>
+        <h3>other channel</h3>
         <div class="liste-chan-pub" v-for="(chanPublic, index) in getChansPublic()" :key="index">
             <button @click="clickChan(chanPublic)">
                 {{ chanPublic.chanel_name }}
@@ -100,7 +124,7 @@
         </div>
         <div class="liste-privMsg" v-for="(chanPrivate, index) in getChansPrivate()" :key="index">
             <button @click="clickChan(chanPrivate)">
-                {{ chanPrivate.chanel_name }}
+                {{ chanPrivate.users_nickname }}
             </button>
         </div>
         <div id="statuscode" v-if="getStatusCode()">

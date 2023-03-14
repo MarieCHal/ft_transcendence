@@ -25,8 +25,16 @@ const sendFriendRequest = async (userId: any) => {
     });
 }
 const SendMsg = async(user: any) =>{
-    store.commit("setChanContext", user)
-    router.push('/chat')
+    try {
+        console.log(user);
+        const headers = {"Authorization": `Bearer ${Cookies.get('auth_token')}`};
+        const data = { private: true, otherId: user.users_user_id};
+        const response = await axios.post('http://c1r2s3:3000/chat/create', data,  {headers});
+        store.commit("setChanContext", user);
+        router.push('/chat');
+    } catch (error) {
+        console.log(error);
+    }
     // avant de commit il faut faire une requete 
 }
 </script>

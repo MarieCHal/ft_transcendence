@@ -3,7 +3,7 @@ import { io } from 'socket.io-client';
 import createPersistedState from 'vuex-persistedstate'
 import Cookies from 'js-cookie';
 const persistedState = createPersistedState({
-  paths: ['isAuthenticated', 'isDoubleAuth', 'isId', 'isAvatar', 'isNickname', 'isStatusCode', 'isUsers', 'isItIsMe']
+  paths: ['isAuthenticated', 'isDoubleAuth', 'isShowUsers', 'isId', 'isAvatar', 'isNickname', 'isStatusCode', 'isUsers', 'isItIsMe', 'isChans', 'isUserContext', 'isChanContext']
 });
 
 const store = createStore({
@@ -18,8 +18,8 @@ const store = createStore({
     isStatusCode: false,
     isUsers: [],
     isItIsMe: [],
-    isChansPublic: [],
-    isChansPrivate: [],
+    isChans: [],
+    isUserContext: [],
     isChanContext: [],
     isWebSocket: null
   },
@@ -32,9 +32,9 @@ const store = createStore({
     setStatusCode(state,  isStatusCode) {state.isStatusCode =  isStatusCode},
     setUsers(state,  isUsers) {state.isUsers =  isUsers},
     setItIsMe(state,  isItIsMe) {state.isItIsMe =  isItIsMe},
-    setChansPublic(state,  isChansPublic) {state.isChansPublic =  isChansPublic},
-    setChansPrivate(state,  isChansPrivate) {state.isChansPrivate =  isChansPrivate},
+    setChans(state,  isChans) {state.isChans =  isChans},
     setChanContext(state,  isChanContext) {state.isChanContext =  isChanContext},
+    setUserContext(state,  isUserContext) {state.isUserContext =  isUserContext},
     setWebSocket(state, isWebSocket) {state.isWebSocket = isWebSocket;},
     setShowUsers(state, isShowUsers) {state.isShowUsers = isShowUsers;},
   },
@@ -47,9 +47,9 @@ const store = createStore({
     getStatusCode: state => state.isStatusCode,
     getUsers: state => state.isUsers,
     getItIsMe: state => state.isItIsMe,
-    getChansPublic: state => state.isChansPublic,
-    getChansPrivate: state => state.isChansPrivate,
+    getChans: state => state.isChans,
     getChanContext: state => state.isChanContext,
+    getUserContext: state => state.isUserContext,
     getWebSocket: state => state.isWebSocket,
     getShowUsers: state => state.isShowUsers
   },

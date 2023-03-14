@@ -1,15 +1,21 @@
 <script setup lang="ts">
     import { onMounted, ref } from 'vue';
     import { useStore } from "vuex"
+    import axios from 'axios'
+    import Cookies from 'js-cookie';
 
     const store = useStore();
     const chatMessages = ref<string[]>([]);
     const newMessage = ref('');
     const socket = store.getters.getWebSocket;
     const chanContext = store.getters.getChanContext;
-
-    console.log(chanContext);
-    onMounted(() => {
+    const userContext = store.getters.getUserContext;
+    console.log('chanContext dans chatView',chanContext);
+    console.log('userContext dans chatView',userContext);
+    onMounted(async () => {
+      //const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}` };
+      //const response = await axios.get(`http://c1r2s3:3000/chat/history/${chan.chanel_chat_id}`, {headers});
+      //const thisChatContext = response.data;
       if (socket){
         socket.on('chat', (message: string) => {
         chatMessages.value.push(message);
