@@ -18,9 +18,8 @@
         const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}` };
         const response = await axios.get("http://c1r2s3:3000/users/all", {headers});//FAIRE TRY CATCH
         //const response = await axios.get("http://localhost:3000/users");
-        store.commit('setUsers', response.data.allUsers);
+        store.commit('setUsers', response.data);
      
-        store.commit('setMyFriends', response.data.myFriends);
     });
 
 function getshowUsers(){

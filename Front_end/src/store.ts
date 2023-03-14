@@ -11,6 +11,7 @@ const store = createStore({
   state: {
     isAuthenticated: false,
     isDoubleAuth: false,
+    isShowUsers: false,
     isId: 0,
     isAvatar: "",
     isNickname: "",
@@ -35,6 +36,7 @@ const store = createStore({
     setChanContext(state,  isChanContext) {state.isChanContext =  isChanContext},
     setWebSocket(state, isWebSocket) {state.isWebSocket = isWebSocket;},
     setNewChanel(state, isNewChanel) {state.isNewChanel = isNewChanel;},
+    setShowUsers(state, isShowUsers) {state.isShowUsers = isShowUsers;},
   },
   getters: {
     getAuthenticated: state => state.isAuthenticated,
@@ -48,7 +50,8 @@ const store = createStore({
     getChans: state => state.isChans,
     getChanContext: state => state.isChanContext,
     getWebSocket: state => state.isWebSocket,
-    getNewChanel: state => state.isNewChanel
+    getNewChanel: state => state.isNewChanel,
+    getShowUsers: state => state.isShowUsers
   },
   actions: {
     initWebSocket({ commit }) {

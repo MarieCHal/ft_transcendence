@@ -11,8 +11,9 @@
     const store = useStore();
 
     function getMyFriends(){
-        return store.getters.getMyFriends;
-    }
+        let friends = store.getters.getUsers;
+    return friends.Myfriends;
+}
 
     const sendFriendRequest = async (userId: any) => {
         const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}` };
@@ -35,8 +36,8 @@
 
 
 <template>
+    FRIENDS
     <div id="capsule" v-for="(Myfriends, index) in getMyFriends()" :key="index">
-        FRIENDS
         <div class="dataUser">
             <div class="nicknameStatus">
                 <div class="status-indicator" :class="{ 'status-online': Myfriends.user_isActive, 'status-offline': !Myfriends.user_isActive }"></div>
@@ -69,6 +70,7 @@
 #capsule{
     width: 15em;
     max-height: 5em;
+    margin: auto;
     //background-color: aquamarine;
 }
 #nickname{
@@ -111,3 +113,9 @@
     background-color: red;
 }
 </style>
+
+
+function getMyFriends(){
+    let friends = store.getters.getUsers;
+    return friends.Myfriends;
+}
