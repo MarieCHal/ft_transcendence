@@ -1,7 +1,6 @@
 <script setup lang="ts">
     import { useRouter } from 'vue-router'
     import { useStore } from "vuex"
-    import Cookies from 'js-cookie';
 
     const router = useRouter();
     const store = useStore();
@@ -14,7 +13,6 @@
         }
         store.replaceState({});
         localStorage.clear();
-        Cookies.remove('auth_token');
         store.commit('setDoubleAuth', false);
         router.push('/');
     }

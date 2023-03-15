@@ -97,7 +97,7 @@
 
 <template>
     <div class="main-dashboard">
-        <h1>CHANNEL</h1>
+        <h1>Channel</h1>
         <div class="create-chan">
             <button class="create-chan-button" @click="createChan()">
                 +

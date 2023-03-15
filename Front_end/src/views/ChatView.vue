@@ -12,10 +12,12 @@
     const userContext = store.getters.getUserContext;
     console.log('chanContext dans chatView',chanContext);
     console.log('userContext dans chatView',userContext);
+    //const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}` };
+    //const response = await axios.get(`http://c1r2s3:3000/chat/history/${chan.chanel_chat_id}`, {headers});
+    //const chatContext = response.data;
+    //console.log('chatContext dans chatView',chatContext);
     onMounted(async () => {
-      //const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}` };
-      //const response = await axios.get(`http://c1r2s3:3000/chat/history/${chan.chanel_chat_id}`, {headers});
-      //const thisChatContext = response.data;
+
       if (socket){
         socket.on('chat', (message: string) => {
         chatMessages.value.push(message);
