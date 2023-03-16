@@ -1,19 +1,28 @@
 <script setup lang="ts">
     import { onMounted, ref } from 'vue';
     import { useStore } from "vuex"
+    import { useRouter } from 'vue-router'
     import Cookies from 'js-cookie';
     import axios from 'axios';
+import { routeLocationKey } from 'vue-router';
 
     const store = useStore();
+    const router = useRouter();
     const chatMessages = ref<string[]>([]);
     const newMessage = ref('');
+    let newChanel = '';
+    let Pwd = '';
+    let statuscode = false;
+    let bool = false;
     const socket = store.getters.getWebSocket;
     const chanContext = store.getters.getChanContext;
     const userContext = store.getters.getUserContext;
 
     onMounted(async () => {
-      //const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}`};
-      //const response = await axios.get(`http://c1r2s3:3000/chat/history/${chan.chanel_chat_id}`, {headers});
+      const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}`};
+      /// a voir si envoie la bonne donnée "chanContext"
+      const response = await axios.get(`http://c1r2s3:3000/chat/users/${chanContext.chanel_chat_id}`, {headers});
+      store.commit("setChanelUser", response.data.users)
       socket.on('chat', (message: string) => {
           chatMessages.value.push(message);
       });
@@ -35,22 +44,38 @@
     function getUsers(){
         let allUser = store.getters.getUsers;
     return allUser.allUsers
-}
+  }
+  
+  function getChanelUser(){
+      return store.getters.getChanelUser;
+    }
+
+  function clickNickname(user: any){
+    // cree le context unser id
+    store.commit("setUserId", user.users_user_id)
+    router.push('/ProfileUser')
+  }
+
 </script>
 
 <template>
   <div>
     <h1>users</h1>
-    <div id="capsule" v-for="(user, index) in getUsers()" :key="index">
+    <div id="capsule" v-for="(user, index) in getChanelUser()" :key="index">
             <div class="dataUser">
                 <div class="nicknameStatus">
                     <div class="status-indicator" :class="{ 'status-online': user.users_isActive, 'status-offline': !user.users_isActive }"></div>
-                    <button id="nickname">
+                    <button id="nickname" @click="clickNickname(user)">
                         {{ user.users_nickname }}
                     </button>
                 </div>
             </div>
         </div>
+    </div>
+    <div>
+      <button>
+        changer code a faire
+      </button>
     </div>
     <h1>Chat en temps réel</h1>
     <div class="chat-container">

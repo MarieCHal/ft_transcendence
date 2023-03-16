@@ -18,10 +18,14 @@ const store = createStore({
     isNewChanel: "",
     isStatusCode: false,
     isUsers: [],
+    isUserId: 0,
     isItIsMe: [],
     isChans: [],
     isChanContext: [],
     isUserContext: [],
+    isUserProfile: [],
+    isChanelUser: [],
+    isUserAvatar: '',
     isWebSocket: null
   },
   mutations: {
@@ -39,6 +43,10 @@ const store = createStore({
     setNewChanel(state, isNewChanel) {state.isNewChanel = isNewChanel;},
     setShowUsers(state, isShowUsers) {state.isShowUsers = isShowUsers;},
     setUserContext(state, isUserContext) {state.isUserContext = isUserContext;},
+    setUserId(state, isUserId) {state.isUserId = isUserId;},
+    setUserProfile(state, isUserProfile) {state.isUserProfile = isUserProfile;},
+    setUserAvatar(state, isUserAvatar) {state.isUserAvatar = isUserAvatar;},
+    setChanelUser(state, isChanelUser) {state.isChanelUser = isChanelUser;},
   },
   getters: {
     getAuthenticated: state => state.isAuthenticated,
@@ -54,7 +62,11 @@ const store = createStore({
     getWebSocket: state => state.isWebSocket,
     getNewChanel: state => state.isNewChanel,
     getShowUsers: state => state.isShowUsers,
-    getUserContext: state => state.isUserContext
+    getUserContext: state => state.isUserContext,
+    getUserId: state => state.isUserId,
+    getUserProfile: state => state.isUserProfile,
+    getUserAvatar: state => state.isUserAvatar,
+    getChanelUser: state => state.isChanelUser,
   },
   actions: {
     initWebSocket({ commit }) {

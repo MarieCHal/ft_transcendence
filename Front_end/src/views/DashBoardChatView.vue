@@ -13,6 +13,7 @@
     onMounted(() => {
         getDashboard();
     });
+    
     const getDashboard = async () => {
         try {
             const headers = {"Authorization": `Bearer ${Cookies.get('auth_token')}`};
@@ -80,6 +81,14 @@
         }
     }
 
+    const quitChan = async (chan :any) =>{
+        const headers = {"Authorization": `Bearer ${Cookies.get('auth_token')}`};
+        const data = {
+            chanelId: chan.chanel_chat_id,
+        }
+        const response = await axios.post(`http://c1r2s3:3000/chat/quit`, data, {headers});
+    }
+
     function createMsg(){
         router.push('/CreateChan');//a faire
     }
@@ -105,6 +114,9 @@
         <div class="liste-chan-pub" v-for="(chanPublicJoined, index) in getChansJoined()" :key="index">
             <button @click="clickChan(chanPublicJoined)">
                 {{ chanPublicJoined.chanel_name }}
+            </button>
+            <button id="quitchan" @click="quitChan(chanPublicJoined)">
+                -
             </button>
         </div>
         <h1>other chanel</h1>
@@ -134,6 +146,17 @@
 .liste-chan-pub{
 }
 .liste-privMsg{
+}
+
+#quitchan{
+    padding: 5px 10px;
+    margin: 5px;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    overflow: auto;
 }
 .main-dashboard{
     display: flex;

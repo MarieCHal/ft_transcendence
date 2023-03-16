@@ -5,6 +5,7 @@ import UsersView from '../views/UsersView.vue'
 import PlayView from '../views/PlayView.vue'
 import ChanView from '../views/ChatView.vue'
 import ProfileView from '../views/ProfileView.vue'
+import ProfileUserView from '../views/ProfileUserView.vue'
 import ProfileModifView from '../views/ProfileModifView.vue'
 import LoginView from '../views/LoginView.vue'
 import DashBoardChan from '../views/DashBoardChatView.vue'
@@ -121,6 +122,20 @@ const router = createRouter({
       path: '/Profile',
       name: 'profile',
       component: ProfileView,
+      /*beforeEnter:(to, from, next) => {
+        console.log(isAuthenticated());
+        if(isAuthenticated() == true){
+          next();
+        }
+        else {
+          next({ name: 'register' });
+        }
+      }*/
+    },
+    {
+      path: '/ProfileUser',
+      name: 'profileuser',
+      component: ProfileUserView,
       /*beforeEnter:(to, from, next) => {
         console.log(isAuthenticated());
         if(isAuthenticated() == true){
