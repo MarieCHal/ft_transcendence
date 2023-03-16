@@ -105,34 +105,34 @@
 
 <template>
     <div class="main-dashboard">
-        <h1>CHANNEL</h1>
+        <h1 id="H1">CHANNEL</h1>
         <div class="create-msg">
-            <button class="create-msg-button" @click="createMsg()">
+            <button id="plus" @click="createMsg()">
                 +
             </button>
         </div>
         <div class="liste-chan-pub" v-for="(chanPublicJoined, index) in getChansJoined()" :key="index">
-            <button @click="clickChan(chanPublicJoined)">
+            <button id="quitchan" @click="clickChan(chanPublicJoined)">
                 {{ chanPublicJoined.chanel_name }}
             </button>
-            <button id="quitchan" @click="quitChan(chanPublicJoined)">
+            <button id="plus" @click="quitChan(chanPublicJoined)">
                 -
             </button>
         </div>
-        <h1>other chanel</h1>
+        <h1>other channel</h1>
         <div class="liste-chan-pub" v-for="(chanPublicNotJoined, index) in getChansPublic()" :key="index">
-            <button @click="clickChan(chanPublicNotJoined)">
+            <button id="quitchan" @click="clickChan(chanPublicNotJoined)">
                 {{ chanPublicNotJoined.chanel_name }}
             </button>
         </div>
         <h1>PrivMsg</h1>
         <div class="create-msg">
-            <button class="create-msg-button" @click="createPrivMsg()">
+            <button id="plus" @click="createPrivMsg()">
                 +
             </button>
         </div>
         <div class="liste-privMsg" v-for="(chanPrivate, index) in getChansPrivate()" :key="index">
-            <button @click="clickChan(chanPrivate)">
+            <button id="quitchan" @click="clickChan(chanPrivate)">
                 {{ chanPrivate.users_nickname }}
             </button>
         </div>
@@ -148,11 +148,17 @@
 .liste-privMsg{
 }
 
+#plus{
+    background-color: #007bff;
+    margin: 5px;
+    border-radius: 9px;
+}
+
 #quitchan{
-    padding: 5px 10px;
+    padding: 4px 8px;
     margin: 5px;
     border-radius: 5px;
-    background-color: #007bff;
+    background-color: #0475ee;
     color: #fff;
     border: none;
     cursor: pointer;
@@ -161,7 +167,7 @@
 .main-dashboard{
     display: flex;
     flex-direction: column;
-    background-color: aqua;
+    background-color: rgb(253, 253, 253);
     color: black;
 }
 </style>

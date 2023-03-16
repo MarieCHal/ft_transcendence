@@ -14,7 +14,7 @@
 
 <style scoped lang="scss">
 #navLoginButton{
-    background-color: rgb(0, 252, 38);
+    background-color: rgb(0, 17, 252);
 }
 .navButton{
     width: auto;

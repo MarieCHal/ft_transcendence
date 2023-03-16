@@ -113,7 +113,7 @@
 }
 
 .status-online {
-    background-color: green;
+    background-color: rgb(11, 14, 212);
 }
 
 .status-offline {

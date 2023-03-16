@@ -24,9 +24,10 @@
             const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}` };
             const data = {protected: statuscode, private: false, name: newChanel, pwd: Pwd}
             const response = await axios.post('http://c1r2s3:3000/chat/create', data,  {headers})
+            
 
             if (store.getters.getStatusCode == false){
-                router.push('/chat')
+                router.push('/dashBoardChan')
             }
             
             }catch (error: any) {

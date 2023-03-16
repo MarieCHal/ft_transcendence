@@ -66,7 +66,7 @@ main{
   display: flex;
   justify-content: center;
   height: 100%;
-  background-color: rgb(55, 47, 47);
+  background-color: rgb(185, 185, 185);
 }
 footer{
   display: flex;
@@ -74,7 +74,7 @@ footer{
   bottom: 0%;
   max-width: 1000px;
   width: 100%;
-  background-color: rgb(165, 91, 91);
+  background-color: rgb(9, 8, 8);
 }
 p{
   margin: auto;

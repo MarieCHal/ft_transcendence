@@ -9,24 +9,31 @@ const persistedState = createPersistedState({
 const store = createStore({
   plugins: [persistedState],
   state: {
+
     isAuthenticated: false,
     isDoubleAuth: false,
     isShowUsers: false,
-    isId: 0,
+    isStatusCode: false,
+    isBool: false,
+
     isAvatar: "",
     isNickname: "",
     isNewChanel: "",
-    isStatusCode: false,
-    isUsers: [],
+    isUserAvatar: "",
+
+    isId: 0,
     isUserId: 0,
+
+    isUsers: [],
     isItIsMe: [],
     isChans: [],
     isChanContext: [],
     isUserContext: [],
     isUserProfile: [],
     isChanelUser: [],
-    isUserAvatar: '',
+
     isWebSocket: null
+    
   },
   mutations: {
     setAuthenticated(state, isAuthenticated) {state.isAuthenticated = isAuthenticated},
@@ -47,6 +54,7 @@ const store = createStore({
     setUserProfile(state, isUserProfile) {state.isUserProfile = isUserProfile;},
     setUserAvatar(state, isUserAvatar) {state.isUserAvatar = isUserAvatar;},
     setChanelUser(state, isChanelUser) {state.isChanelUser = isChanelUser;},
+    setBool(state, isBool) {state.isBool = isBool;},
   },
   getters: {
     getAuthenticated: state => state.isAuthenticated,
@@ -67,6 +75,7 @@ const store = createStore({
     getUserProfile: state => state.isUserProfile,
     getUserAvatar: state => state.isUserAvatar,
     getChanelUser: state => state.isChanelUser,
+    getBool: state => state.isBool,
   },
   actions: {
     initWebSocket({ commit }) {

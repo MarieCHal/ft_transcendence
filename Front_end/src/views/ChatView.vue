@@ -4,7 +4,6 @@
     import { useRouter } from 'vue-router'
     import Cookies from 'js-cookie';
     import axios from 'axios';
-import { routeLocationKey } from 'vue-router';
 
     const store = useStore();
     const router = useRouter();
@@ -12,15 +11,14 @@ import { routeLocationKey } from 'vue-router';
     const newMessage = ref('');
     let newChanel = '';
     let Pwd = '';
-    let statuscode = false;
     let bool = false;
     const socket = store.getters.getWebSocket;
     const chanContext = store.getters.getChanContext;
     const userContext = store.getters.getUserContext;
+    store.commit("setBool", false)
 
     onMounted(async () => {
       const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}`};
-      /// a voir si envoie la bonne donnée "chanContext"
       const response = await axios.get(`http://c1r2s3:3000/chat/users/${chanContext.chanel_chat_id}`, {headers});
       store.commit("setChanelUser", response.data.users)
       socket.on('chat', (message: string) => {
@@ -41,11 +39,7 @@ import { routeLocationKey } from 'vue-router';
         store.dispatch('initWebSocket');
       }
     }
-    function getUsers(){
-        let allUser = store.getters.getUsers;
-    return allUser.allUsers
-  }
-  
+
   function getChanelUser(){
       return store.getters.getChanelUser;
     }
@@ -56,28 +50,79 @@ import { routeLocationKey } from 'vue-router';
     router.push('/ProfileUser')
   }
 
+  const submmit = async () => {
+    console.log("je suis la");
+    if (!userContext.owner){
+        alert("YOU ARE NOT A OWNER")
+        return ;
+    }
+    try {
+        const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}` };
+        const data = { chanelId: chanContext.chanel_chat_id, pwd: Pwd};
+        const response = await axios.post('http://c1r2s3:3000/chat/pwd', data,  {headers})
+        console.log("store 2=", response.status)
+        if(response.status == 201){
+          store.commit("setBool", false)
+        }
+        }catch (error: any) {
+          if (error.response.status != 201){
+            console.log("Error serveur");
+          }
+        }
+  }
+
+  function getBool(){
+     console.log("store =", store.getters.getBool)
+      store.commit("setBool", true)
+      return store.getters.getBool;
+  }
+
+  const deleteChan = async () => {
+    try {
+        const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}` };
+        const response = await axios.delete(`http://c1r2s3:3000/chat/del/${chanContext.chanel_chat_id}`,  {headers})
+        router.push('/dashBoardChan')
+        }catch (error: any) {
+          if (error.response.status != 201){
+            console.log("Error serveur");
+          }
+        }
+  }
+
 </script>
 
 <template>
   <div>
-    <h1>users</h1>
+    <h1> users </h1>
     <div id="capsule" v-for="(user, index) in getChanelUser()" :key="index">
-            <div class="dataUser">
-                <div class="nicknameStatus">
-                    <div class="status-indicator" :class="{ 'status-online': user.users_isActive, 'status-offline': !user.users_isActive }"></div>
-                    <button id="nickname" @click="clickNickname(user)">
-                        {{ user.users_nickname }}
-                    </button>
-                </div>
-            </div>
+      <div class="dataUser">
+        <div class="nicknameStatus">
+          <div class="status-indicator" :class="{ 'status-online': user.users_isActive, 'status-offline': !user.users_isActive }"></div>
+          <button id="nickname" @click="clickNickname(user)">
+            {{ user.users_nickname }}
+          </button>
         </div>
+      </div>
     </div>
-    <div>
-      <button>
-        changer code a faire
+  </div>
+  <div v-if="userContext.owner">
+    <form @submit.prevent="submmit">
+      <button  @click.prevent="getBool">
+        changePWD
       </button>
-    </div>
-    <h1>Chat en temps réel</h1>
+        <div v-if="store.getters.getBool">
+          <input type="text" name="code" autocomplete="off"
+          placeholder="PWD" minlength="4" maxlength="4" v-model="Pwd">
+          <button type="submit">
+            submit
+          </button>
+        </div>
+    </form>
+    <button @click="deleteChan()">
+      deleteChan
+    </button>
+  </div>
+    <h1> Chat en temps réel </h1>
     <div class="chat-container">
         <ul class="chat-messages" style="display: flex; flex-direction: column-reverse;">
           <li v-for="(message, index) in chatMessages.slice().reverse()" :key="index" style="display: flex; flex-direction: column-reverse;">{{ message }}</li>

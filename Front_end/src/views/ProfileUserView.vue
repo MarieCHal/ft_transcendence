@@ -1,15 +1,10 @@
 <script setup lang="ts">
-    import modifProfileButton from '../components/profileComponents/modifProfileButton.vue'
     import axios from 'axios'
     import { useRouter } from 'vue-router'
     import { useStore } from "vuex"
     import { onMounted } from 'vue'
     import stats from '../components/profileComponents/stats.vue'
-    import doubleAuth from '../components/profileComponents/doubleAuthButton.vue'
-    import friendRequest from '../components/profileComponents/friendRequest.vue'
-    import logout from '../components/profileComponents/logout.vue'
     import Cookies from 'js-cookie';
-    import ButtonFriendsUsers from '@/components/usersComponents/buttonFriendsUsers.vue'
 
     const router = useRouter();
     const store = useStore();
@@ -69,6 +64,7 @@
                 chanelId: chanContext.chanel_chat_id,
             }
             await axios.post(`http://c1r2s3:3000/chat/bann`, data,  {headers})
+            router.push('/chat')
         }
     }
 
@@ -118,7 +114,6 @@
         }catch{
             console.log("Erreur chatUsers")
         }
-        // avant de commit il faut faire une requete 
     }
 
     const sendFriendRequest = async (userId: any) => {
