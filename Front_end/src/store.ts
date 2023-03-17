@@ -31,6 +31,7 @@ const store = createStore({
     isUserContext: [],
     isUserProfile: [],
     isChanelUser: [],
+    isChatHistory: [],
 
     isWebSocket: null
     
@@ -55,6 +56,8 @@ const store = createStore({
     setUserAvatar(state, isUserAvatar) {state.isUserAvatar = isUserAvatar;},
     setChanelUser(state, isChanelUser) {state.isChanelUser = isChanelUser;},
     setBool(state, isBool) {state.isBool = isBool;},
+    setChatHistory(state, isChatHistory) {state.isChatHistory = isChatHistory;},
+
   },
   getters: {
     getAuthenticated: state => state.isAuthenticated,
@@ -76,6 +79,7 @@ const store = createStore({
     getUserAvatar: state => state.isUserAvatar,
     getChanelUser: state => state.isChanelUser,
     getBool: state => state.isBool,
+    getChatHistory: state => state.isChatHistory,
   },
   actions: {
     initWebSocket({ commit }) {

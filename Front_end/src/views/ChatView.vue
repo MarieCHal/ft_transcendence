@@ -9,9 +9,7 @@
     const router = useRouter();
     const chatMessages = ref<string[]>([]);
     const newMessage = ref('');
-    let newChanel = '';
     let Pwd = '';
-    let bool = false;
     const socket = store.getters.getWebSocket;
     const chanContext = store.getters.getChanContext;
     const userContext = store.getters.getUserContext;
@@ -20,19 +18,26 @@
     onMounted(async () => {
       const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}`};
       const response = await axios.get(`http://c1r2s3:3000/chat/users/${chanContext.chanel_chat_id}`, {headers});
+      const chatHistory = await axios.get(`http://c1r2s3:3000/chat/history/${chanContext.chanel_chat_id}`,  {headers})
       store.commit("setChanelUser", response.data.users)
+      store.commit("setChatHistory", chatHistory.data.history)
+
+      socket.on('join', (message: string) => {
+          chatMessages.value.push(message);
+      });
+      socket.emit('join', `${chanContext.chanel_chat_id}`)
       socket.on('chat', (message: string) => {
           chatMessages.value.push(message);
       });
     });
 
     const sendMessage = () => {
-      //if (userContext.muted){
-      //  alert("YOU ARE MUTED")
-       // return ;
-      //}
+      if (userContext.muted){
+        alert("YOU ARE MUTED")
+        return ;
+      }
       if (socket){
-        socket.emit('chat' ,newMessage.value);
+        socket.emit('chat', newMessage.value, `${chanContext.chanel_chat_id}`);
         newMessage.value = '';
       }
       else{
@@ -89,6 +94,10 @@
         }
   }
 
+  function getChatHistory(){
+    return store.getters.getChatHistory;
+  }
+
 </script>
 
 <template>
@@ -122,10 +131,21 @@
       deleteChan
     </button>
   </div>
-    <h1> Chat en temps réel </h1>
+    <h1> {{ chanContext.chanel_name}} </h1>
     <div class="chat-container">
+      <div>
+        <ul class="chat-messages">
+          <li v-for="(chat, index) in getChatHistory()" :key="index" style="display: flex; flex-direction: column-reverse;">
+            {{ chat.sender_nickname }}
+            {{ chat.messages_text }}
+            {{ chat.messages_createdAt }}
+          </li>
+        </ul>
+      </div>
         <ul class="chat-messages" style="display: flex; flex-direction: column-reverse;">
-          <li v-for="(message, index) in chatMessages.slice().reverse()" :key="index" style="display: flex; flex-direction: column-reverse;">{{ message }}</li>
+          <li v-for="(message, index) in chatMessages.slice().reverse()" :key="index" style="display: flex; flex-direction: column-reverse;">
+            {{ message }}
+          </li>
         </ul>
         <div id="prompt-container">
           <form id="prompt" @submit.prevent="sendMessage">

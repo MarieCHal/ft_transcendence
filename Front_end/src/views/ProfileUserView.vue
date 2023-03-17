@@ -26,6 +26,7 @@
         const url = URL.createObjectURL(blob);
         store.commit("setUserAvatar", url);
     }
+    
     getAvatar();
 
     const bloquer = async () =>{
@@ -34,56 +35,63 @@
             otherId: store.getters.getUserId,
             chanelId: chanContext.chanel_chat_id,
         }
-        await axios.post(`http://c1r2s3:3000/chat/block`, data, {headers})
+        const response = await axios.post(`http://c1r2s3:3000/chat/block`, data, {headers})
+        router.push('/chat')
+        alert(response.data.message);
     }
 
     const muted = async () =>{
-        if (!userContext.owner || !userContext.admin){
-            alert("YOU ARE NOT OWNER OR ADMIN")
-            return ;
-        }
-        else{
             const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}` };
             const data = {
                 otherId: store.getters.getUserId,
                 chanelId: chanContext.chanel_chat_id,
             }
-            await axios.post(`http://c1r2s3:3000/chat/kick`, data,  {headers})
+            const response = await axios.post(`http://c1r2s3:3000/chat/mute`, data,  {headers})
+            /*if (response.data.ban == false){
+                router.push('/chat')
+                alert(response.data.message);
+            }
+            else{
+                router.push('/chat')
+                alert(response.data.message);
+            }*/
         }
-    }
 
     const banned = async () =>{
-        if (!userContext.owner || !userContext.admin){
-            alert("YOU ARE NOT OWNER OR ADMIN")
-            return ;
-        }
-        else{
             const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}` };
             const data = {
                 otherId: store.getters.getUserId,
                 chanelId: chanContext.chanel_chat_id,
             }
-            await axios.post(`http://c1r2s3:3000/chat/bann`, data,  {headers})
-            router.push('/chat')
+            const response = await axios.post(`http://c1r2s3:3000/chat/bann`, data,  {headers})
+            if (response.data.ban == false){
+                router.push('/chat')
+                alert(response.data.message);
+            }
+            else{
+                router.push('/chat')
+                alert(response.data.message);
+            }
         }
-    }
 
     const kick = async () =>{
         console.log("owner =", userContext.owner)
         console.log("admin =", userContext.admin)
-        if (!userContext.owner && !userContext.admin){
-            alert("YOU ARE NOT OWNER OR ADMIN")
-            return ;
-        }
-        else{
             const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}` };
             const data = {
                 otherId: store.getters.getUserId,
                 chanelId: chanContext.chanel_chat_id,
             }
-            await axios.post(`http://c1r2s3:3000/chat/kick`, data,  {headers})
-        }
-    }
+            const response = await axios.post(`http://c1r2s3:3000/chat/kick`, data,  {headers})
+            if (response.data.kick == false){
+                router.push('/chat')
+                alert(response.data.message);
+            }
+            else{
+                router.push('/chat')
+                alert(response.data.message);
+            }
+        } 
 
     const admin = async () =>{
         if (!userContext.owner || !userContext.admin){
@@ -141,21 +149,23 @@
         <div id="stat">
             <stats />
         </div>
-        <button id="button" @click="bloquer()">
-            bloquer
-        </button>
-        <button id="button" @click="kick()">
-            kick
-        </button>
-        <button id="button" @click="muted()">
-            mute
-        </button>
-        <button id="button" @click="banned()">
-            ban
-        </button>
-        <button id="button" @click="admin()">
-            admin
-        </button>
+        <div v-if="userContext.owner || userContext.admin">
+            <button id="button" @click="bloquer()">
+                bloquer
+            </button>
+            <button id="button" @click="kick()">
+                kick
+            </button>
+            <button id="button" @click="muted()">
+                mute
+            </button>
+            <button id="button" @click="banned()">
+                ban
+            </button>
+            <button id="button" @click="admin()">
+                admin
+            </button>
+        </div>
         <div>
             <button id="button" @click="play()">
                 play
