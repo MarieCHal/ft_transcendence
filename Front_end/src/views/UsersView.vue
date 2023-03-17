@@ -1,9 +1,6 @@
 <script setup lang="ts">
     import capsuleUsers from '@/components/usersComponents/capsuleUsers.vue';
     import capsuleFriends from '@/components/usersComponents/capsuleFriends.vue';
-    import blockUser from '@/components/usersComponents/blockUser.vue';
-    import invitFriends from '@/components/usersComponents/invitFriends.vue';
-    import invitPlay from '@/components/usersComponents/invitPlay.vue';
     import axios from 'axios'
     import { useRouter } from 'vue-router'
     import { useStore } from "vuex"

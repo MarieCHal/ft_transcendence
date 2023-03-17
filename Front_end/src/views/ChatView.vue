@@ -9,10 +9,13 @@
     const router = useRouter();
     const chatMessages = ref<string[]>([]);
     const newMessage = ref('');
+    let newChanel = '';
     let Pwd = '';
+    let bool = false;
     const socket = store.getters.getWebSocket;
     const chanContext = store.getters.getChanContext;
     const userContext = store.getters.getUserContext;
+    const chatHistory = store.getters.getChatHistory;
     store.commit("setBool", false)
 
     onMounted(async () => {
@@ -135,7 +138,7 @@
     <div class="chat-container">
       <div>
         <ul class="chat-messages">
-          <li v-for="(chat, index) in getChatHistory()" :key="index" style="display: flex; flex-direction: column-reverse;">
+          <li v-for="(chat, index) in getChatHistory().slice().reverse()" :key="index" style="display: flex; flex-direction: column-reverse;">
             {{ chat.sender_nickname }}
             {{ chat.messages_text }}
             {{ chat.messages_createdAt }}

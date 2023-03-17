@@ -87,6 +87,7 @@
             chanelId: chan.chanel_chat_id,
         }
         const response = await axios.post(`http://c1r2s3:3000/chat/quit`, data, {headers});
+        router.push('/dashBoardChan')
     }
 
     function createMsg(){

@@ -47,14 +47,14 @@
                 chanelId: chanContext.chanel_chat_id,
             }
             const response = await axios.post(`http://c1r2s3:3000/chat/mute`, data,  {headers})
-            /*if (response.data.ban == false){
+            if (response.data.muted == false){
                 router.push('/chat')
                 alert(response.data.message);
             }
             else{
                 router.push('/chat')
                 alert(response.data.message);
-            }*/
+            }
         }
 
     const banned = async () =>{
@@ -104,7 +104,15 @@
                 otherId: store.getters.getUserId,
                 chanelId: chanContext.chanel_chat_id,
             }
-            await axios.post(`http://c1r2s3:3000/chat/admin`, data,  {headers})
+           const response = await axios.post(`http://c1r2s3:3000/chat/admin`, data,  {headers})
+            if (response.data.admin == false){
+                router.push('/chat')
+                alert(response.data.message);
+            }
+            else{
+                router.push('/chat')
+                alert(response.data.message);
+            }
         }
     }
     
