@@ -20,9 +20,16 @@ const store = createStore({
     isNickname: "",
     isNewChanel: "",
     isUserAvatar: "",
-
+    isGoPlay: "",
+    
     isId: 0,
+    isPlayer: 0,
     isUserId: 0,
+    isresultSocketOn: 0,
+    isBallX: 0,
+    isBallY: 0,
+    isScoreUser1: 0,
+    isScoreUser2: 0,
 
     isUsers: [],
     isItIsMe: [],
@@ -57,6 +64,13 @@ const store = createStore({
     setChanelUser(state, isChanelUser) {state.isChanelUser = isChanelUser;},
     setBool(state, isBool) {state.isBool = isBool;},
     setChatHistory(state, isChatHistory) {state.isChatHistory = isChatHistory;},
+    setresultSocketOn(state, isresultSocketOn) {state.isresultSocketOn = isresultSocketOn;},
+    setGoPlay(state, isGoPlay) {state.isGoPlay = isGoPlay;},
+    setBallX(state, isBallX) {state.isBallX = isBallX;},
+    setBallY(state, isBallY) {state.isBallY = isBallY;},
+    setPlayer(state, isPlayer) {state.isPlayer = isPlayer;},
+    setScoreUser1(state, isScoreUser1) {state.isScoreUser1 = isScoreUser1;},
+    setScoreUser2(state, isScoreUser2) {state.isScoreUser2 = isScoreUser2;},
 
   },
   getters: {
@@ -80,6 +94,15 @@ const store = createStore({
     getChanelUser: state => state.isChanelUser,
     getBool: state => state.isBool,
     getChatHistory: state => state.isChatHistory,
+    getresultSocketOn: state => state.isresultSocketOn,
+    getGoPlay: state => state.isGoPlay,
+    getBallX: state => state.isBallX,
+    getBallY: state => state.isBallY,
+    getPlayer: state => state.isPlayer,
+    getScoreUser1: state => state.isScoreUser1,
+    getScoreUser2: state => state.isScoreUser2,
+    
+
   },
   actions: {
     initWebSocket({ commit }) {

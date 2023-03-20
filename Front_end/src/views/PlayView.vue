@@ -22,17 +22,57 @@
         <div id="monpong">
             <canvas id="pong" width="600" height="400"></canvas>
         </div>
+    <div v-if="store.getters.getScoreUser1 == 10">
+        you lose
+    </div>
+    <div v-else="store.getters.getScoreUser2 == 10">
+        you win
+    </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-import axios from "axios";
-import store from "@/store";
+    import { useRouter } from 'vue-router'
+    import { useStore } from "vuex"
+    import { onMounted, ref } from 'vue';
+    import axios from "axios";
 
-onMounted(() => {
-    game();
-});
+    const store = useStore();
+    const router = useRouter();
+    const chatMessages = ref<string[]>([]);
+    const newMessage = ref('');
+
+    let Pwd = '';
+    let bool = false;
+    const socket = store.getters.getWebSocket;
+    const chanContext = store.getters.getChanContext;
+    const userContext = store.getters.getUserContext;
+    const chatHistory = store.getters.getChatHistory;
+    let getsocket = store.getters.getresultSocketOn;
+
+    onMounted(async () => {
+        console.log("sasas")
+        socket.on('startgame', (player: number, status: any) => {
+            if (status == false){
+                store.commit("setPlayer", player)
+                store.commit("setGoPlay", status)
+            }
+            else{
+                store.commit("setGoPlay", status)
+            }
+        });
+        socket.emit('startgame', 'salut');
+        socket.on('play', (message: number) => {
+            getsocket = message;
+        });
+        socket.on('ball', (ballx: number, bally: number, scoreUser2: number, scoreUser1: number) => {
+            store.commit("setBallX", ballx)
+            store.commit("setBallY", bally)
+            store.commit("setScoreUser2", scoreUser2)
+            store.commit("setScoreUser1", scoreUser1)
+        });
+        game();
+    });
 
 /// FONCTION LOGIQUE BOUTON !!!! 
 
@@ -128,11 +168,20 @@ function drawText(text, x, y, color){
     ctx.fillText(text, x, y);
 }
 
-function resetBall(){
+function resetBallright(){
     ball.x = cvs.width/2;
     ball.y = cvs.height/2;
 
-    ball.speed = 5;
+    ball.speed = 6;
+    ball.velocityX = -5;
+    ball.velocityY = -5;
+}
+
+function resetBallleft(){
+    ball.x = cvs.width/2;
+    ball.y = cvs.height/2;
+
+    ball.speed = 6;
     ball.velocityX = 5;
     ball.velocityY = 5;
 }
@@ -151,19 +200,16 @@ function update(){
 
     if (ball.x - ball.radius < 0){
         com.score++;
-        resetBall();
+        resetBallright();
     }else if(ball.x + ball.radius > cvs.width){
         user.score++;
-        resetBall();
+        resetBallleft();
     }
 
     ball.x += ball.velocityX;
     ball.y += ball.velocityY;
 
-    // ai simple
-    let computerLevel = 0.1;
-    com.y += (ball.y - (com.y + com.height/2)) * computerLevel;
-    user.y += (ball.y - (com.y + com.height/2)) * computerLevel;
+    com.y = getsocket;
     
     if (ball.y + ball.radius > cvs.height ||
         ball.y - ball.radius < 0){
@@ -198,13 +244,14 @@ function update(){
 }
 
 // control the user paddle;
-/*cvs.addEventListener("mousemove", movePaddle);
+cvs.addEventListener("mousemove", movePaddle);
 
 function movePaddle(evt){
     let rect = cvs.getBoundingClientRect();
 
     user.y = evt.clientY - rect.top - user.height/2;
-}*/
+    socket.emit('play', user.y)
+}
 
 // collision detection
 function collision(b, p){
@@ -224,8 +271,25 @@ function collision(b, p){
 }
 
 function game(){
-    update();
-    render();
+    if(store.getters.getGoPlay == true && user.score < 10 && com.score < 10){
+        if (store.getters.getPlayer == 1){
+            update();
+            socket.emit("ball", ball.x, ball.y, com.score, user.score)
+        }
+        else if(store.getters.getPlayer == 2){
+
+            ball.x = cvs.width - store.getters.getBallX;
+            ball.y = store.getters.getBallY;
+            com.score = store.getters.getScoreUser1;
+            user.score = store.getters.getScoreUser2;
+            com.y = getsocket;
+        }
+        render();
+    }
+    if (user.score > 9 && com.score > 9){
+        socket.emit("ball", "stop");
+        socket.off("ball", "play", "startgame")
+    }
 }
 
 const framePerSeconde = 50;
