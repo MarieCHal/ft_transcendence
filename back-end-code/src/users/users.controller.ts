@@ -1,45 +1,84 @@
-import { Controller, Get, Injectable, Param, Post, Query, Res, StreamableFile } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Injectable, Param, Post, Query, Request, Res, StreamableFile, UseGuards } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { get } from 'http';
 import { Public } from 'src/public';
-import { User} from 'src/typeorm';
-import { Repository } from 'typeorm';
 import { UsersService } from './users.service';
-import { Readable } from 'stream';
 import { Response } from 'express';
+import { createReadStream } from 'fs';
+import { join } from 'path';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+
 
 
 @Controller('users')
 export class UserController {
     constructor(private usersService: UsersService) {}
 
-    /*@Public()
-    @Get('avatar')
-    async returnAvatar(@Query('nickname') Nickname : string, @Res({passthrough: true}) response: Response) {
-        const Avatar = await this.usersService.returnAvatar(Nickname);
 
-        console.log("nickname: ", Nickname);
-        const stream = Readable.from(Avatar);
-        
-        response.set({
-            'Content-Type': 'image'
-        })
-        return new StreamableFile(stream);
+    @Get('avatar/:id')
+    @UseGuards(JwtAuthGuard)
+    async getAllUsers(@Param('id') id, @Res({passthrough: true}) res: Response)
+    {
+        console.log("get Avatar: ", id)
+        res.set({'Content-Type': 'image/jpeg'});
+
+        const user = await this.usersService.findOne(id);
+        const imageLocation = join(process.cwd(), 'uploads/avatars', user.avatar);
+        const file = createReadStream(imageLocation);
+        return new StreamableFile(file);
     }
 
-    @Public()
-    @Get('all/profile')
-    async getAllUsers() {
-        return this.usersService.findAll();
+    @Get('profile/:id') 
+    @UseGuards(JwtAuthGuard)
+    async getProfile (@Param('id') id: any){
+        return this.usersService.returnProfile(id);
     }
 
-    @Public()
-    @Get('all/avatar')
-    async getAllAvatar() {
-        return this.usersService.returnAllAvatar();
+
+    /** @brief  */
+    @Get('all') 
+    @UseGuards(JwtAuthGuard)
+    async getAllProfile (@Request() req: any) {
+        console.log("get all profile", req.user.user_id);
+        return this.usersService.findAll(req.user.user_id);
     }
-    */
-    /*@Post('update/avatar')
-    async updataAvatar()*/
+
+    @Get('me')
+    @UseGuards(JwtAuthGuard)
+    async getMySelf(@Request() req: any) {
+        console.log('me', req.user.user_id);
+        return this.usersService.mySelf(req.user.user_id);
+    }
+
+    @Post('friend-request')
+    @UseGuards(JwtAuthGuard)
+    async friendRequest(@Request() req: any) {
+        console.log('friend-request', req.body);
+        console.log('re.user: ', req.user.user_id);
+        return this.usersService.friendRequest(req.user.user_id, req.body.id)
+    }
+
+    @Post('friend-accept')
+    @UseGuards(JwtAuthGuard)
+    async acceptFriends(@Request() req: any) {
+        console.log('friend-accept', req.body.id);
+        console.log('friend-accept', req.body.decision);
+        if (req.body.decision == true)
+            return this.usersService.acceptFriendRequest(req.user.user_id, req.body.id)
+        else if (req.body.decision == false)
+            return this.usersService.rejectFriendRequest(req.user.user_id, req.body.id);
+    }
+
+    @Post('delete-friend')
+    @UseGuards(JwtAuthGuard)
+    async deleteFriend(@Request() req: any) {
+        return this.usersService.stopFrienship(req.user.user_id, req.body.id);
+    }
+
+    @Post('doubleAuth')
+    @UseGuards(JwtAuthGuard)
+    async modifyDoubleAuth(@Request() req: any) {
+        console.log("doubleAuth:", req.body);
+        this.usersService.doubleAuth(req.user.user_id, req.body.doubleAuth);
+    }
 
 }

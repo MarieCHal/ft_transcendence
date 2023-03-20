@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { config } from 'process'; 
 import { AuthService } from 'src/auth/services/auth.service';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class ProfileService {
@@ -16,41 +17,52 @@ export class ProfileService {
     // pic and login as nickname
     async createProfile(data: any)
     {
-            const newUser = this.usersRepository.create({login: data.login, nickname: 'newUser', avatar: data.image.link})
+            const newUser = await this.usersRepository.create({login: data.login, avatar: 'super.png'});
             await this.usersRepository.save(newUser);
-            return newUser;
+            const user = await this.usersRepository.findOne ({
+                where: {
+                    login : data.login
+                }
+            })
+            user.nickname = 'user' + user.user_id;
+            await this.usersRepository.save(user);
+            console.log(user.nickname);
+            return user;
     }
     
-    // upload the avatar profile picture
-    /*async uploadAvatar(avatar: Buffer, nickname: string)
+
+    async modifyNickname(nickname: string, userId: number) 
     {
         const user = await this.usersRepository.findOne({
             where: { 
                 nickname: nickname
             }
         })
-        const newAvatar = this.avatarRepository.create({picture: avatar})
-        user.avatar = newAvatar;
-        return newAvatar;
-    }*/
-
-    /*async changeNickname(nickname: string, userId: number) 
-    {
-        const user = await this.usersRepository.find({
-            where: { 
-                nickname: nickname
-            }
-        })
         if (!user)
         {
-            await this.usersRepository
-                .createQueryBuilder()
-                .update(User)
-                .set({nickname: nickname})
-                .where("User.id = :id", {id: userId})
-                .execute()
+            const updateUser = await this.usersRepository.findOneBy({
+                user_id: userId
+            })
+            updateUser.nickname = nickname;
+            await this.usersRepository.save(updateUser);
             return "Your nickname is changed"
         }
-        return "Nickname already taken";
-    }*/
+        return {
+            status:  418,
+            message: "Nickname already taken" };
+    }
+
+    async modifyAvatar(avatar: string, userId: number)
+    {
+        const updateUser = await this.usersRepository.findOne({
+            where: {
+                user_id: userId
+            }
+        })
+        console.log(updateUser.avatar)
+        updateUser.avatar = avatar;
+        const newPic = await this.usersRepository.save(updateUser);
+        console.log(newPic);
+        return "Your avatar is changed"
+    }
 }

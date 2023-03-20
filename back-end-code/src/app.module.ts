@@ -3,23 +3,22 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-//import entities from './typeorm';
 import { MailerModule } from '@nestjs-modules/mailer';
-//import { MailModule } from './mail/mail.module';
 import { config } from 'process';
-//import { RegisterController } from './register/controllers/register.controller';
-//import { RegisterModule } from './register/register.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { HttpModule } from '@nestjs/axios';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
-//import { APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { typeOrmConfigAsync } from './config/typeorm.config';
 import { ProfileModule } from './profile/profile.module';
 import { MailModule } from './mail/mail.module';
-
+import { FriendsModule } from './friends/friends.module';
+import { AppGateway } from './app/app.gateway';
+import { GameService } from './game/game.service';
+import { ChatModule } from './chat/chat.module';
+import { GameController } from './game/game.controller';
 
 
 @Module({
@@ -33,10 +32,12 @@ import { MailModule } from './mail/mail.module';
     AuthModule,
     UsersModule,
     ProfileModule,
-    HttpModule
+    HttpModule,
+    FriendsModule,
+    ChatModule,
   ],
-  controllers: [AppController],
-  providers: [AppService, 
+  controllers: [AppController, GameController],
+  providers: [AppService, AppGateway, GameService
     /*{
       provide: APP_GUARD,
       useClass: JwtAuthGuard

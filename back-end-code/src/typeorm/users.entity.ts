@@ -2,8 +2,11 @@ import { Column, Entity, PrimaryGeneratedColumn, OneToMany,
         JoinTable,
         OneToOne,
         JoinColumn,
-        ManyToMany, } from "typeorm";
-import { Friends } from "./friends.entity";
+        ManyToMany,
+        ManyToOne, } from "typeorm";
+import { Chat } from "./Chat.entity";
+import { Friends } from "./Friends.entity";
+import { Stats } from "./Stats.entity";
 
 @Entity()
 export class User {
@@ -13,7 +16,7 @@ export class User {
         type: 'bigint',
         name: 'user_id',
     })
-    id: number;
+    user_id: number;
 
     // 42 Login
     @Column({
@@ -37,18 +40,25 @@ export class User {
 
 
     @Column({
-        default: '',
+        nullable: true
     })
     avatar: string;
+
+    @ManyToMany(() => User)
+    @JoinTable()
+    blocked: User
+
     // -------- Relations with other tables ----------- 
     // one to one unidirectional relationship with avatar table
     // query can only be done from the user side
-    /*@OneToOne(() => Avatar)
-    @JoinColumn()
-    avatar: Avatar;*/
+    @OneToMany((type) => Friends, (friends) => friends.friend_one)
+    friends: Friends[];
 
-    /*@ManyToMany(() => Friends, (friends) => friends.users)
-    @JoinTable()
-    friends: Friends[];*/
+    @ManyToMany((type) => Chat, (chat) => chat.users)
+    chanel: Chat[]; 
+
+    @OneToOne(() => Stats)
+    @JoinColumn()
+    stats: Stats
 
 }

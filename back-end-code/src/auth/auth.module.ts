@@ -12,7 +12,9 @@ import { ProfileModule } from 'src/profile/profile.module';
 import { User } from 'src/typeorm';
 import { TypeOrmModule } from '@nestjs/typeorm'; 
 import { HttpModule } from '@nestjs/axios';
+import { ProfileService } from 'src/profile/profile.service';
 
+// to remove (profile service)
 @Module({
   imports: [UsersModule, 
             ProfileModule,
@@ -21,7 +23,7 @@ import { HttpModule } from '@nestjs/axios';
             HttpModule,
             JwtModule.registerAsync(jwtConfig),
             TypeOrmModule.forFeature([User])],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [AuthService, LocalStrategy, JwtStrategy, ProfileService],
   controllers: [AuthController],
   exports: [AuthService]
 })

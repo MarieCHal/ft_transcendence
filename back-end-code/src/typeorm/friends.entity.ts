@@ -1,18 +1,16 @@
-import { Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, TableForeignKey} from "typeorm"
-import { ForeignKeyMetadata } from "typeorm/metadata/ForeignKeyMetadata";
-import { User } from "./users.entity";
+import { Column, Entity, ManyToOne,PrimaryGeneratedColumn} from "typeorm"
+import { User } from "./Users.entity";
 
 @Entity()
 export class Friends {
     @PrimaryGeneratedColumn({
         type: 'bigint',
-        name: 'firend_request',
+        name: 'friend_request',
     })
-    id: number;
-
+    friends_id: number;
     // the user'id of the one that requested
-    @Column()
-    friend_one: number;
+    @ManyToOne((type) => User, user => user.friends)
+    friend_one: User;
 
     // the usser's id of the one that recieved the request
     @Column()
@@ -22,6 +20,4 @@ export class Friends {
     @Column('boolean', {default: false})
     status: boolean = false;
 
-    /*@ManyToMany(() => User, user => user.friends)
-    users: User[];8*/
 }

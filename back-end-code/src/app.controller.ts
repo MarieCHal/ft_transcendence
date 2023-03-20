@@ -16,6 +16,7 @@ export class AppController {
     private readonly authService: AuthService
     )  {}
 
+  @Public()
   @Post('wellcome')
   async helloFriend( @Body() body: any) {
     console.log(body.code)
