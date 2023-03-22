@@ -9,7 +9,7 @@
 <template>
     <button class="navButton"  @click="click">
         <span>
-            Play
+            Game
         </span>
     </button>
 </template>

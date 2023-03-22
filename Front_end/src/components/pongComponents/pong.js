@@ -67,7 +67,7 @@ function resetBall(){
     ball.x = cvs.width/2;
     ball.y = cvs.height/2;
 
-    ball.speed = 5;
+    ball.speed = 8;
     ball.velocityX = 5;
     ball.velocityY = 5;
 }

@@ -14,6 +14,7 @@
     function getStatusCode(){
     return store.getters.getStatusCode;
   }
+  
   const checkCodeChan = async () => {
         if (checkCode.length == 4)
         {

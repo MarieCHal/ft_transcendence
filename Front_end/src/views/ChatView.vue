@@ -80,7 +80,7 @@
   }
 
   function getBool(){
-     console.log("store =", store.getters.getBool)
+
       store.commit("setBool", true)
       return store.getters.getBool;
   }

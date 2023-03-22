@@ -30,7 +30,7 @@
     const SendMsg = async(user: any) =>{
         try{
             const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}` };
-            const data = {private: true, name: "", otherId: user.users_user_id}
+            const data = {private: true, name: "", otherId: user.user_user_id}
             const response = await axios.post('http://c1r2s3:3000/chat/create', data,  {headers})
             store.commit("setChanContext", user);
             router.push('/chat');

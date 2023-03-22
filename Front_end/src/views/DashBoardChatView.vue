@@ -70,7 +70,7 @@
                 alert("YOU ARE BANNED");
                 return ;
             }
-            if(chan.chanel_isProtected){
+            if(chan.chanel_isProtected && UserContext == true){
                 router.push('/codeChat')
             }
             else{
@@ -144,10 +144,6 @@
 </template>
 
 <style scoped lang="scss">
-.liste-chan-pub{
-}
-.liste-privMsg{
-}
 
 #plus{
     background-color: #007bff;

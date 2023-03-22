@@ -21,6 +21,8 @@ const store = createStore({
     isNewChanel: "",
     isUserAvatar: "",
     isGoPlay: "",
+    isRoom: "",
+    isTrigger: "",
     
     isId: 0,
     isPlayer: 0,
@@ -30,6 +32,9 @@ const store = createStore({
     isBallY: 0,
     isScoreUser1: 0,
     isScoreUser2: 0,
+    isUser1: 0,
+    isUser2: 0,
+    isInterval: 0,
 
     isUsers: [],
     isItIsMe: [],
@@ -71,6 +76,11 @@ const store = createStore({
     setPlayer(state, isPlayer) {state.isPlayer = isPlayer;},
     setScoreUser1(state, isScoreUser1) {state.isScoreUser1 = isScoreUser1;},
     setScoreUser2(state, isScoreUser2) {state.isScoreUser2 = isScoreUser2;},
+    setUser1(state, isUser1) {state.isUser1 = isUser1;},
+    setUser2(state, isUser2) {state.isUser2 = isUser2;},
+    setRoom(state, isRoom) {state.isRoom = isRoom;},
+    setTrigger(state, isTrigger) {state.isTrigger = isTrigger;},
+    setInterval(state, isInterval) {state.isInterval = isInterval;},
 
   },
   getters: {
@@ -101,13 +111,18 @@ const store = createStore({
     getPlayer: state => state.isPlayer,
     getScoreUser1: state => state.isScoreUser1,
     getScoreUser2: state => state.isScoreUser2,
+    getUser1: state => state.isUser1,
+    getUser2: state => state.isUser2,
+    getRoom: state => state.isRoom,
+    getTrigger: state => state.isTrigger,    
+    getInterval: state => state.isInterval,
     
 
   },
   actions: {
     initWebSocket({ commit }) {
       const myId = store.getters.getId;
-      const webSocket = io('http://c1r2s3:3000/', {
+      const webSocket = io('ws://c1r2s3:3000/', {
         auth: {
           myId: myId
         }
