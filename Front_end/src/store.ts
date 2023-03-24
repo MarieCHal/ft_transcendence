@@ -23,6 +23,7 @@ const store = createStore({
     isGoPlay: "",
     isRoom: "",
     isTrigger: "",
+    isInvitePlay: "",
     
     isId: 0,
     isPlayer: 0,
@@ -81,6 +82,7 @@ const store = createStore({
     setRoom(state, isRoom) {state.isRoom = isRoom;},
     setTrigger(state, isTrigger) {state.isTrigger = isTrigger;},
     setInterval(state, isInterval) {state.isInterval = isInterval;},
+    setInvitePlay(state, isInvitePlay) {state.isInvitePlay = isInvitePlay;},
 
   },
   getters: {
@@ -116,6 +118,7 @@ const store = createStore({
     getRoom: state => state.isRoom,
     getTrigger: state => state.isTrigger,    
     getInterval: state => state.isInterval,
+    getInvitePlay: state => state.isInvitePlay,
     
 
   },
@@ -124,7 +127,7 @@ const store = createStore({
       const myId = store.getters.getId;
       const webSocket = io('ws://c1r2s3:3000/', {
         auth: {
-          myId: myId
+          token: Cookies.get("auth_token")
         }
       });
 

@@ -3,13 +3,13 @@
 </script>
 
 <template>
-    <button>
+    <button >
         Play
     </button>
 </template>
 
-<style scoped lang="scss">
-button{
 
-}
+
+<style scoped lang="scss">
+
 </style>

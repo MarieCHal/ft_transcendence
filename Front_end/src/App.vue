@@ -6,10 +6,13 @@
   import navButtonChat from "./components/navComponents/navButtonChat.vue"
   import navButtonPlay from "./components/navComponents/navButtonPlay.vue"
   import navLogin from "./components/navComponents/navButtonLogin.vue"
-  import { useStore } from "vuex"
 
-  const store = useStore();
+  import { useStore } from "vuex"
   
+  const store = useStore();
+
+
+
   function getlogin(){
     return store.getters.getAuthenticated;
   }

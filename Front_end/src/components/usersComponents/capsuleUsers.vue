@@ -6,14 +6,17 @@
     import invitFriends from '@/components/usersComponents/invitFriends.vue';
     import invitPlay from '@/components/usersComponents/invitPlay.vue';
     import sendMsg from '@/components/usersComponents/sendMsg.vue'
+    import pong from "@/components/playComponents/pong.vue"
 
     const router = useRouter();
     const store = useStore();
+    store.commit("setBool", false)
+    const socket = store.getters.getWebSocket;
 
     function getUsers(){
         let allUser = store.getters.getUsers;
     return allUser.allUsers
-}
+    }
 
     const sendFriendRequest = async (userId: any) => {
         const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}` };
@@ -25,6 +28,14 @@
         .catch(error => {
             console.error('Erreur lors de l\'envoi de la demande d\'amis', error);
         });
+    }
+
+    const InvitePlay = async(user: any) =>{
+        store.commit("setBool", true)
+        const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}` };
+        const data = {otherId: user.user_user_id}
+        const response = await axios.post('http://c1r2s3:3000/users/invitePlay', data, {headers})
+        //socket.emit("notif", user.user_user_id, store.getters.getInvitePlay)
     }
 
     const SendMsg = async(user: any) =>{
@@ -46,9 +57,9 @@
         <div id="capsule" v-for="(user, index) in getUsers()" :key="index">
             <div class="dataUser">
                 <div class="nicknameStatus">
-                    <div class="status-indicator" :class="{ 'status-online': user.users_isActive, 'status-offline': !user.users_isActive }"></div>
+                    <div class="status-indicator" :class="{ 'status-online': user.user_isActive, 'status-offline': !user.users_isActive }"></div>
                     <div id="nickname">
-                        {{ user.users_nickname }}
+                        {{ user.user_nickname }}
                     </div>
                 </div>
                 <div class="elementCaps">
@@ -65,8 +76,11 @@
             </div>
             <div class="buttonUser">
                 <sendMsg @click="SendMsg(user)"/>
-                <invitPlay />
-                <invitFriends @click="sendFriendRequest(user.users_user_id)"/>
+                <invitPlay @click="InvitePlay(user.user_user_id)"/>
+                <div v-if="store.getters.getBool">
+                    <pong />
+                </div>
+                <invitFriends @click="sendFriendRequest(user.user_user_id)"/>
             </div>
         </div>
 </template>

@@ -31,6 +31,7 @@
                 store.commit('setNickname', response.data.user.nickname);
                 Cookies.set('auth_token', response.data.accessToken, {secure: false});
                 fetchAvatar(store);
+                store.dispatch('initWebSocket');
                 router.push('/');
             }
 

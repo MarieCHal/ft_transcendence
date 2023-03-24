@@ -28,24 +28,11 @@
 </template>
 
 <script setup lang="ts">
-    import { useRouter } from 'vue-router'
     import { useStore } from "vuex"
-    import { onMounted, ref } from 'vue';
     import axios from "axios";
     import pong from "../components/playComponents/pong.vue"
 
     const store = useStore();
-    const router = useRouter();
-    const chatMessages = ref<string[]>([]);
-    const newMessage = ref('');
-
-    let Pwd = '';
-    let bool = false;
-    const socket = store.getters.getWebSocket;
-    const chanContext = store.getters.getChanContext;
-    const userContext = store.getters.getUserContext;
-    const chatHistory = store.getters.getChatHistory;
-    let getsocket = store.getters.getresultSocketOn;
     store.commit("setBool", false)
 
 
@@ -77,25 +64,20 @@ function getBool(){
     justify-content: center;
     left: 24%
 }
-/*
-#monpong{
-    margin: 10%;
-    align-items: center;
-    display: flex;
-    justify-content: center;
 
-}*/
 #boutons{
     display: inline-flex;
     margin: 10%;
     flex-direction: column;
     align-items: center;
 }
+
 #Matchmaking{
     background-color: rgb(1, 1, 1);
     color: rgb(247, 247, 247);
     margin: auto;
 }
+
 #InviteFriends{
     background-color: rgb(1, 1, 1);
     color: rgb(247, 247, 247);
