@@ -1,45 +1,64 @@
 <script setup lang="ts">
-    import capsuleUsers from '@/components/usersComponents/capsuleUsers.vue';
-    import capsuleFriends from '@/components/usersComponents/capsuleFriends.vue';
+    import userButtonAll from "../components/button/userButtonAll.vue"
+    import userButtonFriends from "../components/button/userButtonFriends.vue"
+    import oneUserButton from "../components/button/oneUserButton.vue"
     import axios from 'axios'
     import { useRouter } from 'vue-router'
     import { useStore } from "vuex"
     import { onMounted } from 'vue'
-    import Cookies from 'js-cookie';
-    import ButtonFriendsUsers from '@/components/usersComponents/buttonFriendsUsers.vue'
+
     const router = useRouter();
     const store = useStore();
-    
+
+    function clickCheckWhat(what: string){
+        if(what == 'all'){
+            store.commit('setWhat', what);
+        }
+        else if(what == 'friends'){
+            store.commit('setWhat', what);
+        }
+    }
+        
     onMounted(async () => {
-        const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}` };
-        const response = await axios.get("http://c1r2s3:3000/users/all", {headers});//FAIRE TRY CATCH
-        //const response = await axios.get("http://localhost:3000/users");
-        store.commit('setUsers', response.data);
-     
+        try {
+            const headers = { Authorization: `Bearer ${store.getters.getToken}` };
+            const response = await axios.get("/users/all", {headers});
+            store.commit('setAllUsers', response.data);
+        } catch (error: any) {
+            console.log(error);
+            //alert(error);
+            /*setTimeout(() => {
+                window.location.reload();
+            }, 1000);*/
+        }
     });
-function getshowUsers(){
-    return store.getters.getShowUsers
-}
+
 </script>
 
 <template>
     <div id="mainUsers">
-        <ButtonFriendsUsers />
-      <div v-if="getshowUsers() == true">
-        <capsuleFriends />
-      </div>
-      <div v-else>
-        <capsuleUsers />
-      </div>
+        <div class="navUser">
+            <userButtonAll @click="clickCheckWhat('all')"/>
+            <userButtonFriends @click="clickCheckWhat('friends')"/>
+        </div>
+        <oneUserButton v-if="store.getters.getWhat == 'all'"/>
+        <oneUserButton v-if="store.getters.getWhat == 'friends'"/>
     </div>
   </template>
 
 <style scoped lang="scss">
 #mainUsers{
-    overflow-x: hidden;
     display: flex;
-    flex-wrap: wrap;
-    color: black;
+    flex-direction: column;
+    align-items: center;
+    max-height: 100%;
+    background-color: aquamarine;
 }
-
+.navUser{
+    display: flex;
+    flex-direction:row;
+    justify-content: center;
+    max-height: 5em;
+    background-color: darkblue;
+}
 </style>

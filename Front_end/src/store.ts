@@ -1,64 +1,117 @@
 import { createStore } from 'vuex'
-import { io } from 'socket.io-client';
 import createPersistedState from 'vuex-persistedstate'
-import Cookies from 'js-cookie';
+import { io } from 'socket.io-client';
+import { ref } from 'vue';
+
 const persistedState = createPersistedState({
-  paths: ['isAuthenticated', 'isDoubleAuth', 'isShowUsers', 'isId', 'isAvatar', 'isNickname', 'isStatusCode', 'isUsers', 'isItIsMe', 'isChans', 'isUserContext', 'isChanContext']
-});
+  paths: [
+  'isToken',
+  'isDoubleAuth', 
+  'isId',
+  'isNickname',
+  'isAvatar',
+  ]});
 
 const store = createStore({
   plugins: [persistedState],
+
   state: {
-    isAuthenticated: false,
-    isDoubleAuth: false,
-    isShowUsers: false,
-    isId: 0,
-    isAvatar: "",
-    isNickname: "",
-    isStatusCode: false,
-    isUsers: [],
-    isItIsMe: [],
-    isChans: [],
-    isUserContext: [],
-    isChanContext: [],
-    isWebSocket: null
+
+      isChatMessages: ref<string[]>([]),
+      isNewMessage: ref(''),
+
+      isToken: "", 
+      isDoubleAuth: false,
+      isId: 0,
+      isNickname: "",
+      isAvatar: "",
+
+      isBool: false,
+      isCode: false,
+      isWhat: "",
+      
+      isUserId: 0,
+      isAllUsers: [],
+      isUsers: [],
+      isOneUser: [],
+      isUserContext: [],
+      isUserAvatar: '',
+      isArrayAvatar: <any>[],
+      
+      isChanId: 0,
+      isChans: [],
+      isChanContext: [],
+      isChatHistory: [],
+      //isUsersInChan: [],
+
+      isWebSocket: null
   },
+
   mutations: {
-    setAuthenticated(state, isAuthenticated) {state.isAuthenticated = isAuthenticated},
-    setDoubleAuth(state, isDoubleAuth) {state.isDoubleAuth = isDoubleAuth},
-    setId(state, isId) {state.isId = isId},
-    setAvatar(state, isAvatar) {state.isAvatar = isAvatar},
+    setChatMessages(state, isChatMessages){state.isChatMessages = isChatMessages},
+    setNewMessage(state, isNewMessage){state.isNewMessage = isNewMessage},
+    setToken(state, isToken){state.isToken = isToken},
+    setDoubleAuth(state, isDoubleAuth){state.isDoubleAuth = isDoubleAuth},
+    setId(state, isId){state.isId = isId},
     setNickname(state, isNickname) {state.isNickname = isNickname},
-    setStatusCode(state,  isStatusCode) {state.isStatusCode =  isStatusCode},
-    setUsers(state,  isUsers) {state.isUsers =  isUsers},
-    setItIsMe(state,  isItIsMe) {state.isItIsMe =  isItIsMe},
+    setAvatar(state, isAvatar) {state.isAvatar = isAvatar},
+    setUserAvatar(state, isUserAvatar) {state.isUserAvatar = isUserAvatar},
+    setCode(state, isCode) {state.isCode = isCode},
+    setAllUsers(state, isAllUsers) {state.isAllUsers = isAllUsers},
+    setUsers(state, isUsers) {state.isUsers = isUsers},
+    setOneUser(state, isOneUser) {state.isOneUser = isOneUser},
+    setUserContext(state, isUserContext) {state.isUserContext = isUserContext},
+    setChanContext(state, isChanContext) {state.isChanContext = isChanContext},
+    setWhat(state, isWhat) {state.isWhat = isWhat},
+    setChanId(state, isChanId) {state.isChanId = isChanId},
+    setUserId(state, isUserId) {state.isUserId = isUserId},
+    setBool(state, isBool) {state.isBool = isBool},
+    setChatHistory(state, isChatHistory) {state.isChatHistory = isChatHistory},
+    //setUsersInChan(state, isUsersInChan) {state.isUsersInChan = isUsersInChan},
     setChans(state,  isChans) {state.isChans =  isChans},
-    setChanContext(state,  isChanContext) {state.isChanContext =  isChanContext},
-    setUserContext(state,  isUserContext) {state.isUserContext =  isUserContext},
     setWebSocket(state, isWebSocket) {state.isWebSocket = isWebSocket;},
-    setShowUsers(state, isShowUsers) {state.isShowUsers = isShowUsers;},
+    setArrayAvatar(state, payload){
+      const {item, index} = payload;
+      state.isArrayAvatar[index] = item;
+    },
+    clearArray(state) {
+      state.isArrayAvatar = [];
+      //state.isOneUser= [];
+    },
   },
+
   getters: {
-    getAuthenticated: state => state.isAuthenticated,
+    getChatMessages: state => state.isChatMessages,
+    getNewMessage: state => state.isNewMessage,
+    getToken: state => state.isToken,
     getDoubleAuth: state => state.isDoubleAuth,
     getId: state => state.isId,
     getAvatar: state => state.isAvatar,
+    getUserAvatar: state => state.isUserAvatar,
+    getCode: state => state.isCode,
     getNickname: state => state.isNickname,
-    getStatusCode: state => state.isStatusCode,
+    getAllUsers: state => state.isAllUsers,
     getUsers: state => state.isUsers,
-    getItIsMe: state => state.isItIsMe,
-    getChans: state => state.isChans,
-    getChanContext: state => state.isChanContext,
+    getOneUser: state => state.isOneUser,
     getUserContext: state => state.isUserContext,
+    getChanContext: state => state.isChanContext,
+    getWhat: state => state.isWhat,
+    getChanId: state => state.isChanId,
+    getUserId: state => state.isUserId,
+    getBool: state => state.isBool,
+    getChatHistory: state => state.isChatHistory,
+    //getUsersInChan: state => state.isUsersInChan,
     getWebSocket: state => state.isWebSocket,
-    getShowUsers: state => state.isShowUsers
+    getArrayAvatar: (state) => (index: any) => {
+      return state.isArrayAvatar[index]
+    },
+    getChans: state => state.isChans,
   },
   actions: {
     initWebSocket({ commit }) {
-      const myId = store.getters.getId;
-      const webSocket = io('http://c1r2s3:3000/', {
+      const webSocket = io('http://c1r2s3:4000/', {
         auth: {
-          myId: myId
+          token: store.getters.getToken,
         }
       });
 

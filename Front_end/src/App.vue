@@ -1,85 +1,69 @@
 <script setup lang="ts">
+  import navBar from "./components/navBar.vue"
+  import { onMounted } from 'vue'
   import { RouterView } from "vue-router"
-  import navButtonLogo from "./components/navComponents/navButtonLogo.vue"
-  import navButtonUsers from "./components/navComponents/navButtonUsers.vue"
-  import navButtonProfile from "./components/navComponents/navButtonProfile.vue"
-  import navButtonChat from "./components/navComponents/navButtonChat.vue"
-  import navButtonPlay from "./components/navComponents/navButtonPlay.vue"
-  import navLogin from "./components/navComponents/navButtonLogin.vue"
-  import { useStore } from "vuex"
-
+  import  { useStore} from 'vuex'
+    
   const store = useStore();
   
-  function getlogin(){
-    return store.getters.getAuthenticated;
+  function getToken() {
+    const token = store.getters.getToken;
+    if (token)
+      return token;
   }
-
 </script>
 
 <template>
   <div class="mainDiv">
-    <header>
-      <nav>
-        <div>
-          <navButtonLogo />
-        </div>
-        <div>
-          <navButtonPlay />
-          <navButtonUsers />
-          <navButtonChat />
-        </div>
-        <div v-if="getlogin() == true">
-          <navButtonProfile />
-        </div>
-        <div v-else>
-          <navLogin />
-        </div>
-      </nav>
+    <header v-if="getToken()">
+        <navBar />
     </header>
     <main>
-      <RouterView />
+        <RouterView />
     </main>
-    <footer>
-      <p><a href="https://42lausanne.ch/" target="_blank">42 Lausanne</a></p>
+    <footer v-if="getToken()">
+      <a href="https://42lausanne.ch/"> 42 Lausanne</a>
     </footer>
   </div>
 </template>
 
 <style scoped lang="scss">
 .mainDiv{
+  overflow: hidden;
+  position: relative;
   display: flex;
-  flex-direction: column;
-  background-color: burlywood;
-  height: 100vh;
-  max-width: 1000px;
+	flex-direction: column;
+	align-items: center;
+  min-height: 100%;
+  background-color: black;
+  color: blanchedalmond;
+
 }
 header{
-  //height: 10em;
-  background-color: black;
-  padding: 10px;
-}
-nav{
-  display: flex;
-  justify-content: space-between;
+  max-width: 1000px;
+  min-width: 360px;
+  height: auto;
+  background-color: cyan;
 }
 main{
-  display: flex;
-  justify-content: center;
-  height: 100%;
-  background-color: rgb(55, 47, 47);
+  max-width: 1000px;
+  min-width: 360px;
+  flex-grow: 1;
+  background-color: rgb(253, 253, 253);
+  color: black;
 }
 footer{
   display: flex;
-  //position: absolute;
-  bottom: 0%;
-  max-width: 1000px;
-  width: 100%;
-  background-color: rgb(165, 91, 91);
-}
-p{
+  justify-content: center;
+  align-items: center;
   margin: auto;
+  max-width: 1000px;
+  min-width: 360px;
+  height: auto;
+  background-color: burlywood;
 }
 a{
-  text-decoration : none;
+  text-align: center;
 }
+
 </style>

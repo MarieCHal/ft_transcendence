@@ -1,19 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import store  from '../store';
 import HomeView from '../views/HomeView.vue'
 import UsersView from '../views/UsersView.vue'
-import PlayView from '../views/PlayView.vue'
+import ProfileUserView from '../views/ProfileUserView.vue'
+import ProfileUserMeView from '../views/ProfileUserMeView.vue'
+import DashBoardChat from '../views/DashBoardChatView.vue'
+import CreateChan from '../views/CreateChanView.vue'
 import ChanView from '../views/ChatView.vue'
-import ProfileView from '../views/ProfileView.vue'
-import ProfileModifView from '../views/ProfileModifView.vue'
-import LoginView from '../views/LoginView.vue'
-import DashBoardChatView from '../views/DashBoardChatView.vue'
-import CodeChatView from '../views/CodeChatView.vue'
-import CreateChanView from '../views/CreateChanView.vue'
-import store  from '../store';
-    
-function isAuthenticated(){
-  let isConnect = store.getters.getAuthenticated;
-  if (isConnect == true)
+
+function isAuthenticated(){// utiliser directement store.getters.getToken dans les before si possible
+  if (store.getters.getToken)
     return true;
   else
     return false;
@@ -30,10 +26,10 @@ const router = createRouter({
     {
       path: '/register',
       name: 'register',
-      component: LoginView
+      component: HomeView
     },
     {
-      path: '/Users',
+      path: '/users',
       name: 'users',
       component: UsersView
       /*beforeEnter:(to, from, next) => {
@@ -47,9 +43,23 @@ const router = createRouter({
       }*/
     },
     {
-      path: '/Play',
-      name: 'play',
-      component: PlayView,
+      path: '/profile/user',
+      name: 'profileUser',
+      component: ProfileUserView,
+      /*beforeEnter:(to, from, next) => {
+        console.log(isAuthenticated());
+        if(isAuthenticated() == true){
+          next();
+        }
+        else {
+          next({ name: 'register' });
+        }
+      }*/
+    },
+    {
+      path: '/profile/me',
+      name: 'profileUserMe',
+      component: ProfileUserMeView,
       /*beforeEnter:(to, from, next) => {
         console.log(isAuthenticated());
         if(isAuthenticated() == true){
@@ -63,7 +73,7 @@ const router = createRouter({
     {
       path: '/dashBoardChat',
       name: 'dashBoardChat',
-      component: DashBoardChatView,
+      component: DashBoardChat,
       /*beforeEnter:(to, from, next) => {
         console.log(isAuthenticated());
         if(isAuthenticated() == true){
@@ -75,9 +85,9 @@ const router = createRouter({
       }*/
     },
     {
-      path: '/codeChat',
-      name: 'codeChat',
-      component: CodeChatView,
+      path: '/CreateChan',
+      name: 'CreateChan',
+      component: CreateChan,
       /*beforeEnter:(to, from, next) => {
         console.log(isAuthenticated());
         if(isAuthenticated() == true){
@@ -89,21 +99,7 @@ const router = createRouter({
       }*/
     },
     {
-      path: '/createChan',
-      name: 'createChan',
-      component: CreateChanView,
-      /*beforeEnter:(to, from, next) => {
-        console.log(isAuthenticated());
-        if(isAuthenticated() == true){
-          next();
-        }
-        else {
-          next({ name: 'register' });
-        }
-      }*/
-    },
-    {
-      path: '/Chat',
+      path: '/chat',
       name: 'chat',
       component: ChanView,
       /*beforeEnter:(to, from, next) => {
@@ -116,34 +112,6 @@ const router = createRouter({
         }
       }*/
     },
-    {
-      path: '/Profile',
-      name: 'profile',
-      component: ProfileView,
-      /*beforeEnter:(to, from, next) => {
-        console.log(isAuthenticated());
-        if(isAuthenticated() == true){
-          next();
-        }
-        else {
-          next({ name: 'register' });
-        }
-      }*/
-    },
-    {
-      path: '/Profile/modif',
-      name: 'profileModif',
-      component: ProfileModifView,
-      /*beforeEnter:(to, from, next) => {
-        console.log(isAuthenticated());
-        if(isAuthenticated() == true){
-          next();
-        }
-        else {
-          next({ name: 'register' });
-        }
-      }*/
-    }
   ]
 })
 export default router
