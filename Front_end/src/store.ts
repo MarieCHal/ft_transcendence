@@ -15,6 +15,7 @@ const store = createStore({
     isShowUsers: false,
     isStatusCode: false,
     isBool: false,
+    isTrigger: false,
 
     isAvatar: "",
     isNickname: "",
@@ -22,7 +23,6 @@ const store = createStore({
     isUserAvatar: "",
     isGoPlay: "",
     isRoom: "",
-    isTrigger: "",
     isInvitePlay: "",
     
     isId: 0,

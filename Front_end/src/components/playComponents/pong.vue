@@ -14,26 +14,17 @@
 <script setup lang="ts">
     import { useRouter } from 'vue-router'
     import { useStore } from "vuex"
-    import { onMounted, ref } from 'vue';
-    import axios from "axios";
+    import { onMounted, onUnmounted } from 'vue';
 
     const store = useStore();
     const router = useRouter();
-    const chatMessages = ref<string[]>([]);
-    const newMessage = ref('');
 
-    let Pwd = '';
-    let bool = false;
     const socket = store.getters.getWebSocket;
-    const chanContext = store.getters.getChanContext;
-    const user1Context = store.getters.getuser1Context;
-    const chatHistory = store.getters.getChatHistory;
-    let getsocket = store.getters.getresultSocketOn;
 
     function Quit(){
         socket.emit("game", store.getters.getRoom, "quit");
     }
-
+    
     
     onMounted(async () => {
         console.log("userID =", store.getters.getId)
@@ -42,37 +33,40 @@
             store.commit("setBallY", bally)
             store.commit("setUser1", user1)
             store.commit("setUser2", user2)
-
+            
         }); 
         socket.emit("init")
-        store.commit("setStatusCode", - 1)
-        socket.on('startgame', (player: number, status: any, trigger: any, ballx: number, bally: number ) => {
-            store.commit("setTrigger", trigger)
-            if (trigger == false){
-                game();
-            }
-            else if(trigger == true){
-                store.commit("setStatusCode", status)
-                console.log("Status =", status)
-                console.log("setStatusCode =", trigger)
-                console.log("setTimeoutavant timeout")
-                socket.off("startgame");
-                socket.off("player");
-                socket.off("game");
-                socket.off("init");
-                // fonction d attente
-                setTimeout(() =>{
-                    console.log("setTimeout dans timeout")
-                    router.push("/")
-                }, 3000);
+        store.commit("setStatusCode", -1)
+        socket.on('startgame', (player: number, status: any, trigger: boolean) => {
+        console.log("avant test du true ou false trigger =", trigger)
+        console.log("depart");
+        console.log("player", player);
+        console.log("status", status);
+        console.log("trigger", trigger);
 
-            }
+        if(trigger == true){
+            console.log("fininihs");
+            console.log("trigger si true =", trigger)
+            store.commit("setStatusCode", status)
+            console.log("setStatusCode =", status)
+            socket.off("startgame");
+            socket.off("player");
+            socket.off("game");
+            socket.off("init");
+            
+            
+            // fonction d attente
+            setTimeout(() =>{
+                router.push("/")
+            }, 3000);
+            
+        }
             if (status == false){
                 store.commit("setPlayer", player)
-                console.log('Player =', player)
                 store.commit("setGoPlay", status)
             }
             else{
+                game();
                 store.commit("setGoPlay", status)
                 store.commit("setRoom", player)
             }
@@ -100,14 +94,14 @@
         socket.emit('game', "départ")
     });
     
+    
+
     /// FONCTION POUR LE PONG !!!!!!!!!
     function game(){
-        const cvs = document.getElementById("pong")
-        const ctx = cvs.getContext("2d");
-    
-    
-    function end(){
+        const cvs = document.getElementById("pong") as HTMLCanvasElement;
+        const ctx = cvs.getContext("2d") as CanvasRenderingContext2D;
 
+    function end(){
         if (store.getters.getId == store.getters.getStatusCode){
             drawText("YOU WIN", cvs.width/3, cvs.height/2, "YELLOW")
         }
@@ -115,7 +109,6 @@
             drawText("YOU LOSE", cvs.width/3, cvs.height/2, "YELLOW")
         }
     }
-
 
     const user1 = {
         x: 10,
@@ -151,18 +144,18 @@
     }
 
     function drawNet(){
-        for(let i = 0; i <= cvs.height; i+=15){
+        for(let i = 0; i <= cvs.height; i += 15){
             drawRect(net.x, net.y + i, net.width, net.height, net.color);
         }
     }
 
-    function drawRect(x, y, w, h, color){
+    function drawRect(x: number, y: number, w: number, h: number, color: any){
         ctx.fillStyle = color;
         ctx.fillRect(x, y, w, h);
     }
     drawRect(0, 0, cvs.width, cvs.height, "black")
 
-    function drawCircle(x, y, r, color){
+    function drawCircle(x: number, y: number, r: number, color: string){
         ctx.fillStyle = color;
         ctx.beginPath();
         ctx.arc(x, y, r, 0, Math.PI*2, false);
@@ -170,7 +163,7 @@
         ctx.fill();
     }
 
-    function drawText(text, x, y, color){
+    function drawText(text: any, x: number, y: number, color: string){
         ctx.fillStyle = color;
         ctx.font = "45px fantasy";
         ctx.fillText(text, x, y);
@@ -191,22 +184,29 @@
         drawRect(user1.x, user1.y, user1.width, user1.height, user1.color);
         drawRect(user2.x, user2.y, user2.width, user2.height, user2.color);
         drawCircle(ball.x, ball.y, ball.radius, ball.color);
-
     }
 
-    // control the user1 paddle;
-    cvs.addEventListener("mousemove", movePaddle);
-
-    function movePaddle(evt){
+    document.addEventListener("keydown", function(event) 
+    {
         let rect = cvs.getBoundingClientRect();
-        console.log('movemouse')
+        let prop = rect.height/40;
+        if (event.code == 'KeyW') // Touche "haut"
+        { 
+            user1.y -= 10;
+        } 
+        else if (event.code == 'KeyS') // Touche "bas"
+        {
+            user1.y += 10;
+        }
+        
         if (store.getters.getRoom){
-            user1.y = evt.clientY - rect.top - user1.height/2;
+
             socket.emit('player', store.getters.getRoom , user1.y)
         }
-    }
+    });
+ 
 
-    function game(){
+    function playgame(){
         if (store.getters.getStatusCode < 0){
             render();
         }
@@ -215,27 +215,25 @@
         }
         
     }
-    const framePerSeconde = 50;
-    setInterval(game, 1000/framePerSeconde)
+    if (store.getters.getStatusCode == -1){
+        const framePerSeconde = 50;
+        let interval = setInterval(playgame, 1000/framePerSeconde)
+        store.commit("setInterval", interval)
+    }
 }
 
-
+onUnmounted (async () => {
+    clearInterval(store.getters.getInterval);
+    store.commit("setInterval", 0);
+});
 </script>
+
 
 <style scoped lang="scss">
 
-#all{
-    align-items: center;
-    display: flex;
-}
-
-#monpong{
-    
-    margin: 10%;
-    align-items: center;
-    display: flex;
-    justify-content: center;
-
+#pong{
+    width: 100%;
+    height: auto;
 }
 
 </style>
