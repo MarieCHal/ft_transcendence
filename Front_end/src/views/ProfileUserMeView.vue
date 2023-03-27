@@ -45,4 +45,8 @@
     height: 200px;
     background-color: greenyellow;
 }
+.listFriendsRequest{
+    height: 200px;
+    color: black;
+}
 </style>

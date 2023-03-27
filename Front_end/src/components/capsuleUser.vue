@@ -31,7 +31,7 @@
             </div>
             <div>
                 user_nickname = {{ user.user_nickname }}
-                <div class="status-indicator" :class="{ 'status-online': user.users_isActive, 'status-offline': !user.users_isActive }"></div>
+                <div class="status-indicator" :class="{ 'status-online': user.user_isActive, 'status-offline': !user.user_isActive }"></div>
             </div>
         </div>
         <div>

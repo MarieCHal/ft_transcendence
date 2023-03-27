@@ -10,9 +10,6 @@
     const store = useStore();
     const chatMessages = ref<any[]>([]);
     const socket = store.getters.getWebSocket;
-    //const newMessage = ref('');
-    //const userContext = store.getters.getUserContext;
-    //const chanContext = store.getters.getChanContext;
 
     store.commit("setBool", false)
 
@@ -25,19 +22,19 @@
         store.commit("setChatHistory", chatHistory.data.history);
 
         socket.on('join', (message: any) => {
-            console.log('chatmsg', message);
             chatMessages.value.push(message);
         });
-        socket.emit('join', `${store.getters.getChanContext.chanel_chat_id}`);
+        socket.emit('join', `${store.getters.getChanContext.chanel_chat_id}`, true);
         socket.on('chat', (message: any) => {
-            console.log('chatmsg', message);
             chatMessages.value.push(message);
         });
     });
 
     onUnmounted(async () => {
+      socket.emit('join', `${store.getters.getChanContext.chanel_chat_id}`, false);
       socket.off('join');
-      socket.off('chat')
+      socket.off('chat');
+      store.commit('setUserContext', []);
     });
 
 </script>
@@ -47,9 +44,6 @@
     <h1> users </h1>
     <div>
       <oneUserButton v-if="store.getters.getWhat === 'UsersInChan'"/>
-      <!--<div v-if="store.getters.getUserContext.owner">-->
-        <!--OwnerButton-->
-      <!--<div />-->
     </div>
   </div>
   <div v-if="store.getters.getUserContext.owner">

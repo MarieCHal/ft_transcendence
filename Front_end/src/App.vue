@@ -35,35 +35,22 @@
 	flex-direction: column;
 	align-items: center;
   min-height: 100%;
-  background-color: black;
   color: blanchedalmond;
 
 }
 header{
-  max-width: 1000px;
-  min-width: 360px;
-  height: auto;
-  background-color: cyan;
+
 }
 main{
-  max-width: 1000px;
-  min-width: 360px;
-  flex-grow: 1;
-  background-color: rgb(253, 253, 253);
-  color: black;
+  
 }
 footer{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: auto;
-  max-width: 1000px;
-  min-width: 360px;
-  height: auto;
-  background-color: burlywood;
+
 }
 a{
   text-align: center;
+  color: white;
+  text-decoration: none;
 }
 
 </style>

@@ -24,6 +24,7 @@
             const headers = { Authorization: `Bearer ${store.getters.getToken}` };
             const response = await axios.get("/users/all", {headers});
             store.commit('setAllUsers', response.data);
+
         } catch (error: any) {
             console.log(error);
             //alert(error);

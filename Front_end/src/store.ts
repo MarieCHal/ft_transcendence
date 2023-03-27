@@ -28,6 +28,7 @@ const store = createStore({
 
       isBool: false,
       isCode: false,
+      isBlockBool: false,
       isWhat: "",
       
       isUserId: 0,
@@ -35,6 +36,7 @@ const store = createStore({
       isUsers: [],
       isOneUser: [],
       isUserContext: [],
+      isUserBlocked: [],
       isUserAvatar: '',
       isArrayAvatar: <any>[],
       
@@ -61,11 +63,13 @@ const store = createStore({
     setUsers(state, isUsers) {state.isUsers = isUsers},
     setOneUser(state, isOneUser) {state.isOneUser = isOneUser},
     setUserContext(state, isUserContext) {state.isUserContext = isUserContext},
+    setUserBlocked(state, isUserBlocked) {state.isUserBlocked = isUserBlocked},
     setChanContext(state, isChanContext) {state.isChanContext = isChanContext},
     setWhat(state, isWhat) {state.isWhat = isWhat},
     setChanId(state, isChanId) {state.isChanId = isChanId},
     setUserId(state, isUserId) {state.isUserId = isUserId},
     setBool(state, isBool) {state.isBool = isBool},
+    setBlockBool(state, isBlockBool) {state.isBlockBool = isBlockBool},
     setChatHistory(state, isChatHistory) {state.isChatHistory = isChatHistory},
     //setUsersInChan(state, isUsersInChan) {state.isUsersInChan = isUsersInChan},
     setChans(state,  isChans) {state.isChans =  isChans},
@@ -94,11 +98,13 @@ const store = createStore({
     getUsers: state => state.isUsers,
     getOneUser: state => state.isOneUser,
     getUserContext: state => state.isUserContext,
+    getUserBlocked: state => state.isUserBlocked,
     getChanContext: state => state.isChanContext,
     getWhat: state => state.isWhat,
     getChanId: state => state.isChanId,
     getUserId: state => state.isUserId,
     getBool: state => state.isBool,
+    getBlockBool: state => state.isBlockBool,
     getChatHistory: state => state.isChatHistory,
     //getUsersInChan: state => state.isUsersInChan,
     getWebSocket: state => state.isWebSocket,
@@ -109,7 +115,7 @@ const store = createStore({
   },
   actions: {
     initWebSocket({ commit }) {
-      const webSocket = io('http://c1r2s3:4000/', {
+      const webSocket = io('http://c1r2s3:3000/', {
         auth: {
           token: store.getters.getToken,
         }

@@ -22,6 +22,9 @@
           store.commit('setAvatar', url);
           store.commit('setCode',  false);
           store.dispatch('initWebSocket');
+          const headers = { Authorization: `Bearer ${store.getters.getToken}` };
+          const res = await axios.get("/chat/blocked", {headers});
+          store.commit('setUserBlocked', res.data);
           router.push("/");
         }
       } catch (error: any) {

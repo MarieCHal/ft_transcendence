@@ -2,6 +2,7 @@
     import { useStore } from "vuex"
     import { useRouter } from 'vue-router'
     import axios from 'axios';
+    import {  onUnmounted } from 'vue'
 
     const store = useStore();
     const router = useRouter();
@@ -44,22 +45,23 @@
       store.commit("setBool", true)
       return store.getters.getBool;
   }
+  
 </script>
 
 <template>
     <form @submit.prevent="submmit" v-if="userContext.isProtected === true">
-      <button  @click.prevent="getBool">
+      <button class="navButton" @click.prevent="getBool">
         changePWD
       </button>
         <div v-if="store.getters.getBool">
           <input type="text" name="code" autocomplete="off"
           placeholder="PWD" minlength="4" maxlength="4" v-model="Pwd">
-          <button type="submit">
+          <button class="navButton" type="submit">
             submit
           </button>
         </div>
     </form>
-    <button @click="deleteChan()">
+    <button class="navButton" @click="deleteChan()">
       deleteChan
     </button>
 </template>

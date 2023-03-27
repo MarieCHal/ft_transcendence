@@ -1,10 +1,18 @@
 <script setup lang="ts">
-    import { useStore } from "vuex"
     import router from '@/router'
     import getAvatar from '../../getAvatar'
+    import { useStore } from "vuex"
     import { onMounted } from 'vue'
+    import axios from 'axios';
 
     const store = useStore();
+    
+    const userContext = store.getters.getUserContext;
+    const chanContext = store.getters.getChanContext;
+    
+    onMounted(async () => {
+        await fetchData();
+    });
 
     function click(data: any){
         store.commit('setOneUser', data);
@@ -47,9 +55,79 @@
         }
     }
 
-    onMounted(async () => {
-        await fetchData();
-    });
+    const muted = async (userId: number) =>{
+        const headers = { Authorization: `Bearer ${store.getters.getToken}` };
+        const data = {
+            otherId: userId,
+            chanelId: chanContext.chanel_chat_id,
+        }
+        const response = await axios.post(`/chat/mute`, data,  {headers})
+        if (response.data.muted == false){
+            router.push('/chat')
+            alert(response.data.message);
+        }
+        else{
+            router.push('/chat')
+            alert(response.data.message);
+        }
+    }
+
+    const banned = async (userId: number) =>{
+        const headers = { Authorization: `Bearer ${store.getters.getToken}` };
+        const data = {
+            otherId: userId,
+            chanelId: chanContext.chanel_chat_id,
+        }
+        const response = await axios.post(`/chat/bann`, data,  {headers})
+        if (response.data.ban == false){
+            router.push('/chat')
+            alert(response.data.message);
+        }
+        else{
+            router.push('/chat')
+            alert(response.data.message);
+        }
+    }
+        
+    const kick = async (userId: number) =>{
+        const headers = { Authorization: `Bearer ${store.getters.getToken}` };
+        const data = {
+            otherId: userId,
+            chanelId: chanContext.chanel_chat_id,
+        }
+        const response = await axios.post(`/chat/kick`, data,  {headers})
+        if (response.data.kick == false){
+            router.push('/chat')
+            alert(response.data.message);
+        }
+        else{
+            router.push('/chat')
+            alert(response.data.message);
+        }
+    } 
+
+    const admin = async (userId: number) =>{
+        if (!userContext.owner || !userContext.admin){
+            alert("YOU ARE NOT OWNER OR ADMIN")
+            return ;
+        }
+        else{
+            const headers = { Authorization: `Bearer ${store.getters.getToken}` };
+            const data = {
+                otherId: userId,
+                chanelId: chanContext.chanel_chat_id,
+            }
+           const response = await axios.post(`/chat/admin`, data,  {headers})
+            if (response.data.admin == false){
+                router.push('/chat')
+                alert(response.data.message);
+            }
+            else{
+                router.push('/chat')
+                alert(response.data.message);
+            }
+        }
+    }
 
 </script>
 
@@ -62,8 +140,22 @@
             :style="{ 'background-image': 'url(' + store.getters.getArrayAvatar(data.user_user_id) + ')'}"
             >
             <img :src="store.getters.getArrayAvatar(data.user_user_id)" />
-            {{ data.user_nickname }}
         </button>
+        {{ data.user_nickname }}
+        <div class="ownerButton" v-if="userContext.owner || userContext.admin">
+            <button class="navButton" @click="kick(data.user_user_id)">
+                kick
+            </button>
+            <button class="navButton" @click="muted(data.user_user_id)">
+                mute
+            </button>
+            <button class="navButton" @click="banned(data.user_user_id)">
+                ban
+            </button>
+            <button class="navButton" @click="admin(data.user_user_id)">
+                admin
+            </button>
+        </div>
     </div>
 </template>
 
@@ -83,6 +175,11 @@ img{
     flex-direction: column;
     align-items: center;
     max-height: 100%;
+}
+.ownerButton{
+    display: flex;
+    justify-content: center;
+    //background-color: gray;
 }
 
 </style>

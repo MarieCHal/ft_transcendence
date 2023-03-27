@@ -4,6 +4,7 @@
     import friendRequest from "@/components/button/friendRequest.vue";
     import sendMsg from '@/components/button/sendMsg.vue';
     import playInvit from '@/components/button/playInvit.vue';
+    import bloquer from '@/components/button/bloquer.vue';
     //import { useStore } from "vuex"
     //const store = useStore();
     //const user = store.getters.getOneUser;
@@ -18,6 +19,7 @@
         <friendRequest />
         <sendMsg />
         <playInvit />
+        <bloquer />
     </div>
     <div class="ownerButton">
 
@@ -26,10 +28,6 @@
 
 <style scoped lang="scss">
 .mainProfileUser{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 100%;
-    //background-color: gray;
+
 }
 </style>

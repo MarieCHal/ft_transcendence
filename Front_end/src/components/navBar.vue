@@ -22,7 +22,7 @@
 <style scoped lang="scss">
 .nav {
     display: flex;
-    justify-content: space-between;
-    background-color: rgb(52, 147, 230);
+    //justify-content: space-between;
+    //background-color: rgb(52, 147, 230);
 }
 </style>

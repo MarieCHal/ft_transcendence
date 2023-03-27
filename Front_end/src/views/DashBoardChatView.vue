@@ -16,6 +16,7 @@
         try {
             const headers = {"Authorization": `Bearer ${store.getters.getToken}`};
             const response = await axios.get('/chat/all', {headers});
+            console.log('data /chat/all on dashbord', response.data)
             store.commit('setChans', response.data);
             store.commit('setChanId', 0);
         } catch (error: any) {
@@ -29,6 +30,7 @@
             const response = await axios.get(`/chat/join/${chan.chanel_chat_id}`, {headers});
             store.commit('setChanContext', chan);
             store.commit('setUserContext', response.data);
+            console.log('data /chat/join on dashbord', response.data)
             const UserContext = store.getters.getUserContext;
             if (UserContext.banned){
                 alert("YOU ARE BANNED");
@@ -52,7 +54,9 @@
             const data = {
                 chanelId: chan.chanel_chat_id,
             }
-            const response = await axios.post(`/chat/quit`, data, {headers});//faire trycatch
+            const response = await axios.post(`/chat/quit`, data, {headers});
+            //store.commit('setUserContext', response.data.owner)
+            console.log('data /chat/quit on dashbord', response.data)
             store.commit('setChans', response.data);
         } catch (error) {
             console.log(error);
