@@ -10,6 +10,38 @@ const persistedState = createPersistedState({
   'isId',
   'isNickname',
   'isAvatar',
+  'isBool',
+  'isCode',
+  'isBlockBool',
+  'isStatusCode',
+  'isTrigger',
+  'isWhat',
+  'isUserId',
+  'isAllUsers',
+  'isUsers',
+  'isOneUser',
+  'isUserContext',
+  'isUserBlocked',
+  'isUserAvatar',
+  'isArrayAvatar',//attention a lui
+  'isChanId',
+  'isChans',
+  'isChanContext',
+  'isChatHistory',
+  'isChatMessages',//attention a lui
+  'isNewMessage',//attention a lui
+  'isGoPlay',
+  'isRoom',
+  'isInvitePlay',
+  'isresultSocketOn',
+  'isBallX',
+  'isBallY',
+  'isScoreUser1',
+  'isScoreUser2',
+  'isUser1',
+  'isUser2',
+  'isInterval',
+  'isPlayer',
   ]});
 
 const store = createStore({
@@ -17,39 +49,75 @@ const store = createStore({
 
   state: {
 
-      isChatMessages: ref<string[]>([]),
-      isNewMessage: ref(''),
+    //self
+    isToken: "", 
+    isDoubleAuth: false,
+    isId: 0,
+    isNickname: "",
+    isAvatar: "",
+    
+    //truc
+    isBool: false,
+    isCode: false,
+    isBlockBool: false,
+    isStatusCode: false,
+    isTrigger: false,//a verifier si exist
+    isWhat: "",
+    
+    //user
+    isUserId: 0,
+    isAllUsers: [],
+    isUsers: [],
+    isOneUser: [],
+    isUserContext: [],
+    isUserBlocked: [],
+    isUserAvatar: '',
+    isArrayAvatar: <any>[],
+    
+    //chan
+    isChanId: 0,
+    isChans: [],
+    isChanContext: [],
+    isChatHistory: [],
+    //isUsersInChan: [],
+    
+    //chat
+    isChatMessages: ref<string[]>([]),
+    isNewMessage: ref(''),
 
-      isToken: "", 
-      isDoubleAuth: false,
-      isId: 0,
-      isNickname: "",
-      isAvatar: "",
+    //pong
+    isGoPlay: "",
+    isRoom: "",
+    isInvitePlay: "",//a verifier si exist
+    isresultSocketOn: 0,//a verifier si exist
+    isBallX: 0,
+    isBallY: 0,
+    isScoreUser1: 0,
+    isScoreUser2: 0,
+    isUser1: 0,
+    isUser2: 0,
+    isInterval: 0,
+    isPlayer: 0,
 
-      isBool: false,
-      isCode: false,
-      isBlockBool: false,
-      isWhat: "",
-      
-      isUserId: 0,
-      isAllUsers: [],
-      isUsers: [],
-      isOneUser: [],
-      isUserContext: [],
-      isUserBlocked: [],
-      isUserAvatar: '',
-      isArrayAvatar: <any>[],
-      
-      isChanId: 0,
-      isChans: [],
-      isChanContext: [],
-      isChatHistory: [],
-      //isUsersInChan: [],
-
-      isWebSocket: null
+    //socket
+    isWebSocket: null
   },
 
   mutations: {
+    setresultSocketOn(state, isresultSocketOn) {state.isresultSocketOn = isresultSocketOn;},
+    setGoPlay(state, isGoPlay) {state.isGoPlay = isGoPlay;},
+    setBallX(state, isBallX) {state.isBallX = isBallX;},
+    setBallY(state, isBallY) {state.isBallY = isBallY;},
+    setPlayer(state, isPlayer) {state.isPlayer = isPlayer;},
+    setScoreUser1(state, isScoreUser1) {state.isScoreUser1 = isScoreUser1;},
+    setScoreUser2(state, isScoreUser2) {state.isScoreUser2 = isScoreUser2;},
+    setUser1(state, isUser1) {state.isUser1 = isUser1;},
+    setUser2(state, isUser2) {state.isUser2 = isUser2;},
+    setRoom(state, isRoom) {state.isRoom = isRoom;},
+    setTrigger(state, isTrigger) {state.isTrigger = isTrigger;},
+    setInterval(state, isInterval) {state.isInterval = isInterval;},
+    setInvitePlay(state, isInvitePlay) {state.isInvitePlay = isInvitePlay;},
+    setStatusCode(state,  isStatusCode) {state.isStatusCode =  isStatusCode},
     setChatMessages(state, isChatMessages){state.isChatMessages = isChatMessages},
     setNewMessage(state, isNewMessage){state.isNewMessage = isNewMessage},
     setToken(state, isToken){state.isToken = isToken},
@@ -85,6 +153,20 @@ const store = createStore({
   },
 
   getters: {
+    getresultSocketOn: state => state.isresultSocketOn,
+    getGoPlay: state => state.isGoPlay,
+    getBallX: state => state.isBallX,
+    getBallY: state => state.isBallY,
+    getPlayer: state => state.isPlayer,
+    getScoreUser1: state => state.isScoreUser1,
+    getScoreUser2: state => state.isScoreUser2,
+    getUser1: state => state.isUser1,
+    getUser2: state => state.isUser2,
+    getRoom: state => state.isRoom,
+    getTrigger: state => state.isTrigger,    
+    getInterval: state => state.isInterval,
+    getInvitePlay: state => state.isInvitePlay,
+    getStatusCode: state => state.isStatusCode,
     getChatMessages: state => state.isChatMessages,
     getNewMessage: state => state.isNewMessage,
     getToken: state => state.isToken,
