@@ -1,78 +1,48 @@
 
 <script setup lang="ts">
-    import { useStore } from "vuex"
     import axios from "axios";
-    import pong from "../components/pong.vue"
+    import { useRouter } from 'vue-router'
+    import { useStore } from 'vuex';
 
     const store = useStore();
-    store.commit("setBool", false);
+    const router = useRouter();
+    const socket = store.getters.getWebSocket;
+
+    function goMatchmaking(){
+        store.commit('setMatchmaking', true);
+        router.push('/Play/start');
+    }
 
     const submit = async () => {
-        const response = await axios.get("http://c1r2s3:3000/users/all");
-        store.commit('setUsers', response.data)
+        const headers = { Authorization: `Bearer ${store.getters.getToken}`};
+        const response = await axios.get("http://c1r2s3:3000/users/all", {headers});
+        store.commit('setUsers', response.data.allUsers)
+        console.log('user store', store.getters.getUsers)
     }
 
-    function getUsers(){
-        return store.getters.getUsers;
-    }
-    
-    function getBool(){
-        store.commit("setBool", true)
-        return store.getters.getBool;
+    const play = async (userId: number) =>{
+        socket.emit('notif', userId, true);
     }
 </script>
 
 <template>
     <div>
-        <div id="boutons">
-            <div>
-                <div>
-                    <button id="InviteFriends" @click="getBool()" v-if="store.getters.getBool == false">
-                        play
-                    </button>
-                    <div v-if="store.getters.getBool">
-                        <pong />
-                    </div>
-                </div>
-            </div>
-            <div>
-                <button id="InviteFriends" @click="submit" v-if="store.getters.getBool == false">
-                    InviteFriends
-                </button>
-                <div id="user42">
-                    <div id="user" v-for="(user, index) in getUsers()">
-                        <button>
-                                {{ user.nickname }}
-                        </button>
-                    </div>
-                </div>
-            </div>
+        <button class="navButton" id="InviteFriends" @click="goMatchmaking()">
+            Matchmaking
+        </button>
+    </div>
+    <div>
+        <button class="navButton" @click="submit">
+            InviteFriends
+        </button>
+        <div  v-for="(user, index) in store.getters.getUsers">
+            <button class="navButton" v-if="user.user_isActive" @click="play(user.user_user_id)">
+                    {{ user.user_nickname }}
+            </button>
         </div>
     </div>
 </template>
 
 <style scoped lang="scss">
-#user42{
-    position: absolute;
-    align-items: center;
-    align-self: center;
-    justify-content: center;
-    left: 24%
-}
-#boutons{
-    display: inline-flex;
-    margin: 10%;
-    flex-direction: column;
-    align-items: center;
-}
-#Matchmaking{
-    background-color: rgb(1, 1, 1);
-    color: rgb(247, 247, 247);
-    margin: auto;
-}
-#InviteFriends{
-    background-color: rgb(1, 1, 1);
-    color: rgb(247, 247, 247);
-    margin: auto;
-}
+
 </style>

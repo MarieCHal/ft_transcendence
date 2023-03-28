@@ -55,7 +55,7 @@
                 store.commit("setRoom", player)
             }
         });
-        socket.emit('startgame')
+        socket.emit('startgame', store.getters.getMatchmaking)//matchmaking == true || false
         socket.on("game", (ballx: number, bally: number, user1: number, user2: number, score1: number, score2: number ) => {           
             if (store.getters.getPlayer == 1){
                 store.commit("setBallX", ballx)

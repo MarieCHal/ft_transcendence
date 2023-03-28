@@ -4,9 +4,17 @@
     import doubleAuth from '../components/button/doubleAuth.vue'
     import listFriendsRequest from "@/components/listFriendsRequest.vue";
     import { useStore } from "vuex"
+    import { onMounted, onUnmounted } from 'vue';
+    import axios from "axios";
+
 
     const store = useStore();
-    const user = store.getters.getOneUser;
+    onMounted(async () => {
+        const headers = { Authorization: `Bearer ${store.getters.getToken}` };
+        const response = await axios.get("/users/me", {headers});
+        store.commit('setMe', response.data);
+        console.log('oneUser myProfile',  response.data)
+    });
 
 </script>
 

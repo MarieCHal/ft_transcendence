@@ -42,6 +42,7 @@ const persistedState = createPersistedState({
   'isUser2',
   'isInterval',
   'isPlayer',
+  'isMe',
   ]});
 
 const store = createStore({
@@ -55,7 +56,7 @@ const store = createStore({
     isId: 0,
     isNickname: "",
     isAvatar: "",
-    
+    isMe: [],
     //truc
     isBool: false,
     isCode: false,
@@ -98,12 +99,23 @@ const store = createStore({
     isUser2: 0,
     isInterval: 0,
     isPlayer: 0,
+    isMatchmaking: false,
 
     //socket
-    isWebSocket: null
+    isWebSocket: null,
+
+    //notif
+    isNameNotif: "",
+    isInvite: false,
+    isAcceptPlay: false,
   },
 
   mutations: {
+    setMe(state, isMe) {state.isMe = isMe;},
+    setAcceptPlay(state, isAcceptPlay) {state.isAcceptPlay = isAcceptPlay;},
+    setInvite(state, isInvite) {state.isInvite = isInvite;},
+    setMatchmaking(state, isMatchmaking) {state.isMatchmaking = isMatchmaking;},
+    setNameNotif(state, isNameNotif) {state.isNameNotif = isNameNotif;},
     setresultSocketOn(state, isresultSocketOn) {state.isresultSocketOn = isresultSocketOn;},
     setGoPlay(state, isGoPlay) {state.isGoPlay = isGoPlay;},
     setBallX(state, isBallX) {state.isBallX = isBallX;},
@@ -153,7 +165,12 @@ const store = createStore({
   },
 
   getters: {
+    getMe: state => state.isMe,
+    getAcceptPlay: state => state.isAcceptPlay,
+    getInvite: state => state.isInvite,
+    getMatchmaking: state => state.isMatchmaking,
     getresultSocketOn: state => state.isresultSocketOn,
+    getNameNotif: state => state.isNameNotif,
     getGoPlay: state => state.isGoPlay,
     getBallX: state => state.isBallX,
     getBallY: state => state.isBallY,
@@ -211,6 +228,12 @@ const store = createStore({
       webSocket.on('disconnect', () => {
         console.log('Socket disconnected');
         commit('setWebSocket', null);
+      });
+
+      webSocket.on('notif', (nickname: string, invite: boolean, accept: boolean) =>{
+        commit('setNameNotif', nickname); // a qui on parle
+        commit('setInvite', invite); //es une invite ou un reponse
+        commit('setAcceptPlay', accept); //es accept ou refus
       });
     },
   }

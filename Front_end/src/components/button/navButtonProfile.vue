@@ -11,7 +11,6 @@
             const headers = { Authorization: `Bearer ${store.getters.getToken}` };
             const response = await axios.get(`/users/profile/${store.getters.getId}`, {headers});
             store.commit('setOneUser', response.data);
-            console.log('OneUser in navButtonProfile = ', store.getters.getOneUser);
             router.push('/Profile/me');
         } catch (error: any) {
             console.log(error);

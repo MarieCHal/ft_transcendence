@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import navBar from "./components/navBar.vue"
+  import notif from "./components/notif.vue"
   import { onMounted } from 'vue'
   import { RouterView } from "vue-router"
   import  { useStore} from 'vuex'
@@ -17,6 +18,7 @@
   <div class="mainDiv">
     <header v-if="getToken()">
         <navBar />
+        <notif v-if="store.getters.getNameNotif"/>
     </header>
     <main>
         <RouterView />

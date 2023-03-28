@@ -58,7 +58,8 @@
             //store.commit('setUserContext', response.data.owner)
             console.log('data /chat/quit on dashbord', response.data)
             store.commit('setChans', response.data);
-        } catch (error) {
+        } 
+        catch (error) {
             console.log(error);
         }
     }

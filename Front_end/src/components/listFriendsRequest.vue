@@ -16,7 +16,7 @@
             id: userId,
             decision: decision
         };
-        const response = await axios.post('http://c1r2s3:3000/users/friend-accept', data, {headers})
+        const response = await axios.post('/users/friend-accept', data, {headers})
         .then(response => {
             console.log('Demande d\'amis acceptee avec succès');
         })
@@ -26,7 +26,7 @@
     }
 
     function getMyFriends(){
-        const me = store.getters.getItIsMe;
+        const me = store.getters.getMe;
         if (me)
             return me.pending;
     }
@@ -35,12 +35,12 @@
 <template>
     <div v-for="(pending, index) in getMyFriends()" :key="index" :id="`capsule-${pending.id}`">
         <div>
-            {{ pending.friend_one.nickname}} vous demande en amis<!--trouver le tableau de friends-request?-->
+            {{ pending.user_nickname}} vous demande en amis<!--trouver le tableau de friends-request?-->
         </div>
-        <button @click="friendsValidate(pending.friend_one_user_id, true); removeCapsule(pending)">
+        <button class="navButton" @click="friendsValidate(pending.user_user_id, true); removeCapsule(pending)">
             oui je le veux
         </button>
-        <button @click="friendsValidate(pending.friend_one_user_id, false); removeCapsule(pending)">
+        <button class="navButton" @click="friendsValidate(pending.user_user_id, false); removeCapsule(pending)">
             non je ne le veux pas
         </button>
     </div>
