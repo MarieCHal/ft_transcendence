@@ -1,13 +1,9 @@
 <template>
-    <div>
+    <div >
         <button @click="Quit()">
             X
         </button>
-    </div>
-    <div id="all">
-        <div id="monpong">
-            <canvas id="pong" width="600" height="400"></canvas>
-        </div>
+        <canvas id="pong" width="600" height="400"></canvas>
     </div>
 </template>
 
@@ -15,9 +11,18 @@
     import { useRouter } from 'vue-router'
     import { useStore } from "vuex"
     import { onMounted, onUnmounted } from 'vue';
+
     const store = useStore();
     const router = useRouter();
     const socket = store.getters.getWebSocket;
+
+    let colorRect1 = "WHITE"
+    let colorRect2 = "WHITE"
+    let colorBall = "WHITE"
+    let colorBackGround = "BLACK"
+    let colorNet = "WHITE"
+    let colorText = "WHITE"
+
     function Quit(){
         socket.emit("game", store.getters.getRoom, "quit");
     }
@@ -34,16 +39,18 @@
         }); 
         socket.emit("init")
         store.commit("setStatusCode", -1)
-        socket.on('startgame', (player: number, status: any, trigger: boolean) => {
+        socket.on('startgame', (player: number, status: any, trigger: boolean, msg: string) => {
         if(trigger == true){
             store.commit("setStatusCode", status)
             socket.off("startgame");
             socket.off("player");
             socket.off("game");
             socket.off("init");
+            alert(msg);
+            
             setTimeout(() =>{
                 router.push("/")
-            }, 3000);       
+            }, 1500);       
         }
             if (status == false){
                 store.commit("setPlayer", player)
@@ -55,7 +62,10 @@
                 store.commit("setRoom", player)
             }
         });
-        socket.emit('startgame', store.getters.getMatchmaking)//matchmaking == true || false
+        console.log('isMatchmaking', store.getters.getMatchmaking)
+        console.log('isNameNotif', store.getters.getNameNotif)
+        socket.emit('startgame', store.getters.getMatchmaking, store.getters.getNameNotif)
+        store.commit('setNameNotif', "")
         socket.on("game", (ballx: number, bally: number, user1: number, user2: number, score1: number, score2: number ) => {           
             if (store.getters.getPlayer == 1){
                 store.commit("setBallX", ballx)
@@ -175,6 +185,7 @@
     });
  
     function playgame(){
+        console.log('1')
         if (store.getters.getStatusCode < 0){
             render();
         }

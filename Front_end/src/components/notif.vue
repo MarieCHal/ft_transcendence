@@ -13,7 +13,7 @@
             const userConfirmed = confirm("Voulez-vous jouer avec cette personne?")
             if(userConfirmed){
                 socket.emit('notif', store.getters.getNameNotif, false, true);
-                store.commit('setNameNotif', "");
+                //store.commit('setNameNotif', "");
                 store.commit('setAcceptPlay', true);
                 store.commit('setMatchmaking', false);
                 router.push('/Play/start');
@@ -30,7 +30,7 @@
         else{
             if(store.getters.getAcceptPlay == true){
                 alert('demande accept')
-                store.commit('setNameNotif', "");
+                //store.commit('setNameNotif', "");
                 store.commit('setMatchmaking', false);
                 router.push('/Play/start')
                 //verifier nameNotif du store une fois dans la vue playStart
@@ -41,8 +41,7 @@
                 alert('demande refus')
                 store.commit('setNameNotif', "");
             }
-        }
-        
+        }    
     }
 </script>
 

@@ -8,6 +8,7 @@ import DashBoardChat from '../views/DashBoardChatView.vue'
 import CreateChan from '../views/CreateChanView.vue'
 import ChanView from '../views/ChatView.vue'
 import PlayView from '../views/PlayView.vue'
+import PlayStartView from '../views/PlayStartView.vue'
 
 function isAuthenticated(){// utiliser directement store.getters.getToken dans les before si possible
   if (store.getters.getToken)
@@ -47,6 +48,20 @@ const router = createRouter({
       path: '/Play',
       name: 'play',
       component: PlayView,
+      /*beforeEnter:(to, from, next) => {
+        console.log(isAuthenticated());
+        if(isAuthenticated() == true){
+          next();
+        }
+        else {
+          next({ name: 'register' });
+        }
+      }*/
+    },
+    {
+      path: '/Play/start',
+      name: 'playStart',
+      component: PlayStartView,
       /*beforeEnter:(to, from, next) => {
         console.log(isAuthenticated());
         if(isAuthenticated() == true){
