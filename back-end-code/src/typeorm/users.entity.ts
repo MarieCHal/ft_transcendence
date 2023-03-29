@@ -57,7 +57,7 @@ export class User {
     @ManyToMany((type) => Chat, (chat) => chat.users)
     chanel: Chat[]; 
 
-    @OneToOne(() => Stats)
+    @OneToOne(() => Stats, (stats) => stats.user)
     @JoinColumn()
     stats: Stats
 

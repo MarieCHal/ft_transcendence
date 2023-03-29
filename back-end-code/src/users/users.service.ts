@@ -21,10 +21,12 @@ export class UsersService {
         .getRawMany()
         console.log(users);
         const friends = await this.getFriends(userId);
+        //const blocked = await this.getBlocked(userId);
         console.log(friends);
         return {
             allUsers: users,
-            myFriends: friends
+            myFriends: friends,
+            //blocked: blocked
         }
     }
 
@@ -46,6 +48,14 @@ export class UsersService {
         const user = await this.usersRepository.findOne({
             where: {
                 user_id: id, 
+            }
+        })
+        return user;
+    }
+    async findNickname(nickname: string) {
+        const user = await this.usersRepository.findOne({
+            where: {
+                nickname: nickname
             }
         })
         return user;
@@ -75,7 +85,8 @@ export class UsersService {
                                         .leftJoinAndSelect('friends.friend_one', 'user')
                                         .where("friends.status = :status", {status: false})
                                         .andWhere("friends.friend_two = :user_id", {user_id: id})
-                                        .getMany()
+                                        .select(['user.user_id', 'user.nickname'])
+                                        .getRawMany()
         console.log(friendRequests);
         return {
             me,
@@ -91,13 +102,22 @@ export class UsersService {
         const requester = await this.findOne(userId);
         const otherUser = await this.findOne(friendId);
 
-        const pending = await this.friendsRepository
+        const oneWay = await this.friendsRepository
                         .createQueryBuilder('friends')
                         .leftJoinAndSelect('friends.friend_one', 'friend_one')
                         .where('friends.friend_one.user_id = :user_id', {user_id: friendId})
                         .andWhere('friends.friend_two = :id', {id: userId})
                         .getOne()
-        if (pending)
+        
+        const otherWay = await this.friendsRepository
+                        .createQueryBuilder('friends')
+                        .leftJoinAndSelect('friends.friend_one', 'friend_one')
+                        .where('friends.friend_one.user_id = :user_id', {user_id: userId})
+                        .andWhere('friends.friend_two = :id', {id: friendId})
+                        .getOne()
+        
+        console.log("ways: ", otherWay, oneWay)
+        if (oneWay || otherWay)
             return "You guys are already friends :))"
 
         const newFriends1 = new Friends();
@@ -105,13 +125,7 @@ export class UsersService {
         newFriends1.friend_two = otherUser.user_id;
         await this.friendsRepository.save(newFriends1);
 
-
-        const friendRequests = await this.friendsRepository
-                                .createQueryBuilder('friends')
-                                .leftJoinAndSelect('friends.friend_one', 'friend_one')
-                                .where("friends.status = :status", {status: false})
-                                .getMany()
-        return friendRequests
+        return `Your friend request was send`
     }
 
     /** @brief */
@@ -142,14 +156,17 @@ export class UsersService {
     }
 
     /** @brief reject a friend request and remove the corresponding row  */
-    async rejectFriendRequest(userId: number, firendId: number)
+    async rejectFriendRequest(userId: number, friendId: number)
     {
+        console.log("l'autre: ", friendId)
+        console.log("moi: ", userId)
         const pending = await this.friendsRepository
                         .createQueryBuilder('friends')
                         .leftJoinAndSelect('friends.friend_one', 'friend_one')
-                        .where('friends.friend_one.user_id = :id', {id: firendId})
-                        .andWhere('friends.friend_two = :id', {id: userId})
+                        .where('friend_one.user_id = :user_id', {user_id: friendId})
+                        .andWhere('friends.friend_two = :friend_two', {friend_two: userId})
                         .getOne()
+        console.log('friend pending: ', pending);
         await this.friendsRepository.remove(pending);
         return 'request succefully rejected';
     }

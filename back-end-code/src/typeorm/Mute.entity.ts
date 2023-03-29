@@ -18,6 +18,7 @@ export class Mute {
     @ManyToOne(() => Chat, (chat) => chat.muted)
     chat: Chat
 
-    @CreateDateColumn()
+    @CreateDateColumn({
+    })
     createdAt: Date;
 }

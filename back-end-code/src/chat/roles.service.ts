@@ -60,27 +60,47 @@ export class RolesService {
     console.log("isAdmin: ", isAdmin);
     if (isAdmin)
         return true;
-    //console.log("isAdmin: ", isAdmin)
-    /*for (let i = 0; isAdmin[i]; i++)
-    {
-       if (isAdmin[i].admins_user_id == userId)
-            return true
-    }*/
     return false;
     }
 
     async isMuted(userId: number, chanelId: number)
     {
-        /*const isMuted = await this.chatRepository
-                                    .createQueryBuilder('chat')
-                                    .leftJoinAndSelect('chat.muted', 'muted')
-                                    .where('chat.chat_id = :id', {id: chanelId})
-                                    .andWhere('muted.user_id = :id', {id: userId})
+        const now = new Date();
+        const time = 30000; // 30 sec in millisec
+        console.log('now: ', now);
+        const muted = await this.muteRepository.createQueryBuilder('muted')
+                                    .leftJoinAndSelect('muted.users', 'users')
+                                    .leftJoinAndSelect('muted.chat', 'chat')
+                                    .where('users.user_id = :user_id', {user_id: userId})
+                                    .andWhere('chat.chat_id = :chat_id', {chat_id: chanelId})
                                     .getOne()
-        if (isMuted)
-            return  true
-        else*/
+        console.log("muted: ", muted)
+        if (muted == null)
             return false
+        console.log("createdat in isMusted: ", muted)
+
+        const diff = now.getTime() - muted.createdAt.getTime();
+        console.log('diff: ', diff);
+        console.log('chan: ', muted.createdAt.getTime());
+        console.log('now: ', now.getTime());
+
+        const chan = await this.chatRepository.findOne({
+            where: {
+                chat_id: chanelId
+            }
+        })
+        if (diff > time)
+        {
+            await this.chatRepository
+            .createQueryBuilder()
+            .relation(Chat, "muted")
+            .of(chan)
+            .remove(muted)
+
+            await this.muteRepository.delete(muted)
+            return false
+        }
+        return true
     }
 
     async isInChanel(userId: number, chanelId: number) {
@@ -107,10 +127,11 @@ export class RolesService {
             return "Sorry, you can't access that data, you are not part of this channel";
         const users = await this.chatRepository
                                     .createQueryBuilder('chanel')
-                                    .leftJoinAndSelect('chanel.users', 'users')
-                                    .select(['users.user_id', 'users.nickname', 'users.isActive'])
+                                    .leftJoinAndSelect('chanel.users', 'user')
+                                    .leftJoinAndSelect('user.stats', 'stats')
+                                    .select(['user.user_id', 'user.nickname', 'user.isActive', 'user.stats'])
                                     .where('chanel.chat_id = :chat_id', {chat_id: chanelId})
-                                    .andWhere('users.user_id != :user_id', {user_id: userId})
+                                    .andWhere('user.user_id != :user_id', {user_id: userId})
                                     .getRawMany()
         console.log("chanel users: ", users);
         return {
@@ -176,11 +197,11 @@ export class RolesService {
             return {
                 message: `You are not admin or owner of channel ${chat.name}`
             }
-        const newMuted = await this.chatRepository
-                                    .createQueryBuilder()
-                                    .relation(Chat, "muted")
-                                    .of(newChat)
-                                    .add(toMute);
+        await this.chatRepository
+                        .createQueryBuilder()
+                        .relation(Chat, "muted")
+                        .of(newChat)
+                        .add(toMute);
         //console.log(newMuted);
         return {
             message: `You successfully made ${toMute.nickname} admin of channel ${chat.name}`
@@ -205,6 +226,26 @@ export class RolesService {
             return false
     }
 
+    // remove otherId from the userId's list of blocked users
+    async unBlock(userId: number, otherId: number) {
+         const user = await this.userRepository.createQueryBuilder('user')
+                                    .leftJoinAndSelect('user.blocked', 'blocked')
+                                    .where('user.user_id = :user_id', {user_id: userId})
+                                    .andWhere('blocked.user_id = :other_id', {other_id: otherId})
+                                    .getOne()
+
+        const other = await this.userService.findOne(otherId)
+        if (!user)
+            return `User ${other.nickname} isn't blocked`;
+        const remove = await this.userRepository.createQueryBuilder()
+                                    .relation(User, "blocked")
+                                    .of(user)
+                                    .remove(other)
+        console.log(remove)
+        return remove;
+    }
+
+    // adds otherId to userId's list of blocked users
     async blockUser(userId: number, otherId: number) {
         const checkBlock = await this.isBlocked(userId, otherId)
 
@@ -212,27 +253,34 @@ export class RolesService {
 
         const other = await this.userService.findOne(otherId);
         if (checkBlock == true)
+        {
+            await this.unBlock(userId, otherId);
+            const blocked = await this.getBlocked(userId);
             return {
-                message: `you already blocked ${other.nickname}`
+                blocked,
+                message: `you removed ${other.nickname} from your blocked contact`
             }
+        }
         const user2 = await this.userRepository
-                                .createQueryBuilder()
-                                .relation(User, "blocked")
-                                .of(user)
-                                .add(other)
-        //console.log(user2);
+                                    .createQueryBuilder()
+                                    .relation(User, "blocked")
+                                    .of(user)
+                                    .add(other)
+        const blocked = await this.getBlocked(userId);
         return {
-            message: `you successfully blocked ${other.nickname}`
+            message: `you successfully blocked ${other.nickname}`,
+            blocked: blocked
         }
     }
 
+    // returns an array containing the ids of the users blocked by userId
     async getBlocked(userId: number) {
         const blocked = await this.userRepository
                                 .createQueryBuilder('user')
                                 .leftJoinAndSelect('user.blocked', 'blocked')
+                                .select('blocked.user_id')
                                 .where('user.user_id = :user_id', {user_id: userId})
-                                .getOne();
+                                .getRawMany();
         return blocked
     }
-
 }

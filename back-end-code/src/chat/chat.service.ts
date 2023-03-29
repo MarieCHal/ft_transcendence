@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { channel } from 'diagnostics_channel';
 import { User } from 'src/typeorm';
 import { Chat } from 'src/typeorm';
 import { Message } from 'src/typeorm';
@@ -8,7 +7,18 @@ import { Mute } from 'src/typeorm';
 import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
 import { RolesService } from './roles.service';
-import { In } from 'typeorm';
+import * as bcrypt from 'bcrypt';
+import { AppGateway } from 'src/app/app.gateway';
+import { SocketService } from 'src/socket/socket.service';
+import { Socket, Server} from 'socket.io';
+import {
+    WebSocketGateway,
+  WebSocketServer,
+  SubscribeMessage,
+  OnGatewayConnection,
+  OnGatewayDisconnect,
+  OnGatewayInit,
+  } from '@nestjs/websockets'
 
 
 @Injectable()
@@ -18,7 +28,9 @@ export class ChatService {
      @InjectRepository(Message) private readonly messRepository: Repository<Message>,
      @InjectRepository(User) private readonly userRepository: Repository<User>,
     private userService: UsersService,
-    private rolesService: RolesService
+    private rolesService: RolesService,
+    private socketService: SocketService
+    //private appGateway: AppGateway,
    ) {}
 
    async findOne(chanelId: number) {
@@ -31,11 +43,10 @@ export class ChatService {
    }
 
    // to remove
-   async getChannelInfo(uesrId: number, chanelId: number) {
+   async getChannelInfo(chanelId: number) {
     const chan = await this.chatRepository
                         .createQueryBuilder('chat')
                         .leftJoinAndSelect('chat.banned', 'banned')
-                        //.leftJoinAndSelect('chat.kicked', 'kicked')
                         .leftJoinAndSelect('chat.muted', 'muted')
                         .leftJoinAndSelect('muted.users', 'user')
                         .leftJoinAndSelect('chat.admins', 'admins')
@@ -47,6 +58,13 @@ export class ChatService {
         return chan
    }
 
+   async checkChanExist(name: string) {
+    let checkExist = await this.chatRepository.createQueryBuilder('chat')
+                                .where('chat.name = :chat_name', {chat_name: name})
+                                .getOne()
+    return checkExist;
+   }
+
    //creates a new chat 
    //!!!!! check the boleans condition private
     async createChanel(userId: number, params: any) {
@@ -55,22 +73,42 @@ export class ChatService {
         //check for specificities of the chat
         if (params.private == true) // if it is a privmsg
         {
-            console.log("private")
+            const other = await this.userService.findOne(params.otherId);
+            let name:string;
+            name = owner.nickname + '-' + other.nickname;
+            let checkExist = await this.checkChanExist(name);
+            if (!checkExist)
+            {
+                name = other.nickname + '-' + owner.nickname;
+                checkExist = await this.checkChanExist(name);
+            }
+            if (checkExist)
+                return this.getChanHistory(userId, checkExist.chat_id)
+            //console.log("private")
             const newChan = new Chat();
             newChan.owner = owner;
             newChan.admins = [owner];
-            newChan.name = "privmsg";
             console.log("owner:", owner);
-            const other = await this.userService.findOne(params.otherId);
             console.log("other: ", other);
+            newChan.name = name;
             newChan.isPrivate = true;
             newChan.users = [other, owner];
             newChan.nb_users = 2;
-            const toReturn = await this.chatRepository.save(newChan)
-            console.log(toReturn);
+            const chat = await this.chatRepository.save(newChan)
+            //const toReturn = await this.userContext(userId, chat.chat_id);
+            const toReturn = await this.chatRepository
+                                .createQueryBuilder('chanel')
+                                .leftJoinAndSelect('chanel.users', 'users')
+                                .select(['chanel.name', 'chanel.chat_id', 'chanel.isProtected'])
+                                .where('chanel.chat_id = :chat_id', {chat_id: chat.chat_id})
+                                .andWhere('chanel.isPrivate = :status', {status: true})
+                                .andWhere('users.user_id = :user_id', {user_id: userId})
+                                .getRawOne()
             return toReturn;
         }
-        //const newMute = new Mute();
+        const checkChanExist = await this.checkChanExist(params.name);
+        if (checkChanExist)
+            return 'Please choose another name this channel already exists';
         const newChan = new Chat();
         newChan.owner = owner;
         newChan.admins = [owner];
@@ -79,15 +117,29 @@ export class ChatService {
         newChan.nb_users = 1;
         if (params.protected == true)
         {
-            console.log("protected")
+            const salt = await bcrypt.genSalt();
+            newChan.pwd = await bcrypt.hash(params.pwd, salt); // hash chan's pwd
             newChan.isProtected = true;
-            newChan.pwd = params.pwd;
-            const toReturn = await this.chatRepository.save(newChan)
+            const chat = await this.chatRepository.save(newChan)
+            const toReturn = await this.chatRepository
+                                .createQueryBuilder('chanel')
+                                .leftJoinAndSelect('chanel.users', 'users')
+                                .select(['chanel.name', 'chanel.chat_id', 'chanel.isProtected'])
+                                .where('chanel.chat_id = :chat_id', {chat_id: chat.chat_id})
+                                .andWhere('users.user_id = :user_id', {user_id: userId})
+                                .andWhere('chanel.isPrivate = :status', {status: false})
+                                .getRawOne()
             return toReturn;
         }
-        //newChan.isProtected = false;
-        console.log("public")
-        const toReturn = await this.chatRepository.save(newChan)
+        const chat = await this.chatRepository.save(newChan)
+        const toReturn = await this.chatRepository
+                                .createQueryBuilder('chanel')
+                                .leftJoinAndSelect('chanel.users', 'users')
+                                .select(['chanel.name', 'chanel.chat_id', 'chanel.isProtected'])
+                                .where('chanel.chat_id = :chat_id', {chat_id: chat.chat_id})
+                                .andWhere('users.user_id = :user_id', {user_id: userId})
+                                .andWhere('chanel.isPrivate = :status', {status: false})
+                                .getRawOne()
         return toReturn;
     }
 
@@ -183,6 +235,7 @@ export class ChatService {
         
         const banned = await this.rolesService.isBanned(userId, chanelId);
         let pwd = false;
+        let isProtected = chan.isProtected;
         const muted = await this.rolesService.isMuted(userId, chanelId);
         const owner = await this.rolesService.isOwner(userId, chanelId);
         const admin = await this.rolesService.isAdmin(userId, chanelId);
@@ -190,6 +243,7 @@ export class ChatService {
         const checkUser = await this.rolesService.isInChanel(userId, chanelId);
         if (checkUser == true)
             return {
+                isProtected,
                 banned,
                 pwd,
                 muted,
@@ -207,10 +261,14 @@ export class ChatService {
                                     .relation(Chat, "users")
                                     .of(newchan)
                                     .add(user)
+            let room = chan.chat_id.toString();
+            console.log("room  = ", room)
+            //this.socketService.socket.emit('notifChat', 'userInChan')
             console.log(user)
             console.log(result)
         }
         return {
+            isProtected,
             banned,
             pwd,
             muted,
@@ -220,7 +278,6 @@ export class ChatService {
     }
 
     async leaveChanel(userId: number, chanelId: number) {
-        //const user = await this.userService.findOne(userId);
         console.log("userId: ", userId);
         console.log("chanelId: ", chanelId);
         const user = await this.userRepository
@@ -235,13 +292,30 @@ export class ChatService {
             return `No such channel`;
         const chan = await this.findOne(chanelId);
         chan.nb_users--;
-        const newChan = await this.chatRepository.save(chan);
-        const result = await this.chatRepository
+        if ((await this.rolesService.isOwner(userId, chanelId)) == true)
+            chan.owner = null;
+        let newChan = await this.chatRepository.save(chan);
+    
+        if ((await this.rolesService.isAdmin(userId, chanelId)) == true)
+        {
+            await this.chatRepository
+            .createQueryBuilder()
+            .relation(Chat, "admins")
+            .of(newChan)
+            .remove(user)
+        }
+        await this.chatRepository
             .createQueryBuilder()
             .relation(Chat, "users")
             .of(newChan)
             .remove(user)
-        console.log(result);
+
+        let room = newChan.chat_id.toString();
+        console.log("room: ", room);
+        //this.socketService.socket.to(room).emit('notifChat', 'userInChan')
+        const result = this.getChannelInfo(chanelId)
+        console.log("chan infos after user leaving: ", result)
+
     }
 
     async toKick(userId: number, toBeKicked: number, chanelId: number) {
@@ -263,7 +337,7 @@ export class ChatService {
         const isOwner = await this.rolesService.isOwner(toBeKicked, chanelId);
         if (isOwner == true)
         return{
-            message: `You cannot ban ${toKick.nickname}, they are the owner of the channel`,
+            message: `You cannot kick ${toKick.nickname}, they are the owner of the channel`,
             kick: false
         } 
         await this.leaveChanel(toBeKicked, chanelId);
@@ -314,49 +388,75 @@ export class ChatService {
         const chanel = await this.findOne(chanelId);
         const user = await this.userService.findOne(UserId);
         const isInChan = await this.rolesService.isInChanel(UserId, chanelId)
-        if (pwd == chanel.pwd)
+        const isMatch = await bcrypt.compare(pwd, chanel.pwd)
+        console.log("isMatch: ", isMatch)
+        if (isMatch)
         {
             if (isInChan)
                 return `you are in ${chanel.name}`;
             chanel.nb_users += 1;
             const newchan = await this.chatRepository.save(chanel);
-            const result = await this.chatRepository
+            const result = await this.chatRepository 
                                     .createQueryBuilder()
                                     .relation(Chat, "users")
                                     .of(newchan)
                                     .add(user)
-            return `you are in ${chanel.name}`;
+            //return `you are in ${chanel.name}`;
+            return true;
         }
         else
-            return `Incorrect Password ${chanel.name}`;
+            return false;
+            //return `Incorrect Password ${chanel.name}`;
     }
 
     async getChanHistory(userId: number, chanelId: number) {
-        const chan = await this.userRepository
-                                .createQueryBuilder('user')
-                                .leftJoinAndSelect('user.chanel', 'chanel')
-                                .where('user.user_id = :id', {id: userId})
-                                .andWhere('chanel.chat_id = :id', {id: chanelId})
-                                .getOne()
+        const chan = await this.rolesService.getBlocked(userId)
+        console.log('blocked users: ', chan);
+        let blocked = [];
+        for (let i = 0; chan[i] &&  chan[i].blocked_user_id != null; i++) {
+            blocked[i] = chan[i].blocked_user_id;
+        }
+        console.log(blocked)
 
-        const history = await this.chatRepository
+        if (blocked.length > 0) // if the users blocked other users
+        {
+            console.log("if blocked:, ", blocked.length)
+            const history = await this.chatRepository
+                                .createQueryBuilder('chanel')
+                                .leftJoinAndSelect('chanel.messages', 'messages')
+                                .leftJoinAndSelect('messages.sender', 'sender')
+                                .where('chanel.chat_id = :id', {id: chanelId})
+                                .andWhere('sender.user_id NOT IN (:...blocked)', {blocked})
+                                .select(['messages.text', 'messages.createdAtTime', 'messages.createdAtDate','sender.user_id', 'sender.nickname'])
+                                .getRawMany()
+            console.log("hisotry of chan: ", history);
+            return {
+                history
+            }
+        }
+        else {
+            console.log("else blocked")
+            const history = await this.chatRepository
                                     .createQueryBuilder('chanel')
                                     .leftJoinAndSelect('chanel.messages', 'messages')
                                     .leftJoinAndSelect('messages.sender', 'sender')
+                                    //.leftJoinAndSelect('messages.createdAt', 'createdAt')
                                     .where('chanel.chat_id = :id', {id: chanelId})
-                                    .select(['messages.text', 'messages.createdAt', 'sender.user_id', 'sender.nickname'])
+                                    .select(['messages.text', 'messages.createdAtTime', 'messages.createdAtDate','sender.user_id', 'sender.nickname'])
                                     .getRawMany()
+        
         console.log("hisotry of chan: ", history);
         return {
             history
         }
+        }
     }
 
     /** MESSAGES */ 
-    async newMessage(userId: number, chanelId: number, text: string) {
+    async newMessage(userId: number, chanelId: number, text: string) : Promise<Message> {
         const isMuted = await this.rolesService.isMuted(userId, chanelId);
         if (isMuted == true)
-            return 'sorry you cannot send messages on the Chanel you are Muted'
+            return null
         const user = await this.userService.findOne(userId);
         const chanel = await this.chatRepository.findOne({
             where: {
@@ -369,7 +469,16 @@ export class ChatService {
         Mess.text = text;
         const newMess = await this.messRepository.save(Mess);
         console.log(newMess);
-        return 'Your message was succesfuly sent';
+        const returnMess = await this.chatRepository
+                                        .createQueryBuilder('chanel')
+                                        .leftJoinAndSelect('chanel.messages', 'messages')
+                                        .leftJoinAndSelect('messages.sender', 'sender')
+                                        //.leftJoinAndSelect('messages.createdAt', 'createdAt')
+                                        .where('chanel.chat_id = :id', {id: chanelId})
+                                        .andWhere('messages.mess_id = :mess_id', {mess_id: newMess.mess_id})
+                                        .select(['messages.text', 'messages.createdAtTime', 'messages.createdAtDate','sender.user_id', 'sender.nickname'])
+                                        .getRawOne() 
+        return returnMess;
     }
 
     async changePwd(userId: number, ChanelId: number, pwd: string)

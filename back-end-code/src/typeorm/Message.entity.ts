@@ -16,6 +16,14 @@ export class Message {
     @Column()
     text: string
 
-    @CreateDateColumn()
-    createdAt: Date;
+    @CreateDateColumn({
+        type: 'time',
+        precision: 0
+    })
+    createdAtTime: string;
+
+    @CreateDateColumn({
+        type: 'date'
+    })
+    createdAtDate: string;
 }

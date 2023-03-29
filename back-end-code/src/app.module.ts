@@ -1,4 +1,5 @@
-import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer,  } from '@nestjs/common';
+import { AuthorizationMiddleware } from './authorization.middleware';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -14,11 +15,15 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { typeOrmConfigAsync } from './config/typeorm.config';
 import { ProfileModule } from './profile/profile.module';
 import { MailModule } from './mail/mail.module';
-import { FriendsModule } from './friends/friends.module';
 import { AppGateway } from './app/app.gateway';
 import { GameService } from './game/game.service';
 import { ChatModule } from './chat/chat.module';
 import { GameController } from './game/game.controller';
+import { ScheduleModule } from '@nestjs/schedule'
+import { GameModule } from './game/game.module';
+import { JwtModule } from '@nestjs/jwt';
+import { SocketModule } from './socket/socket.module';
+import { RequestMethod } from '@nestjs/common';
 
 
 @Module({
@@ -28,20 +33,31 @@ import { GameController } from './game/game.controller';
     }),*/
     ConfigModule.forRoot({isGlobal: true}), // load and parse .env and imports it (true)
     TypeOrmModule.forRootAsync (typeOrmConfigAsync),
+    ScheduleModule.forRoot(),
     MailModule,
     AuthModule,
     UsersModule,
     ProfileModule,
     HttpModule,
-    FriendsModule,
     ChatModule,
+    GameModule,
+    JwtModule,
+    SocketModule
   ],
   controllers: [AppController, GameController],
-  providers: [AppService, AppGateway, GameService
+  providers: [AppService, AppGateway
     /*{
       provide: APP_GUARD,
       useClass: JwtAuthGuard
     }, */
   ],
+  //exports: [AppGateway]
 })
 export class AppModule {}
+/*export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(AuthorizationMiddleware)
+      .exclude('auth/(.*)')
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
+  }}*/

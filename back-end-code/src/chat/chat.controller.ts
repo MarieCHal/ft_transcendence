@@ -8,6 +8,13 @@ export class ChatController {
     constructor(private chatService: ChatService,
                 private rolesService: RolesService) {}
 
+    @Get('isMuted/:id')
+    @UseGuards(JwtAuthGuard)
+    async getMuted(@Param('id') id: any, @Request() req: any) {
+        //console.log('req.body: ')
+        return this.rolesService.isMuted(req.user.user_id, id)
+    }
+
     @Post('create')
     @UseGuards(JwtAuthGuard)
     async createChannel (@Request() req: any) {
@@ -58,7 +65,8 @@ export class ChatController {
     @UseGuards(JwtAuthGuard)
     async quitChan(@Request() req: any) {
         console.log("quit chan: ", req.body.chanelId);
-        return await this.chatService.leaveChanel(req.user.user_id, req.body.chanelId)
+        await this.chatService.leaveChanel(req.user.user_id, req.body.chanelId)
+        return await this.chatService.getMyChans(req.user.user_id);
     }
 
     // for test
@@ -75,12 +83,13 @@ export class ChatController {
         return await this.chatService.newMessage(req.user.user_id, id, req.body.text);
     }
 
+    // to remove
     @Get('chanels/:id')
     @UseGuards(JwtAuthGuard)
     async getChans(@Param('id') id: any, @Request() req: any) {
         console.log(req.user.user_id)
         console.log("chanel id:", id);
-        return await this.chatService.getChannelInfo(req.user.user_id, id);
+        return await this.chatService.getChannelInfo(id);
     }
 
     @Get('users/:id')
@@ -126,7 +135,7 @@ export class ChatController {
     }
 
     // to remove
-    @Get('allBlocked')
+    @Get('blocked')
     @UseGuards(JwtAuthGuard)
     async getMyblocked(@Request() req: any) {
         return await this.rolesService.getBlocked(req.user.user_id)

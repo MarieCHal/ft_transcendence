@@ -7,11 +7,15 @@ import { User } from 'src/typeorm';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersService } from 'src/users/users.service';
 import { RolesService } from './roles.service';
+import { AppGateway } from 'src/app/app.gateway';
+import { SocketService } from 'src/socket/socket.service';
+
+
 
 
 @Module({
   imports: [TypeOrmModule.forFeature([User, Chat, Friends, Message, Mute])],
-  providers: [ChatService,  UsersService, RolesService],
+  providers: [ChatService,  UsersService, RolesService, SocketService],
   controllers: [ChatController],
   exports: [ChatService]
 })
