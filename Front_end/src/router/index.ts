@@ -1,25 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router'
-
+import store  from '../store';
 import HomeView from '../views/HomeView.vue'
 import UsersView from '../views/UsersView.vue'
-import PlayView from '../views/PlayView.vue'
-import ChanView from '../views/ChatView.vue'
-import ProfileView from '../views/ProfileView.vue'
 import ProfileUserView from '../views/ProfileUserView.vue'
-import ProfileModifView from '../views/ProfileModifView.vue'
-import LoginView from '../views/LoginView.vue'
-import DashBoardChan from '../views/DashBoardChatView.vue'
-import CodeChatView from '../views/CodeChatView.vue'
+import ProfileUserMeView from '../views/ProfileUserMeView.vue'
+import DashBoardChat from '../views/DashBoardChatView.vue'
 import CreateChan from '../views/CreateChanView.vue'
-import store  from '../store';
-    
-function isAuthenticated(){
-  let isConnect = store.getters.getAuthenticated;
-  if (isConnect == true)
-    return true;
-  else
-    return false;
-}
+import ChanView from '../views/ChatView.vue'
+import PlayView from '../views/PlayView.vue'
+import PlayStartView from '../views/PlayStartView.vue'
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,134 +22,64 @@ const router = createRouter({
     {
       path: '/register',
       name: 'register',
-      component: LoginView
+      component: HomeView
     },
     {
-      path: '/Users',
+      path: '/users',
       name: 'users',
       component: UsersView
-      /*beforeEnter:(to, from, next) => {
-        console.log(isAuthenticated());
-        if(isAuthenticated() == true){
-          next();
-        }
-        else {
-          next({ name: 'register' });
-        }
-      }*/
     },
     {
       path: '/Play',
       name: 'play',
       component: PlayView,
-      /*beforeEnter:(to, from, next) => {
-        console.log(isAuthenticated());
-        if(isAuthenticated() == true){
-          next();
-        }
-        else {
-          next({ name: 'register' });
-        }
-      }*/
+    },
+    {
+      path: '/Play/start',
+      name: 'playStart',
+      component: PlayStartView,
+    },
+    {
+      path: '/profile/user',
+      name: 'profileUser',
+      component: ProfileUserView,
+    },
+    {
+      path: '/profile/me',
+      name: 'profileUserMe',
+      component: ProfileUserMeView,
+    },
+    {
+      path: '/dashBoardChat',
+      name: 'dashBoardChat',
+      component: DashBoardChat,
     },
     {
       path: '/CreateChan',
       name: 'CreateChan',
       component: CreateChan,
-      /*beforeEnter:(to, from, next) => {
-        console.log(isAuthenticated());
-        if(isAuthenticated() == true){
-          next();
-        }
-        else {
-          next({ name: 'register' });
-        }
-      }*/
     },
     {
-      path: '/codeChat',
-      name: 'codeChat',
-      component: CodeChatView,
-      /*beforeEnter:(to, from, next) => {
-        console.log(isAuthenticated());
-        if(isAuthenticated() == true){
-          next();
-        }
-        else {
-          next({ name: 'register' });
-        }
-      }*/
-    },
-    {
-      path: '/dashBoardChan',
-      name: 'dashBoardChan',
-      component: DashBoardChan,
-      /*beforeEnter:(to, from, next) => {
-        console.log(isAuthenticated());
-        if(isAuthenticated() == true){
-          next();
-        }
-        else {
-          next({ name: 'register' });
-        }
-      }*/
-    },
-    {
-      path: '/Chat',
+      path: '/chat',
       name: 'chat',
       component: ChanView,
-      /*beforeEnter:(to, from, next) => {
-        console.log(isAuthenticated());
-        if(isAuthenticated() == true){
-          next();
-        }
-        else {
-          next({ name: 'register' });
-        }
-      }*/
     },
-    {
-      path: '/Profile',
-      name: 'profile',
-      component: ProfileView,
-      /*beforeEnter:(to, from, next) => {
-        console.log(isAuthenticated());
-        if(isAuthenticated() == true){
-          next();
-        }
-        else {
-          next({ name: 'register' });
-        }
-      }*/
-    },
-    {
-      path: '/ProfileUser',
-      name: 'profileuser',
-      component: ProfileUserView,
-      /*beforeEnter:(to, from, next) => {
-        console.log(isAuthenticated());
-        if(isAuthenticated() == true){
-          next();
-        }
-        else {
-          next({ name: 'register' });
-        }
-      }*/
-    },
-    {
-      path: '/Profile/modif',
-      name: 'profileModif',
-      component: ProfileModifView,
-      /*beforeEnter:(to, from, next) => {
-        console.log(isAuthenticated());
-        if(isAuthenticated() == true){
-          next();
-        }
-        else {
-          next({ name: 'register' });
-        }
-      }*/
-    }
   ]
+})
+
+router.beforeEach((to, from, next) => {
+  if(to.name !== 'home' && to.name !== 'register')
+  {
+    if(store.getters.getToken){
+      next();
+    }
+    else {
+      next({ name: 'register' });
+    }
+  }
+  else
+  {
+    next();
+  }
 })
 export default router

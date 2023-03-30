@@ -1,118 +1,88 @@
 <script setup lang="ts">
+    import formChanCode from "@/components/form/formChanCode.vue"
     import { useStore } from "vuex"
     import { onMounted } from 'vue'
     import { useRouter } from 'vue-router'
     import axios from 'axios'
-    import Cookies from 'js-cookie';
+    
     const router = useRouter();
     const store = useStore();
-
-    let codeChan = '';
-    let msgError = '';
-
+    
     onMounted(() => {
         getDashboard();
     });
     
     const getDashboard = async () => {
         try {
-            const headers = {"Authorization": `Bearer ${Cookies.get('auth_token')}`};
-            const response = await axios.get('http://c1r2s3:3000/chat/all', {headers});//recuperation des channel
+            const headers = {"Authorization": `Bearer ${store.getters.getToken}`};
+            const response = await axios.get('/chat/all', {headers});
+            console.log('data /chat/all on dashbord', response.data)
             store.commit('setChans', response.data);
+            store.commit('setChanId', 0);
         } catch (error: any) {
-            if (error.response.status != 200)
-            {
-            msgError = error.response.data.message ;
-            store.commit('setStatusCode', true);
-            }
-        }
-    }
-    
-    function getChansPublic(){
-        const chansPublic = store.getters.getChans;
-        if (chansPublic && chansPublic.chanels){
-            return chansPublic.chanels;
-        }
-        else{
-            return [];
-        }
-    }
-
-    function getChansJoined(){
-        const chansPublicJoined = store.getters.getChans;
-        if (chansPublicJoined && chansPublicJoined.chanels){
-            return chansPublicJoined.Mychanels;
-        }
-        else{
-            return [];
-        }
-    }
-    
-    function getChansPrivate(){
-        const chansPrivate = store.getters.getChans;
-        if (chansPrivate && chansPrivate.privMsg){
-            return chansPrivate.privMsg;
-        }
-        else{
-            return [];
+            console.log(error)
         }
     }
 
     const  clickChan = async (chan: any) =>{
         try {
-            const headers = {"Authorization": `Bearer ${Cookies.get('auth_token')}`};
-            const response = await axios.get(`http://c1r2s3:3000/chat/join/${chan.chanel_chat_id}`, {headers});//faire requete get pour recuperer info (isProtected, if banned, is mute)
+            const headers = {"Authorization": `Bearer ${store.getters.getToken}`};
+            const response = await axios.get(`/chat/join/${chan.chanel_chat_id}`, {headers});
             store.commit('setChanContext', chan);
+            console.log()
             store.commit('setUserContext', response.data);
-            console.log('user context = ', response.data);
+            console.log('data /chat/join on dashbord', response.data)
             const UserContext = store.getters.getUserContext;
             if (UserContext.banned){
                 alert("YOU ARE BANNED");
                 return ;
             }
-            if(chan.chanel_isProtected && UserContext == true){
-                router.push('/codeChat')
+            if(UserContext.pwd == true){
+                store.commit('setChanId', chan.chanel_chat_id);
             }
             else{
                 router.push("/chat");
             }
         } catch (error: any) {
+            console.log(error)
             
         }
     }
-
+    
     const quitChan = async (chan :any) =>{
-        const headers = {"Authorization": `Bearer ${Cookies.get('auth_token')}`};
-        const data = {
-            chanelId: chan.chanel_chat_id,
+        try {            
+            const headers = {"Authorization": `Bearer ${store.getters.getToken}`};
+            const data = {
+                chanelId: chan.chanel_chat_id,
+            }
+            const response = await axios.post(`/chat/quit`, data, {headers});
+            //store.commit('setUserContext', response.data.owner)
+            console.log('data /chat/quit on dashbord', response.data)
+            store.commit('setChans', response.data);
+        } 
+        catch (error) {
+            console.log(error);
         }
-        const response = await axios.post(`http://c1r2s3:3000/chat/quit`, data, {headers});
-        router.push('/dashBoardChan')
     }
-
+    
     function createMsg(){
-        router.push('/CreateChan');//a faire
+        router.push('/CreateChan');
     }
-
+    
     function createPrivMsg(){
-        router.push('/Users');//a faire
+        router.push('/users');
     }
-
-    function getStatusCode(){
-    return store.getters.getStatusCode;
-
-  }
 </script>
 
 <template>
     <div class="main-dashboard">
-        <h1 id="H1">CHANNEL</h1>
+        <h1 id="H1">My channel</h1>
         <div class="create-msg">
             <button id="plus" @click="createMsg()">
                 +
             </button>
         </div>
-        <div class="liste-chan-pub" v-for="(chanPublicJoined, index) in getChansJoined()" :key="index">
+        <div class="liste-chan-pub" v-for="(chanPublicJoined, index) in store.getters.getChans.Mychanels" :key="index">
             <button id="quitchan" @click="clickChan(chanPublicJoined)">
                 {{ chanPublicJoined.chanel_name }}
             </button>
@@ -120,11 +90,12 @@
                 -
             </button>
         </div>
-        <h1>other channel</h1>
-        <div class="liste-chan-pub" v-for="(chanPublicNotJoined, index) in getChansPublic()" :key="index">
+        <h1>Other channel</h1>
+        <div class="liste-chan-pub" v-for="(chanPublicNotJoined, index) in store.getters.getChans.chanels" :key="index">
             <button id="quitchan" @click="clickChan(chanPublicNotJoined)">
                 {{ chanPublicNotJoined.chanel_name }}
             </button>
+            <formChanCode v-if="store.getters.getUserContext.pwd == true && store.getters.getChanId == chanPublicNotJoined.chanel_chat_id" />
         </div>
         <h1>PrivMsg</h1>
         <div class="create-msg">
@@ -132,18 +103,19 @@
                 +
             </button>
         </div>
-        <div class="liste-privMsg" v-for="(chanPrivate, index) in getChansPrivate()" :key="index">
+        <div class="liste-privMsg" v-for="(chanPrivate, index) in store.getters.getChans.privMsg" :key="index">
             <button id="quitchan" @click="clickChan(chanPrivate)">
                 {{ chanPrivate.users_nickname }}
             </button>
-        </div>
-        <div id="statuscode" v-if="getStatusCode()">
-            <p> {{ msgError }} </p>
         </div>
     </div>
 </template>
 
 <style scoped lang="scss">
+.liste-chan-pub{
+}
+.liste-privMsg{
+}
 
 #plus{
     background-color: #007bff;
@@ -164,6 +136,7 @@
 .main-dashboard{
     display: flex;
     flex-direction: column;
+    width: 25rem;
     background-color: rgb(253, 253, 253);
     color: black;
 }

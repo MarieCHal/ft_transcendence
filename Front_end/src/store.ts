@@ -1,34 +1,96 @@
 import { createStore } from 'vuex'
-import { io } from 'socket.io-client';
 import createPersistedState from 'vuex-persistedstate'
-import Cookies from 'js-cookie';
+import { io } from 'socket.io-client';
+import { ref } from 'vue';
+
 const persistedState = createPersistedState({
-  paths: ['isAuthenticated', 'isDoubleAuth', 'isId', 'isAvatar', 'isNickname', 'isStatusCode', 'isUsers', 'isItIsMe']
-});
+  paths: [
+  'isToken',
+  'isDoubleAuth', 
+  'isId',
+  'isNickname',
+  'isAvatar',
+  'isBool',
+  'isCode',
+  'isBlockBool',
+  'isStatusCode',
+  'isTrigger',
+  'isWhat',
+  'isUserId',
+  'isAllUsers',
+  'isUsers',
+  'isOneUser',
+  'isUserContext',
+  'isUserBlocked',
+  'isUserAvatar',
+  'isArrayAvatar',//attention a lui
+  'isChanId',
+  'isChans',
+  'isChanContext',
+  'isChatHistory',
+  'isChatMessages',//attention a lui
+  'isNewMessage',//attention a lui
+  'isGoPlay',
+  'isRoom',
+  'isInvitePlay',
+  'isresultSocketOn',
+  'isBallX',
+  'isBallY',
+  'isScoreUser1',
+  'isScoreUser2',
+  'isUser1',
+  'isUser2',
+  'isInterval',
+  'isPlayer',
+  'isMe',
+  ]});
 
 const store = createStore({
   plugins: [persistedState],
+
   state: {
 
-    isAuthenticated: false,
+    //self
+    isToken: "", 
     isDoubleAuth: false,
-    isShowUsers: false,
-    isStatusCode: false,
-    isBool: false,
-    isTrigger: false,
-
-    isAvatar: "",
+    isId: 0,
     isNickname: "",
-    isNewChanel: "",
-    isUserAvatar: "",
+    isAvatar: "",
+    isMe: [],
+    //truc
+    isBool: false,
+    isCode: false,
+    isBlockBool: false,
+    isStatusCode: false,
+    isTrigger: false,//a verifier si exist
+    isWhat: "",
+    
+    //user
+    isUserId: 0,
+    isAllUsers: [],
+    isUsers: [],
+    isOneUser: [],
+    isUserContext: [],
+    isUserBlocked: [],
+    isUserAvatar: '',
+    isArrayAvatar: <any>[],//faire map si le temps
+    
+    //chan
+    isChanId: 0,
+    isChans: [],
+    isChanContext: [],
+    isChatHistory: [],
+    //isUsersInChan: [],
+    
+    //chat
+    isChatMessages: ref<string[]>([]),
+    isNewMessage: ref(''),
+
+    //pong
     isGoPlay: "",
     isRoom: "",
-    isInvitePlay: "",
-    
-    isId: 0,
-    isPlayer: 0,
-    isUserId: 0,
-    isresultSocketOn: 0,
+    isInvitePlay: "",//a verifier si exist
+    isresultSocketOn: 0,//a verifier si exist
     isBallX: 0,
     isBallY: 0,
     isScoreUser1: 0,
@@ -36,40 +98,37 @@ const store = createStore({
     isUser1: 0,
     isUser2: 0,
     isInterval: 0,
+    isPlayer: 0,
+    isMatchmaking: false,
+    isColorRect1: "",
+    isColorRect2: "",
+    isColorBall: "",
+    isColorBackGround: "",
+    isColorNet: "",
+    isColorText: "",
 
-    isUsers: [],
-    isItIsMe: [],
-    isChans: [],
-    isChanContext: [],
-    isUserContext: [],
-    isUserProfile: [],
-    isChanelUser: [],
-    isChatHistory: [],
+    //socket
+    isWebSocket: null,
 
-    isWebSocket: null
-    
+    //notif
+    isNameNotif: "",
+    isInvite: false,
+    isAcceptPlay: false,
   },
+
   mutations: {
-    setAuthenticated(state, isAuthenticated) {state.isAuthenticated = isAuthenticated},
-    setDoubleAuth(state, isDoubleAuth) {state.isDoubleAuth = isDoubleAuth},
-    setId(state, isId) {state.isId = isId},
-    setAvatar(state, isAvatar) {state.isAvatar = isAvatar},
-    setNickname(state, isNickname) {state.isNickname = isNickname},
-    setStatusCode(state,  isStatusCode) {state.isStatusCode =  isStatusCode},
-    setUsers(state,  isUsers) {state.isUsers =  isUsers},
-    setItIsMe(state,  isItIsMe) {state.isItIsMe =  isItIsMe},
-    setChans(state,  isChans) {state.isChans =  isChans},
-    setChanContext(state,  isChanContext) {state.isChanContext =  isChanContext},
-    setWebSocket(state, isWebSocket) {state.isWebSocket = isWebSocket;},
-    setNewChanel(state, isNewChanel) {state.isNewChanel = isNewChanel;},
-    setShowUsers(state, isShowUsers) {state.isShowUsers = isShowUsers;},
-    setUserContext(state, isUserContext) {state.isUserContext = isUserContext;},
-    setUserId(state, isUserId) {state.isUserId = isUserId;},
-    setUserProfile(state, isUserProfile) {state.isUserProfile = isUserProfile;},
-    setUserAvatar(state, isUserAvatar) {state.isUserAvatar = isUserAvatar;},
-    setChanelUser(state, isChanelUser) {state.isChanelUser = isChanelUser;},
-    setBool(state, isBool) {state.isBool = isBool;},
-    setChatHistory(state, isChatHistory) {state.isChatHistory = isChatHistory;},
+    setColorRect1(state, isColorRect1) {state.isColorRect1 = isColorRect1;},
+    setColorRect2(state, isColorRect2) {state.isColorRect2 = isColorRect2;},
+    setColorBall(state, isColorBall) {state.isColorBall = isColorBall;},
+    setColorBackGround(state, isColorBackGround) {state.isColorBackGround = isColorBackGround;},
+    setColorNet(state, isColorNet) {state.isColorNet = isColorNet;},
+    setColorText(state, isColorText) {state.isColorText = isColorText;},
+
+    setMe(state, isMe) {state.isMe = isMe;},
+    setAcceptPlay(state, isAcceptPlay) {state.isAcceptPlay = isAcceptPlay;},
+    setInvite(state, isInvite) {state.isInvite = isInvite;},
+    setMatchmaking(state, isMatchmaking) {state.isMatchmaking = isMatchmaking;},
+    setNameNotif(state, isNameNotif) {state.isNameNotif = isNameNotif;},
     setresultSocketOn(state, isresultSocketOn) {state.isresultSocketOn = isresultSocketOn;},
     setGoPlay(state, isGoPlay) {state.isGoPlay = isGoPlay;},
     setBallX(state, isBallX) {state.isBallX = isBallX;},
@@ -83,30 +142,55 @@ const store = createStore({
     setTrigger(state, isTrigger) {state.isTrigger = isTrigger;},
     setInterval(state, isInterval) {state.isInterval = isInterval;},
     setInvitePlay(state, isInvitePlay) {state.isInvitePlay = isInvitePlay;},
-
+    setStatusCode(state,  isStatusCode) {state.isStatusCode =  isStatusCode},
+    setChatMessages(state, isChatMessages){state.isChatMessages = isChatMessages},
+    setNewMessage(state, isNewMessage){state.isNewMessage = isNewMessage},
+    setToken(state, isToken){state.isToken = isToken},
+    setDoubleAuth(state, isDoubleAuth){state.isDoubleAuth = isDoubleAuth},
+    setId(state, isId){state.isId = isId},
+    setNickname(state, isNickname) {state.isNickname = isNickname},
+    setAvatar(state, isAvatar) {state.isAvatar = isAvatar},
+    setUserAvatar(state, isUserAvatar) {state.isUserAvatar = isUserAvatar},
+    setCode(state, isCode) {state.isCode = isCode},
+    setAllUsers(state, isAllUsers) {state.isAllUsers = isAllUsers},
+    setUsers(state, isUsers) {state.isUsers = isUsers},
+    setOneUser(state, isOneUser) {state.isOneUser = isOneUser},
+    setUserContext(state, isUserContext) {state.isUserContext = isUserContext},
+    setUserBlocked(state, isUserBlocked) {state.isUserBlocked = isUserBlocked},
+    setChanContext(state, isChanContext) {state.isChanContext = isChanContext},
+    setWhat(state, isWhat) {state.isWhat = isWhat},
+    setChanId(state, isChanId) {state.isChanId = isChanId},
+    setUserId(state, isUserId) {state.isUserId = isUserId},
+    setBool(state, isBool) {state.isBool = isBool},
+    setBlockBool(state, isBlockBool) {state.isBlockBool = isBlockBool},
+    setChatHistory(state, isChatHistory) {state.isChatHistory = isChatHistory},
+    //setUsersInChan(state, isUsersInChan) {state.isUsersInChan = isUsersInChan},
+    setChans(state,  isChans) {state.isChans =  isChans},
+    setWebSocket(state, isWebSocket) {state.isWebSocket = isWebSocket;},
+    setArrayAvatar(state, payload){
+      const {item, index} = payload;
+      state.isArrayAvatar[index] = item;
+    },
+    clearArray(state) {
+      state.isArrayAvatar = [];
+      //state.isOneUser= [];
+    },
   },
+
   getters: {
-    getAuthenticated: state => state.isAuthenticated,
-    getDoubleAuth: state => state.isDoubleAuth,
-    getId: state => state.isId,
-    getAvatar: state => state.isAvatar,
-    getNickname: state => state.isNickname,
-    getStatusCode: state => state.isStatusCode,
-    getUsers: state => state.isUsers,
-    getItIsMe: state => state.isItIsMe,
-    getChans: state => state.isChans,
-    getChanContext: state => state.isChanContext,
-    getWebSocket: state => state.isWebSocket,
-    getNewChanel: state => state.isNewChanel,
-    getShowUsers: state => state.isShowUsers,
-    getUserContext: state => state.isUserContext,
-    getUserId: state => state.isUserId,
-    getUserProfile: state => state.isUserProfile,
-    getUserAvatar: state => state.isUserAvatar,
-    getChanelUser: state => state.isChanelUser,
-    getBool: state => state.isBool,
-    getChatHistory: state => state.isChatHistory,
+    getColorRect1: state => state.isColorRect1,
+    getColorRect2: state => state.isColorRect2,
+    getColorBall: state => state.isColorBall,
+    getColorBackGround: state => state.isColorBackGround,
+    getColorNet: state => state.isColorNet,
+    getColorText: state => state.isColorText,
+
+    getMe: state => state.isMe,
+    getAcceptPlay: state => state.isAcceptPlay,
+    getInvite: state => state.isInvite,
+    getMatchmaking: state => state.isMatchmaking,
     getresultSocketOn: state => state.isresultSocketOn,
+    getNameNotif: state => state.isNameNotif,
     getGoPlay: state => state.isGoPlay,
     getBallX: state => state.isBallX,
     getBallY: state => state.isBallY,
@@ -119,15 +203,40 @@ const store = createStore({
     getTrigger: state => state.isTrigger,    
     getInterval: state => state.isInterval,
     getInvitePlay: state => state.isInvitePlay,
-    
-
+    getStatusCode: state => state.isStatusCode,
+    getChatMessages: state => state.isChatMessages,
+    getNewMessage: state => state.isNewMessage,
+    getToken: state => state.isToken,
+    getDoubleAuth: state => state.isDoubleAuth,
+    getId: state => state.isId,
+    getAvatar: state => state.isAvatar,
+    getUserAvatar: state => state.isUserAvatar,
+    getCode: state => state.isCode,
+    getNickname: state => state.isNickname,
+    getAllUsers: state => state.isAllUsers,
+    getUsers: state => state.isUsers,
+    getOneUser: state => state.isOneUser,
+    getUserContext: state => state.isUserContext,
+    getUserBlocked: state => state.isUserBlocked,
+    getChanContext: state => state.isChanContext,
+    getWhat: state => state.isWhat,
+    getChanId: state => state.isChanId,
+    getUserId: state => state.isUserId,
+    getBool: state => state.isBool,
+    getBlockBool: state => state.isBlockBool,
+    getChatHistory: state => state.isChatHistory,
+    //getUsersInChan: state => state.isUsersInChan,
+    getWebSocket: state => state.isWebSocket,
+    getArrayAvatar: (state) => (index: any) => {
+      return state.isArrayAvatar[index]
+    },
+    getChans: state => state.isChans,
   },
   actions: {
     initWebSocket({ commit }) {
-      const myId = store.getters.getId;
-      const webSocket = io('ws://c1r2s3:3000/', {
+      const webSocket = io('http://c1r2s3:4000/', {
         auth: {
-          token: Cookies.get("auth_token")
+          token: store.getters.getToken,
         }
       });
 
@@ -139,6 +248,12 @@ const store = createStore({
       webSocket.on('disconnect', () => {
         console.log('Socket disconnected');
         commit('setWebSocket', null);
+      });
+
+      webSocket.on('notif', (nickname: string, invite: boolean, accept: boolean) =>{
+        commit('setNameNotif', nickname); // a qui on parle
+        commit('setInvite', invite); //es une invite ou un reponse
+        commit('setAcceptPlay', accept); //es accept ou refus
       });
     },
   }

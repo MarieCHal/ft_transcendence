@@ -1,219 +1,70 @@
-<script setup lang="ts">
-    import axios from 'axios'
-    import { useRouter } from 'vue-router'
-    import { useStore } from "vuex"
-    import { onMounted } from 'vue'
-    import stats from '../components/profileComponents/stats.vue'
-    import Cookies from 'js-cookie';
+<script  setup lang="ts">
+    //faire requete pour recuperer l'user sur le quel on a clicker
+    import capsuleUser from '@/components/capsuleUser.vue';
+    import friendRequest from "@/components/button/friendRequest.vue";
+    import sendMsg from '@/components/button/sendMsg.vue';
+    import playInvit from '@/components/button/playInvit.vue';
+    import bloquer from '@/components/button/bloquer.vue';
+    //import { useStore } from "vuex"
+    //const store = useStore();
+    //const user = store.getters.getOneUser;
 
-    const router = useRouter();
-    const store = useStore();
-    let UserAvatar = '';
-    const userContext = store.getters.getUserContext;
-    const userProfileContext = store.getters.getUserProfile;
-    const chanContext = store.getters.getChanContext;
-    onMounted(async () => {
-        const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}` };
-        const response = await axios.get(`http://c1r2s3:3000/users/profile/${store.getters.getUserId}`, {headers});//FAIRE TRY CATCH
-        store.commit('setUserProfile', response.data)
-    });
-    
-    const getAvatar = async () =>{
-        const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}` };
-        const response = await fetch(`http://c1r2s3:3000/users/avatar/${store.getters.getUserId}`, {headers});
-        const arrayBuffer = await response.arrayBuffer();
-        const blob = new Blob([arrayBuffer], { type: 'image/jpeg' });
-        const url = URL.createObjectURL(blob);
-        store.commit("setUserAvatar", url);
-    }
-    
-    getAvatar();
-
-    const bloquer = async () =>{
-        const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}` };
-        const data = {
-            otherId: store.getters.getUserId,
-            chanelId: chanContext.chanel_chat_id,
-        }
-        const response = await axios.post(`http://c1r2s3:3000/chat/block`, data, {headers})
-        router.push('/chat')
-        alert(response.data.message);
-    }
-
-    const muted = async () =>{
-            const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}` };
-            const data = {
-                otherId: store.getters.getUserId,
-                chanelId: chanContext.chanel_chat_id,
-            }
-            const response = await axios.post(`http://c1r2s3:3000/chat/mute`, data,  {headers})
-            if (response.data.muted == false){
-                router.push('/chat')
-                alert(response.data.message);
-            }
-            else{
-                router.push('/chat')
-                alert(response.data.message);
-            }
-        }
-
-    const banned = async () =>{
-            const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}` };
-            const data = {
-                otherId: store.getters.getUserId,
-                chanelId: chanContext.chanel_chat_id,
-            }
-            const response = await axios.post(`http://c1r2s3:3000/chat/bann`, data,  {headers})
-            if (response.data.ban == false){
-                router.push('/chat')
-                alert(response.data.message);
-            }
-            else{
-                router.push('/chat')
-                alert(response.data.message);
-            }
-        }
-
-    const kick = async () =>{
-        console.log("owner =", userContext.owner)
-        console.log("admin =", userContext.admin)
-            const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}` };
-            const data = {
-                otherId: store.getters.getUserId,
-                chanelId: chanContext.chanel_chat_id,
-            }
-            const response = await axios.post(`http://c1r2s3:3000/chat/kick`, data,  {headers})
-            if (response.data.kick == false){
-                router.push('/chat')
-                alert(response.data.message);
-            }
-            else{
-                router.push('/chat')
-                alert(response.data.message);
-            }
-        } 
-
-    const admin = async () =>{
-        if (!userContext.owner || !userContext.admin){
-            alert("YOU ARE NOT OWNER OR ADMIN")
-            return ;
-        }
-        else{
-            const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}` };
-            const data = {
-                otherId: store.getters.getUserId,
-                chanelId: chanContext.chanel_chat_id,
-            }
-           const response = await axios.post(`http://c1r2s3:3000/chat/admin`, data,  {headers})
-            if (response.data.admin == false){
-                router.push('/chat')
-                alert(response.data.message);
-            }
-            else{
-                router.push('/chat')
-                alert(response.data.message);
-            }
-        }
-    }
-    
-    const play = async () =>{
-        console.log("a faire")
-    }
-
-    const SendMsg = async(user: any) =>{
-        try{
-            const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}` };
-            const data = {private: true, name: "", otherId: user.users_user_id}
-            const response = await axios.post('http://c1r2s3:3000/chat/create', data,  {headers})
-            store.commit("setChanContext", user);
-            router.push('/chat');
-        }catch{
-            console.log("Erreur chatUsers")
-        }
-    }
-
-    const sendFriendRequest = async (userId: any) => {
-        const headers = { Authorization: `Bearer ${Cookies.get('auth_token')}` };
-        const data = {id: userId};
-        const response = await axios.post('http://c1r2s3:3000/users/friend-request', data, {headers})
-        .then(response => {
-            alert(response.data)
-            console.log('Demande d\'amis envoyée avec succès');
-        })
-        .catch(error => {
-            console.error('Erreur lors de l\'envoi de la demande d\'amis', error);
-        });
-    }
 </script>
 
 <template>
-    <div>
-        <div >
-            <img :src="store.getters.getUserAvatar"/>
-        </div>
-        <div id="nickname">
-          {{ store.getters.getUserProfile.user_nickname }} 
-        </div>
-        <div id="stat">
-            <stats />
-        </div>
-        <div v-if="userContext.owner || userContext.admin">
-            <button id="button" @click="bloquer()">
-                bloquer
-            </button>
-            <button id="button" @click="kick()">
-                kick
-            </button>
-            <button id="button" @click="muted()">
-                mute
-            </button>
-            <button id="button" @click="banned()">
-                ban
-            </button>
-            <button id="button" @click="admin()">
-                admin
-            </button>
-        </div>
+    <div class="card">
         <div>
-            <button id="button" @click="play()">
-                play
-            </button>
-            <button id="button" @click="sendFriendRequest(store.getters.getUserProfile.user_user_id)">
-                Friends
-            </button>
-            <button id="button" @click="SendMsg(userProfileContext)">
-                sendMsg
-            </button>
+            <capsuleUser />
         </div>
-    </div> 
+        <div class="userButton">
+            <friendRequest />
+            <sendMsg />
+            <playInvit />
+            <bloquer />
+        </div>
+    </div>
 </template>
 
 <style scoped lang="scss">
-  img{
-    width: 100px;
-    height: 100px;
-    display: block;
-    margin: auto;
-    border-radius: 50px;
-    background-color: #ffff00;
-  }
 
-#button{
-    padding: 5px 10px;
+
+button{
+    max-width: 100px;
+	height: 30px;
+	border-radius: none;
+	width: 65px;
+	color: rgb(122, 122, 122);
+	border: none;
+	letter-spacing: 1.5px;
+	font-family: 'emoji';
+    background:  none;
     margin: 5px;
-    border-radius: 5px;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
+    //background-color:  #06FFFF;
     cursor: pointer;
-    overflow: auto;
+}
+.userButton {
+        display: flex;
+        justify-content: flex-start; 
+        gap: 10px;
+        margin: 10px;
+        height: 100%;
+        border-top: 1px solid #06FFFF;
 }
 
-#stat, #nickname{
-    padding: 5px 10px;
-    margin: 5px;
-    color: rgb(250, 3, 3);
-
+.card {
+    position: static;
+    background-color: rgba(123, 211, 211, 0.098);
+    border-radius: 5px;
+    box-shadow: 3.5px 3.5px 9px rgba(79, 200, 209, 0.94);
+    padding: 20px;
+    transition: opacity 0.2s ease-in-out;
+    opacity: 0.8;
+    width: 40%;
+    max-width: 450px;
+    min-width: 340px;
 }
 
+.card:hover {
+    opacity: 1;
+}
 </style>
