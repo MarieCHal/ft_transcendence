@@ -6,6 +6,7 @@
     import { onMounted, ref, onUnmounted } from 'vue';
     import { useStore } from "vuex"
     import axios from 'axios';
+import router from "@/router";
 
     const store = useStore();
     const chatMessages = ref<any[]>([]);
@@ -28,6 +29,23 @@
         socket.on('chat', (message: any) => {
             chatMessages.value.push(message);
         });
+
+        socket.on('notifChat', async (msg: string)  => {
+          if (msg == 'userInChan'){
+            const response = await axios.get(`/chat/users/${store.getters.getChanContext.chanel_chat_id}`, {headers});
+            store.commit('setWhat', 'UsersInChan');
+            store.commit("setUsers", response.data.users);
+          }
+          else if (msg == 'userContext'){
+            const response = await axios.get(`/chat/join/${store.getters.getChanContext.chanel_chat_id}`, {headers});
+            store.commit('setUserContext', response.data);
+            if (store.getters.getUserContext.banned){
+              alert("YOU ARE BANNED");
+              router.push('dashBoardChat')
+            }
+          }
+          
+        })
     });
 
     onUnmounted(async () => {

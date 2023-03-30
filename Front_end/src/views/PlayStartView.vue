@@ -12,8 +12,8 @@
 </script>
 
 <template>
-    <customPong />
-    <pong />
+    <customPong v-if="!store.getters.getPlayStart"/>
+    <pong v-else/>
 </template>
 
 <style scoped lang="scss">

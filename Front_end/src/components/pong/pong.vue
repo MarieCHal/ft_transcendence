@@ -16,12 +16,12 @@
     const router = useRouter();
     const socket = store.getters.getWebSocket;
 
-    let colorRect1 = "WHITE"
-    let colorRect2 = "WHITE"
-    let colorBall = "WHITE"
-    let colorBackGround = "BLACK"
-    let colorNet = "WHITE"
-    let colorText = "WHITE"
+    let ColorRect1 = "WHITE"
+    let ColorRect2 = "WHITE"
+    let ColorBall = "WHITE"
+    let ColorBackGround = "BLACK"
+    let ColorNet = "WHITE"
+    let ColorText = "WHITE"
 
     function Quit(){
         socket.emit("game", store.getters.getRoom, "quit");
@@ -202,6 +202,7 @@
 onUnmounted (async () => {
     clearInterval(store.getters.getInterval);
     store.commit("setInterval", 0);
+    //store.commit('setPlayStart', false);
 });
 </script>
 

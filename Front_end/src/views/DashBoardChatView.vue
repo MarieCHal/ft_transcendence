@@ -29,6 +29,7 @@
             const headers = {"Authorization": `Bearer ${store.getters.getToken}`};
             const response = await axios.get(`/chat/join/${chan.chanel_chat_id}`, {headers});
             store.commit('setChanContext', chan);
+            console.log()
             store.commit('setUserContext', response.data);
             console.log('data /chat/join on dashbord', response.data)
             const UserContext = store.getters.getUserContext;

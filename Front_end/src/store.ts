@@ -73,7 +73,7 @@ const store = createStore({
     isUserContext: [],
     isUserBlocked: [],
     isUserAvatar: '',
-    isArrayAvatar: <any>[],
+    isArrayAvatar: <any>[],//faire map si le temps
     
     //chan
     isChanId: 0,
@@ -100,6 +100,12 @@ const store = createStore({
     isInterval: 0,
     isPlayer: 0,
     isMatchmaking: false,
+    isColorRect1: "",
+    isColorRect2: "",
+    isColorBall: "",
+    isColorBackGround: "",
+    isColorNet: "",
+    isColorText: "",
 
     //socket
     isWebSocket: null,
@@ -111,6 +117,13 @@ const store = createStore({
   },
 
   mutations: {
+    setColorRect1(state, isColorRect1) {state.isColorRect1 = isColorRect1;},
+    setColorRect2(state, isColorRect2) {state.isColorRect2 = isColorRect2;},
+    setColorBall(state, isColorBall) {state.isColorBall = isColorBall;},
+    setColorBackGround(state, isColorBackGround) {state.isColorBackGround = isColorBackGround;},
+    setColorNet(state, isColorNet) {state.isColorNet = isColorNet;},
+    setColorText(state, isColorText) {state.isColorText = isColorText;},
+
     setMe(state, isMe) {state.isMe = isMe;},
     setAcceptPlay(state, isAcceptPlay) {state.isAcceptPlay = isAcceptPlay;},
     setInvite(state, isInvite) {state.isInvite = isInvite;},
@@ -165,6 +178,13 @@ const store = createStore({
   },
 
   getters: {
+    getColorRect1: state => state.isColorRect1,
+    getColorRect2: state => state.isColorRect2,
+    getColorBall: state => state.isColorBall,
+    getColorBackGround: state => state.isColorBackGround,
+    getColorNet: state => state.isColorNet,
+    getColorText: state => state.isColorText,
+
     getMe: state => state.isMe,
     getAcceptPlay: state => state.isAcceptPlay,
     getInvite: state => state.isInvite,
