@@ -18,17 +18,20 @@ export class Chat {
     })
     pwd: string
 
-    // if set to true = privmsg
+    @Column('boolean', {default: false})
+    isDirect: boolean = false
+
+    // if set to true = private channel
     @Column('boolean', {default: false})
     isPrivate: boolean = false
+
 
     // true = protected by a password
     @Column('boolean', {default: false})
     isProtected: boolean = false
 
-    @Column()
+    @Column({default: 0})
     nb_users: number;
-
     
     @OneToMany(() => Message, (message) => message.chanel)
     messages: Message[];

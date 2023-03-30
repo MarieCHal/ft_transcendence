@@ -9,141 +9,134 @@ export class ChatController {
                 private rolesService: RolesService) {}
 
     @Get('isMuted/:id')
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     async getMuted(@Param('id') id: any, @Request() req: any) {
         //console.log('req.body: ')
-        return this.rolesService.isMuted(req.user.user_id, id)
+        return this.rolesService.isMuted(req.user, id)
     }
 
     @Post('create')
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     async createChannel (@Request() req: any) {
         console.log("create");
        console.log("body: ", req.body);
-       console.log("req.user.user_id: ", req.user.user_id);
-       return await this.chatService.createChanel(req.user.user_id, req.body);
+       console.log("req.user: ", req.user);
+       return await this.chatService.createChanel(req.user, req.body);
     }
 
     @Get('all')
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     async getAll(@Request() req: any) {
-        return await this.chatService.getMyChans(req.user.user_id);
+        return await this.chatService.getMyChans(req.user);
     }
 
     @Get('join/:id')
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     async getChan(@Param('id') id: any, @Request() req: any) {
         console.log("join id: ", id);
-        return await this.chatService.userContext(req.user.user_id, id);
+        return await this.chatService.userContext(req.user, id);
     }
 
     @Post('code')
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     async checkCodeChan(@Request() req: any)
     {
         console.log("chat/code: ", req.body);
-        return await this.chatService.checkChanPwd(req.user.user_id, req.body.chanId, req.body.checkCode);
+        return await this.chatService.checkChanPwd(req.user, req.body.chanId, req.body.checkCode);
     }
 
     @Post('pwd')
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     async pwdChan(@Request() req: any)
     {
         console.log("ped: ", req.body.chanelId)
         console.log("pwd: ", req.body.pwd)
-        return await this.chatService.changePwd(req.user.user_id, req.body.chanelId, req.body.pwd)
+        return await this.chatService.changePwd(req.user, req.body.chanelId, req.body.pwd)
     }
 
     @Delete('del/:id')
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     async gdelChan(@Param('id') id: any, @Request() req: any) {
         console.log("join id: ", id);
-        return await this.chatService.deleteChan(req.user.user_id, id);
+        return await this.chatService.deleteChan(req.user, id);
     }
 
     @Post('quit')
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     async quitChan(@Request() req: any) {
         console.log("quit chan: ", req.body.chanelId);
-        await this.chatService.leaveChanel(req.user.user_id, req.body.chanelId)
-        return await this.chatService.getMyChans(req.user.user_id);
+        await this.chatService.leaveChanel(req.user, req.body.chanelId)
+        return await this.chatService.getMyChans(req.user);
     }
 
     // for test
     @Get('history/:id')
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     async getHistory(@Param('id') id: any, @Request() req: any) {
-        return await this.chatService.getChanHistory(req.user.user_id, id);
+        return await this.chatService.getChanHistory(req.user, id);
     }
 
     //for test 
     @Post('message/:id')
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     async createMess(@Param('id') id: any, @Request() req: any) {
-        return await this.chatService.newMessage(req.user.user_id, id, req.body.text);
+        return await this.chatService.newMessage(req.user, id, req.body.text);
     }
 
     // to remove
     @Get('chanels/:id')
-    @UseGuards(JwtAuthGuard)
+    ////@UseGuards(JwtAuthGuard)
     async getChans(@Param('id') id: any, @Request() req: any) {
-        console.log(req.user.user_id)
+        console.log(req.user)
         console.log("chanel id:", id);
         return await this.chatService.getChannelInfo(id);
     }
 
     @Get('users/:id')
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     async getAllUsers(@Param('id') id: any, @Request() req: any) {
-        return await this.rolesService.getAllUsers(req.user.user_id, id);
+        return await this.rolesService.getAllUsers(req.user, id);
     }
 
     @Post('kick')
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     async kickUser(@Request() req: any) {
         console.log("kick: ", req.body);
-        return await this.chatService.toKick(req.user.user_id, req.body.otherId, req.body.chanelId)
+        return await this.chatService.toKick(req.user, req.body.otherId, req.body.chanelId)
     }
 
     @Post('bann')
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     async banUser(@Request() req: any) {
         console.log("ban: ", req.body);
-        return await this.chatService.toBan(req.user.user_id, req.body.otherId, req.body.chanelId)
+        return await this.chatService.toBan(req.user, req.body.otherId, req.body.chanelId)
     }
 
-    // to do
     @Post('mute')
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     async muteUser(@Request() req: any) {
         console.log("mute: ", req.body);
-        return await this.rolesService.toMute(req.user.user_id, req.body.otherId, req.body.chanelId);
+        return await this.rolesService.toMute(req.user, req.body.otherId, req.body.chanelId);
     }
 
     @Post('admin')
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     async adminUser(@Request() req: any) {
         console.log("admin: ", req.body);
-        return await this.rolesService.toAdmin(req.user.user_id, req.body.otherId, req.body.chanelId)
+        return await this.rolesService.toAdmin(req.user, req.body.otherId, req.body.chanelId)
     }
 
     @Post('block')
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     async blockUser(@Request() req: any) {
         console.log(req.body.otherId);
-        return this.rolesService.blockUser(req.user.user_id, req.body.otherId);
+        return this.rolesService.blockUser(req.user, req.body.otherId);
     }
 
-    // to remove
     @Get('blocked')
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     async getMyblocked(@Request() req: any) {
-        return await this.rolesService.getBlocked(req.user.user_id)
-    }
-
-    @Get('myHistory/:id')
-    @UseGuards(JwtAuthGuard)
-    async getMyHistory(@Request() req: any) {
+        return await this.rolesService.getBlocked(req.user)
     }
 
 }

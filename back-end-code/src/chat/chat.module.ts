@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { ChatController } from './chat.controller';
-import { Friends, Message, Mute } from 'src/typeorm';
+import { Friends, MatchHistory, Message, Mute } from 'src/typeorm';
 import { Chat } from 'src/typeorm';
 import { User } from 'src/typeorm';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -14,7 +14,7 @@ import { SocketService } from 'src/socket/socket.service';
 
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Chat, Friends, Message, Mute])],
+  imports: [TypeOrmModule.forFeature([User, Chat, Friends, Message, Mute, MatchHistory])],
   providers: [ChatService,  UsersService, RolesService, SocketService],
   controllers: [ChatController],
   exports: [ChatService]

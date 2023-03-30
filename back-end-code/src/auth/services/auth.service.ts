@@ -30,7 +30,7 @@ export class AuthService {
      * -> if it doesn't it will create a new user using the infos returned by the api
      * -> it will then link the user (new or old) to the state
      */
-    async registerUser(apiToken: any, state: string) {
+    async registerUser(apiToken: any) {
         try {
             const {data} = await firstValueFrom(this.httpService.get(`https://api.intra.42.fr/v2/me`,
             {

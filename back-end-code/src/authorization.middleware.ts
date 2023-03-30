@@ -12,7 +12,7 @@ export class AuthorizationMiddleware implements NestMiddleware{
       private usersService: UsersService,
       private configService: ConfigService
    ){}  
-   async use(req: Request, res: Response, nest: NextFunction){
+   async use(req: Request, res: Response, next: NextFunction){
       // get token and decode or any custom auth logic
       let token = req.headers.authorization;
       let cleanToken = token.replace('Bearer','').trim();
@@ -26,7 +26,7 @@ export class AuthorizationMiddleware implements NestMiddleware{
       console.log("token secret: ", this.configService.get('APP_SECRET'))
       let userToken = this.jwtService.verify(
          cleanToken, {
-           secret: 'coucou'
+           secret: this.configService.get('APP_SECRET')
          }
        );
       console.log("token: ", userToken)
@@ -35,6 +35,6 @@ export class AuthorizationMiddleware implements NestMiddleware{
          throw new UnauthorizedException;
       console.log("user in middleware: ", user)
       req.user = user;
-      //next(); 
+      next(); 
    }
 }

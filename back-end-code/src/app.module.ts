@@ -11,14 +11,11 @@ import { join } from 'path';
 import { HttpModule } from '@nestjs/axios';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
-import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { typeOrmConfigAsync } from './config/typeorm.config';
 import { ProfileModule } from './profile/profile.module';
 import { MailModule } from './mail/mail.module';
 import { AppGateway } from './app/app.gateway';
-import { GameService } from './game/game.service';
 import { ChatModule } from './chat/chat.module';
-import { GameController } from './game/game.controller';
 import { ScheduleModule } from '@nestjs/schedule'
 import { GameModule } from './game/game.module';
 import { JwtModule } from '@nestjs/jwt';
@@ -44,7 +41,7 @@ import { RequestMethod } from '@nestjs/common';
     JwtModule,
     SocketModule
   ],
-  controllers: [AppController, GameController],
+  controllers: [AppController],
   providers: [AppService, AppGateway
     /*{
       provide: APP_GUARD,
@@ -53,11 +50,11 @@ import { RequestMethod } from '@nestjs/common';
   ],
   //exports: [AppGateway]
 })
-export class AppModule {}
-/*export class AppModule implements NestModule {
+//export class AppModule {}
+export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthorizationMiddleware)
       .exclude('auth/(.*)')
       .forRoutes({ path: '*', method: RequestMethod.ALL });
-  }}*/
+  }}

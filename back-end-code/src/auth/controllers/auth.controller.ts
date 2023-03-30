@@ -1,13 +1,11 @@
 import { Controller, Get, Request, Post, UseGuards, Body, ValidationPipe, UsePipes, UnauthorizedException } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { LocalStrategy } from '../strategy/local.strategy';
-import { LocalAuthGuard } from '../guards/local_auth.guard';
 import { AuthService } from '../services/auth.service';
-import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { Public } from 'src/public';
-import { LoginUserDto } from '../dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
 import { ProfileService } from 'src/profile/profile.service';
+import { HttpService } from '@nestjs/axios';
+import { catchError, firstValueFrom } from 'rxjs';
+import { AxiosError } from 'axios';
 
 
 
@@ -15,10 +13,11 @@ import { ProfileService } from 'src/profile/profile.service';
 export class AuthController {
     constructor(private authService: AuthService,
         private profileService: ProfileService,
-        private jwtService: JwtService) {}
+        private jwtService: JwtService,
+        private readonly httpService: HttpService,) {}
 
     // to remove
-    @Public()
+    //@Public()
     @Post('token')
     async test(@Body() body: any) {
         const payload = {username: 'marie', sub: body.id};
@@ -29,7 +28,7 @@ export class AuthController {
     }
 
     // to remove
-    @Public()
+    //@Public()
     @Post('test')
     async createUSer(@Body() body: any) {
         console.log("test");
@@ -38,18 +37,34 @@ export class AuthController {
         return await this.authService.generateAccessToken(newUSer)
     }
 
-    @UseGuards(JwtAuthGuard)
-    @Get('test')
-    testtest(@Request() req: any ){
-        console.log(req.user)
-    }
-
-    @Public()
+    //@Public()
     //@UseGuards(LocalAuthGuard)
     @Post('code')
     async DoubleAuthentification(@Request() req: any) {
         console.log("this is the req.body:", req.body);
         return this.authService.checkDoubleAuthCode(req.body.nickname, req.body.codeMail);
     }
+
+    @Post('wellcome')
+    async helloFriend( @Body() body: any) {
+    console.log(body.code)
+    //console.log("body state:", body.state)
+    const {data} = await firstValueFrom(this.httpService.post(`https://api.intra.42.fr/oauth/token`, {
+            grant_type: 'authorization_code',
+            client_id: process.env.CLIENT_ID,
+            client_secret: process.env.CLIENT_SECRET,
+            code: body.code,
+            redirect_uri: 'http://localhost:5173/register',
+        }).pipe(
+          catchError((error: AxiosError) => {
+            console.error(error.response.data);
+            throw 'An error has happened! ' 
+          })
+        )
+      )
+    console.log("data: ", data);
+
+    return this.authService.registerUser(data.access_token);
+  }
 
 }

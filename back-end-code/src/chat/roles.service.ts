@@ -15,74 +15,65 @@ export class RolesService {
      @InjectRepository(User) private readonly userRepository: Repository<User>,
      @InjectRepository(Mute) private readonly muteRepository: Repository<Mute>,
     private userService: UsersService,
-    //private chatService: ChatService
     ) {}
     
-    async isOwner(userId: number, chanelId: number) {
+    async isOwner(user: User, chanelId: number) {
         const isOwner = await this.chatRepository
                                 .createQueryBuilder('chat')
                                 .leftJoinAndSelect('chat.owner', 'owner')
                                 .where('chat.chat_id = :id', {id: chanelId})
-                                .andWhere('owner.user_id = :user_id', {user_id: userId})
+                                .andWhere('owner.user_id = :user_id', {user_id: user.user_id})
                                 .getRawOne()
-        console.log("isOwner: ", isOwner);
         if (isOwner)
             return true;
         else
             return false;
     }
 
-    async isBanned(userId: number, chanelId: number) {
+    async isBanned(user: User, chanelId: number) {
         console.log(chanelId);
-        console.log("user_id", userId);
         const isBanned = await this.chatRepository.createQueryBuilder('chat')
                                     .leftJoinAndSelect('chat.banned', 'banned')
                                     .select(['banned.user_id'])
                                     .where('chat.chat_id = :chat_id', {chat_id: chanelId})
-                                    .andWhere('banned.user_id = :user_id', {user_id: userId})
+                                    .andWhere('banned.user_id = :user_id', {user_id: user.user_id})
                                     .getRawOne()
 
-    console.log("isBanned: ", isBanned)
+    //console.log("isBanned: ", isBanned)
     if (isBanned)
         return true;
     return false;
     }
 
-   async isAdmin(userId: number, chanelId: number) {
+   async isAdmin(user: User, chanelId: number) {
     const isAdmin = await this.chatRepository
                 .createQueryBuilder('chat')
                 .leftJoinAndSelect('chat.admins', 'admins')
                 .select('admins.user_id')
                 .where('chat.chat_id = :chat_id', {chat_id: chanelId})
-                .andWhere('admins.user_id = :user_id', {user_id: userId})
+                .andWhere('admins.user_id = :user_id', {user_id: user.user_id})
                 .getRawOne()
 
-    console.log("isAdmin: ", isAdmin);
     if (isAdmin)
         return true;
     return false;
     }
 
-    async isMuted(userId: number, chanelId: number)
+    async isMuted(user: User, chanelId: number)
     {
         const now = new Date();
         const time = 30000; // 30 sec in millisec
-        console.log('now: ', now);
+        //console.log('now: ', now);
         const muted = await this.muteRepository.createQueryBuilder('muted')
                                     .leftJoinAndSelect('muted.users', 'users')
                                     .leftJoinAndSelect('muted.chat', 'chat')
-                                    .where('users.user_id = :user_id', {user_id: userId})
+                                    .where('users.user_id = :user_id', {user_id: user.user_id})
                                     .andWhere('chat.chat_id = :chat_id', {chat_id: chanelId})
                                     .getOne()
-        console.log("muted: ", muted)
         if (muted == null)
             return false
-        console.log("createdat in isMusted: ", muted)
 
         const diff = now.getTime() - muted.createdAt.getTime();
-        console.log('diff: ', diff);
-        console.log('chan: ', muted.createdAt.getTime());
-        console.log('now: ', now.getTime());
 
         const chan = await this.chatRepository.findOne({
             where: {
@@ -103,26 +94,26 @@ export class RolesService {
         return true
     }
 
-    async isInChanel(userId: number, chanelId: number) {
+    async isInChanel(user: User, chanelId: number) {
         const isChanel = await this.chatRepository
                     .createQueryBuilder('chat')
                     .leftJoinAndSelect('chat.users', 'users')
                     .where('chat.chat_id = :id', {id: chanelId})
-                    //.andWhere('admins.user_id = :id', {id: userId})
+                    //.andWhere('admins.user_id = :id', {id: user.user_id})
                     .getRawMany()
     
         //console.log("isChanel: ", isChanel)
         for (let i = 0; isChanel[i]; i++)
         {
-           if (isChanel[i].users_user_id == userId)
+           if (isChanel[i].users_user_id == user.user_id)
                 return true
         }
             return false;
     }
 
 
-    async getAllUsers(userId: number, chanelId: number) {
-        const isInChan = await this.isInChanel(userId, chanelId);
+    async getAllUsers(user: User, chanelId: number) {
+        const isInChan = await this.isInChanel(user, chanelId);
         if (isInChan == false)
             return "Sorry, you can't access that data, you are not part of this channel";
         const users = await this.chatRepository
@@ -131,7 +122,7 @@ export class RolesService {
                                     .leftJoinAndSelect('user.stats', 'stats')
                                     .select(['user.user_id', 'user.nickname', 'user.isActive', 'user.stats'])
                                     .where('chanel.chat_id = :chat_id', {chat_id: chanelId})
-                                    .andWhere('user.user_id != :user_id', {user_id: userId})
+                                    .andWhere('user.user_id != :user_id', {user_id: user.user_id})
                                     .getRawMany()
         console.log("chanel users: ", users);
         return {
@@ -139,19 +130,19 @@ export class RolesService {
         }
     }
 
-    async toAdmin(userId: number, toBeAdmin: number, chanelId: number)
+    async toAdmin(user: User, toBeAdmin: number, chanelId: number)
     {
-        console.log("userId: ", userId)
+        console.log("user.user_id: ", user.user_id)
         console.log("otherId: ", toBeAdmin)
         console.log("chanelId: ", chanelId)
         const toAdmin = await this.userService.findOne(toBeAdmin);
-        const isAlready = await this.isAdmin(toBeAdmin, chanelId);
+        const isAlready = await this.isAdmin(toAdmin, chanelId);
         if (isAlready == true)
             return {
                 message: `${toAdmin.nickname} is already an Admin`
             }
         
-        const isAllowed = await this.isAdmin(userId, chanelId);
+        const isAllowed = await this.isAdmin(user, chanelId);
         const chan = await this.chatRepository.findOne({
             where : {
                 chat_id: chanelId
@@ -175,13 +166,13 @@ export class RolesService {
         }
     }
 
-    async toMute(userId: number, toBemute: number, chanelId: number) {
-        console.log("userId: ", userId)
+    async toMute(user: User, toBemute: number, chanelId: number) {
+        console.log("user.user_id: ", user.user_id)
         console.log("otherId: ", toBemute)
         console.log("chanelId: ", chanelId)
         const toMute = await this.userService.findOne(toBemute);
         
-        const isAllowed = await this.isAdmin(userId, chanelId);
+        const isAllowed = await this.isAdmin(user, chanelId);
 
         const chat = await this.chatRepository.findOne({
             where: {
@@ -208,54 +199,49 @@ export class RolesService {
         }
     }
 
-    async isBlocked(userId: number, otherId: number) {
-        console.log("userId: ", userId)
-        console.log("otherId: ", otherId)
-
+    async isBlocked(user: User, otherId: number) {
         const isBlocked = await this.userRepository
                                     .createQueryBuilder('user')
                                     .leftJoinAndSelect('user.blocked', 'blocked')
                                     .select('blocked')
-                                    .where('user.user_id = :user_id', {user_id: userId})
+                                    .where('user.user_id = :user_id', {user_id: user.user_id})
                                     .andWhere('blocked.user_id = :blocked_id', {blocked_id: otherId})
                                     .getRawOne()
-        console.log("isBlocked", isBlocked)
         if (isBlocked)
             return true
         else
             return false
     }
 
-    // remove otherId from the userId's list of blocked users
-    async unBlock(userId: number, otherId: number) {
-         const user = await this.userRepository.createQueryBuilder('user')
+    // remove otherId from the user.user_id's list of blocked users
+    async unBlock(user: User, otherId: number) {
+         const user_blocked = await this.userRepository.createQueryBuilder('user')
                                     .leftJoinAndSelect('user.blocked', 'blocked')
-                                    .where('user.user_id = :user_id', {user_id: userId})
+                                    .where('user.user_id = :user_id', {user_id: user.user_id})
                                     .andWhere('blocked.user_id = :other_id', {other_id: otherId})
                                     .getOne()
 
         const other = await this.userService.findOne(otherId)
-        if (!user)
+        if (!user_blocked)
             return `User ${other.nickname} isn't blocked`;
         const remove = await this.userRepository.createQueryBuilder()
                                     .relation(User, "blocked")
                                     .of(user)
+                                    //.of(user_blocked)
                                     .remove(other)
         console.log(remove)
         return remove;
     }
 
-    // adds otherId to userId's list of blocked users
-    async blockUser(userId: number, otherId: number) {
-        const checkBlock = await this.isBlocked(userId, otherId)
-
-        const user = await this.userService.findOne(userId);
+    // adds otherId to user.user_id's list of blocked users
+    async blockUser(user: User, otherId: number) {
+        const checkBlock = await this.isBlocked(user, otherId)
 
         const other = await this.userService.findOne(otherId);
         if (checkBlock == true)
         {
-            await this.unBlock(userId, otherId);
-            const blocked = await this.getBlocked(userId);
+            await this.unBlock(user, otherId);
+            const blocked = await this.getBlocked(user);
             return {
                 blocked,
                 message: `you removed ${other.nickname} from your blocked contact`
@@ -266,20 +252,20 @@ export class RolesService {
                                     .relation(User, "blocked")
                                     .of(user)
                                     .add(other)
-        const blocked = await this.getBlocked(userId);
+        const blocked = await this.getBlocked(user);
         return {
             message: `you successfully blocked ${other.nickname}`,
             blocked: blocked
         }
     }
 
-    // returns an array containing the ids of the users blocked by userId
-    async getBlocked(userId: number) {
+    // returns an array containing the ids of the users blocked by user.user_id
+    async getBlocked(user: User) {
         const blocked = await this.userRepository
                                 .createQueryBuilder('user')
                                 .leftJoinAndSelect('user.blocked', 'blocked')
                                 .select('blocked.user_id')
-                                .where('user.user_id = :user_id', {user_id: userId})
+                                .where('user.user_id = :user_id', {user_id: user.user_id})
                                 .getRawMany();
         return blocked
     }

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { User } from 'src/typeorm';
+import { Stats, User } from 'src/typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { config } from 'process'; 
@@ -25,26 +25,27 @@ export class ProfileService {
                 }
             })
             user.nickname = 'user' + user.user_id;
-            await this.usersRepository.save(user);
+            user.stats = new Stats()
+            const userSave = await this.usersRepository.save(user);
+
+            /*const stat = new Stats()
+            stat.user = userSave*/
             console.log(user.nickname);
             return user;
     }
     
 
-    async modifyNickname(nickname: string, userId: number) 
+    async modifyNickname(nickname: string, user: User) 
     {
-        const user = await this.usersRepository.findOne({
+        const other = await this.usersRepository.findOne({
             where: { 
                 nickname: nickname
             }
         })
-        if (!user)
+        if (!other)
         {
-            const updateUser = await this.usersRepository.findOneBy({
-                user_id: userId
-            })
-            updateUser.nickname = nickname;
-            await this.usersRepository.save(updateUser);
+            user.nickname = nickname;
+            await this.usersRepository.save(user);
             return "Your nickname is changed"
         }
         return {
@@ -52,17 +53,10 @@ export class ProfileService {
             message: "Nickname already taken" };
     }
 
-    async modifyAvatar(avatar: string, userId: number)
+    async modifyAvatar(avatar: string, user: User)
     {
-        const updateUser = await this.usersRepository.findOne({
-            where: {
-                user_id: userId
-            }
-        })
-        console.log(updateUser.avatar)
-        updateUser.avatar = avatar;
-        const newPic = await this.usersRepository.save(updateUser);
-        console.log(newPic);
+        user.avatar = avatar;
+        await this.usersRepository.save(user);
         return "Your avatar is changed"
     }
 }

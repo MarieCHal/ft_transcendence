@@ -2,26 +2,29 @@ import { Injectable, StreamableFile } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {Friends, User } from 'src/typeorm';
 import { Not, Repository } from 'typeorm';
+import { MatchHistory } from 'src/typeorm';
 import { MailService } from 'src/mail/mail.service';
+
 
 @Injectable()
 export class UsersService {
     constructor (
         @InjectRepository(User) private usersRepository: Repository<User>,
         @InjectRepository(Friends) private friendsRepository: Repository<Friends>,
+        @InjectRepository(MatchHistory) private matchHistory: Repository<MatchHistory>
     ) {}
 
-    
-    async findAll(userId: number) {
+    /** @summary returns all users excepted yourself in public mode */
+    async findAll(user: User) {
         const users = await this.usersRepository
-        .createQueryBuilder("user")
-        .leftJoinAndSelect("user.stats", "stats")
-        .select(['user.user_id', 'user.nickname', 'user.isActive', 'stats'])
-        .where("user.user_id != :id", {id: userId})
-        .getRawMany()
+                        .createQueryBuilder("user")
+                        .leftJoinAndSelect("user.stats", "stats")
+                        .select(['user.user_id', 'user.nickname', 'user.isActive', 'stats'])
+                        .where("user.user_id != :id", {id: user.user_id})
+                        .getRawMany()
         console.log(users);
-        const friends = await this.getFriends(userId);
-        //const blocked = await this.getBlocked(userId);
+        const friends = await this.getFriends(user);
+        //const blocked = await this.getBlocked(user.user_id);
         console.log(friends);
         return {
             allUsers: users,
@@ -30,20 +33,22 @@ export class UsersService {
         }
     }
 
-    async getFriends(userId: number) {
+    /** @summary return an array of users in public mode corresponding to the user's friends*/
+    async getFriends(user: User) {
 
         const friends = await this.friendsRepository
                             .createQueryBuilder("friends")
                             .leftJoinAndSelect("friends.friend_one", "user")
                             .leftJoinAndSelect("user.stats", "stats")
                             .select(['user.user_id', 'user.nickname', 'user.isActive', 'stats'])
-                            .where("friends.friend_two = :id", {id: userId})
+                            .where("friends.friend_two = :id", {id: user.user_id})
                             .andWhere("friends.status = :status", {status: true})
                             .getRawMany()
         console.log(friends);
         return friends        
     }
 
+    /** @summary get one by id*/
     async findOne(id: number) {
         const user = await this.usersRepository.findOne({
             where: {
@@ -52,6 +57,8 @@ export class UsersService {
         })
         return user;
     }
+
+    /** @summary get one by nickname (used in app.gateway) */
     async findNickname(nickname: string) {
         const user = await this.usersRepository.findOne({
             where: {
@@ -61,15 +68,21 @@ export class UsersService {
         return user;
     }
 
-    async returnProfile(userID: number) {
+    /** @summary return a specific profile (public) */
+    async returnProfile(userId: number) {
         const user = await this.usersRepository
                                 .createQueryBuilder('user')
                                 .leftJoinAndSelect('user.stats', 'stats')
                                 .select(['user.nickname', 'user.user_id', 'user.isActive', 'stats'])
-                                .where('user.user_id = :id', {id: userID})
+                                .where('user.user_id = :id', {id: userId})
                                 .getRawOne()
-        return user;
+        const matchHistory = await this.returnMatch(user)
+        return {
+            user,
+            matchHistory
+        }
     }
+    
 
     /** @brief return the profile of the user itself, its stats, friends and friend request */
     async mySelf(id: number) {
@@ -87,36 +100,49 @@ export class UsersService {
                                         .andWhere("friends.friend_two = :user_id", {user_id: id})
                                         .select(['user.user_id', 'user.nickname'])
                                         .getRawMany()
+
+        const matchHistory = await this.returnMatch(me);
         console.log(friendRequests);
         return {
             me,
-            pending: friendRequests
+            pending: friendRequests,
+            matchHistory
         }
     }
 
-    async friendRequest(userId: number, friendId: number) { 
+    async returnMatch(user: User) {
+        const history = await this.matchHistory.createQueryBuilder('match')
+                                    .where('match.player1 = :player1_id', {player1_id: user.nickname})
+                                    .orWhere('match.player2 = :player2_id', {player2_id: user.nickname})
+                                    .getMany()
 
-        if (userId == friendId)
+        console.log("history return: ", history)
+        return history
+    }
+
+    /** @summary creates a new friend request if not yet existing (from user to friendId) */
+    async friendRequest(user: User, friendId: number) { 
+
+        if (user.user_id == friendId)
             "I hope you don't need to ask yourSelf to be friend with your own person"
 
-        const requester = await this.findOne(userId);
+        const requester = await this.findOne(user.user_id);
         const otherUser = await this.findOne(friendId);
 
         const oneWay = await this.friendsRepository
                         .createQueryBuilder('friends')
                         .leftJoinAndSelect('friends.friend_one', 'friend_one')
                         .where('friends.friend_one.user_id = :user_id', {user_id: friendId})
-                        .andWhere('friends.friend_two = :id', {id: userId})
+                        .andWhere('friends.friend_two = :id', {id: user.user_id})
                         .getOne()
         
         const otherWay = await this.friendsRepository
                         .createQueryBuilder('friends')
                         .leftJoinAndSelect('friends.friend_one', 'friend_one')
-                        .where('friends.friend_one.user_id = :user_id', {user_id: userId})
+                        .where('friends.friend_one.user_id = :user_id', {user_id: user.user_id})
                         .andWhere('friends.friend_two = :id', {id: friendId})
                         .getOne()
         
-        console.log("ways: ", otherWay, oneWay)
         if (oneWay || otherWay)
             return "You guys are already friends :))"
 
@@ -132,19 +158,18 @@ export class UsersService {
     /* accept a friend request, create new row in friend table with friend one being the personne that made the request
      * set the two rows corresponfin to the friendship to status = true
      */
-    async acceptFriendRequest(userId: number, friendId: number) {
+    async acceptFriendRequest(user: User, friendId: number) {
         console.log("l'autre: ", friendId)
-        console.log("moi: ", userId)
+        console.log("moi: ", user)
         const pending = await this.friendsRepository
                         .createQueryBuilder('friends')
                         .leftJoinAndSelect('friends.friend_one', 'friend_one')
                         .where('friends.friend_one.user_id = :user_id', {user_id: friendId})
-                        .andWhere('friends.friend_two = :id', {id: userId})
+                        .andWhere('friends.friend_two = :friend_id', {friend_id: user.user_id})
                         .getOne()
         
         console.log("friendReq in accept", pending);
         const newFriends = new Friends();
-        const user = await this.findOne(userId)
 
         newFriends.friend_one = user;
         newFriends.friend_two = pending.friend_one.user_id;
@@ -156,36 +181,37 @@ export class UsersService {
     }
 
     /** @brief reject a friend request and remove the corresponding row  */
-    async rejectFriendRequest(userId: number, friendId: number)
+    async rejectFriendRequest(user: User, friendId: number)
     {
         console.log("l'autre: ", friendId)
-        console.log("moi: ", userId)
+        console.log("moi: ", user.user_id)
         const pending = await this.friendsRepository
                         .createQueryBuilder('friends')
                         .leftJoinAndSelect('friends.friend_one', 'friend_one')
                         .where('friend_one.user_id = :user_id', {user_id: friendId})
-                        .andWhere('friends.friend_two = :friend_two', {friend_two: userId})
+                        .andWhere('friends.friend_two = :friend_two', {friend_two: user.user_id})
                         .getOne()
         console.log('friend pending: ', pending);
         await this.friendsRepository.remove(pending);
         return 'request succefully rejected';
     }
 
+    // front
     /** @brief remove both rows in friend table concerning the friendship */
-    async stopFrienship(userId: number, friendId: number)
+    async stopFrienship(user: User, friendId: number)
     {
         const toStop = await this.friendsRepository
                                     .createQueryBuilder('friends')
                                     .leftJoinAndSelect('friends.friend_one', 'friend_one')
-                                    .where('friends.friend_one.user_id = :id', {id: friendId})
-                                    .andWhere('friends.friend_two = :id', {id: userId})
+                                    .where('friends.friend_one.user_id = :user_id', {user_id: friendId})
+                                    .andWhere('friends.friend_two = :friend_id', {friend_id: user.user_id})
                                     .getOne()
         
         const toStop2 = await this.friendsRepository
                                 .createQueryBuilder('friends')
                                 .leftJoinAndSelect('friends.friend_one', 'friend_one')
-                                .where('friends.friend_one.user_id = :id', {id: userId})
-                                .andWhere('friends.friend_two = :id', {id: friendId})
+                                .where('friends.friend_one.user_id = :user_id', {user_id: user.user_id})
+                                .andWhere('friends.friend_two = :friend_id', {friend_id: friendId})
                                 .getOne()
 
         await this.friendsRepository.remove([toStop, toStop2]);
@@ -193,20 +219,13 @@ export class UsersService {
 
 
     /** @brief change the double authentification  */
-    async doubleAuth(userId: number, doubleAuth: boolean) {
-        const user = await this.usersRepository.findOne({
-            where: {
-                user_id: userId
-            }
-        })
+    async doubleAuth(user: User, doubleAuth: boolean) {
         user.doubleAuth = doubleAuth;
         return await this.usersRepository.save(user);
     }
 
-    async isActive(userId: number, status: boolean) {
-
-        console.log(userId)
-        const user = await this.findOne(userId);
+    /** @summary change status state */
+    async isActive(user: User, status: number) {
         user.isActive = status;
         await this.usersRepository.save(user);
     }

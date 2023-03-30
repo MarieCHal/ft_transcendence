@@ -40,7 +40,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }*/
 
   rooms: string[] = [];                     // number of rooms for the game that are active (emit on the every x time to update positions)
-  usersSockets: {[Key: string]: User;}      // dictionary with key being the user's socket and the data the user itself
+  usersSockets: {[Key: string]: User;} = {}   // dictionary with key being the user's socket and the data the user itself
   invite: {                                 // an array of invite accepted containing the room name and IDs, used to attribute a room to the players in startgame
     user1: number,
     user2: number,
@@ -62,15 +62,15 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
         client.disconnect()
       else {
         console.log("user: ", user)
-        if (!this.usersSockets) { // init usersSockets
-          this.usersSockets = {} 
-        }
+        //if (!this.usersSockets) { // init usersSockets
+          //this.usersSockets = {} 
+        //}
         this.usersSockets[client.id] = user; // add a new socket/user to userSockets
   
         if (!this.invite) // init invite
           this.invite = [];
   
-        await this.usersService.isActive(user.user_id, true);
+        await this.usersService.isActive(user, 1);
   
         console.log(`client connected: ${client.id}`)
       }
@@ -81,7 +81,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const user = this.usersSockets[client.id];
       console.log(`client disconnected: ${client.id}`)
      
-      await this.usersService.isActive(user.user_id, false); // the user is not any more active
+      await this.usersService.isActive(user, 0); // the user is not any more active
       delete this.usersSockets[client.id]; // delete the socket from the lists of active users
       
     }
@@ -109,7 +109,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
       console.log(payload[1])
       console.log("rooms: ", this.server.sockets.adapter.rooms)
       let channelId = +payload[1];
-      const newMess = await this.chatService.newMessage(user.user_id, channelId, payload[0])
+      const newMess = await this.chatService.newMessage(user, channelId, payload[0])
       if ( newMess != null)
         this.server.to(payload[1]).emit('chat', newMess)
     }
@@ -177,6 +177,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
       if (numberUser.length == 1) // if only one is present then his id as player is sent
       {
         this.server.to(client.id).emit('startgame', 1, false, false);
+        await this.usersService.isActive(user, 3);
       }
       else if (numberUser.length == 2)
       {
@@ -192,6 +193,7 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
             }
           }
         }
+        await this.usersService.isActive(user, 3);
         this.server.to(room).emit('startgame', room, true, false); // emit to start the game
         this.rooms.push(room);
       }
@@ -260,7 +262,10 @@ export class AppGateway implements OnGatewayConnection, OnGatewayDisconnect {
         for (const key of Object.keys(this.usersSockets)) {
           if (this.usersSockets[key].user_id == payload[0])
           {
-            this.server.to(key).emit('notif', mess, true, false)
+            if (this.usersSockets[key].isActive == 3)
+              this.server.to(client.id).emit('notif', mess, true, false)
+            else
+              this.server.to(key).emit('notif', mess, true, false)
           }
         }
       }

@@ -1,12 +1,9 @@
-import { Controller, Get, Res, Post, UseGuards, BadRequestException, HttpStatus, Body } from '@nestjs/common';
+import { Controller, Post,Body } from '@nestjs/common';
 import { AppService } from './app.service';
-import { AuthGuard } from '@nestjs/passport';
 import { Public } from './public';
 import { HttpService } from '@nestjs/axios';
-import { response } from 'express';
 import { catchError, firstValueFrom } from 'rxjs';
 import { AxiosError } from 'axios';
-import { Headers } from '@nestjs/common';
 import { AuthService } from './auth/services/auth.service';
 
 @Controller()
@@ -16,7 +13,7 @@ export class AppController {
     private readonly authService: AuthService
     )  {}
 
-  @Public()
+  /*@Public()
   @Post('wellcome')
   async helloFriend( @Body() body: any) {
     console.log(body.code)
@@ -37,8 +34,7 @@ export class AppController {
       )
     console.log("data: ", data);
 
-    return this.authService.registerUser(data.access_token, "coucou");
-    //return "ok Gael :)"
-  }
+    return this.authService.registerUser(data.access_token);
+  }*/
 
 }

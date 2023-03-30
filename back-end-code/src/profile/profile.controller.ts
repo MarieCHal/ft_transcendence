@@ -29,23 +29,15 @@ export class ProfileController {
 
 
     @Post('modify/nickname')
-    @UseGuards(JwtAuthGuard)
     modifyNickanme(@Request()req: any) {
         console.log("nickname");
         console.log(req.user);
-        return this.profileService.modifyNickname(req.body.nickname, req.user.user_id);
+        return this.profileService.modifyNickname(req.body.nickname, req.user);
     }
 
     @Post('modify/avatar')
-    @UseGuards(JwtAuthGuard)
     @UseInterceptors(FileInterceptor('avatar', storage))
     modifyAvatar(@Request()req: any, @UploadedFile() avatar: Express.Multer.File) {
-        console.log("this the avatar filename: ", avatar.fieldname) //remove
-        console.log("req.user: ", req.user)
-        
-        console.log("avatar: ", avatar);
-        //return req.body.avatar;
-        console.log(avatar.filename);
-        return this.profileService.modifyAvatar(avatar.filename, req.user.user_id);
+        return this.profileService.modifyAvatar(avatar.filename, req.user);
     }
 }

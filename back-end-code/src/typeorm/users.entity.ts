@@ -31,8 +31,8 @@ export class User {
     nickname: string;
 
     // true user is logeed in - false user isn't
-    @Column('boolean', {default: false})
-    isActive: boolean = false;
+    @Column({default: 0})
+    isActive: number = 0;
 
     // true send mail when login for double auth
     @Column('boolean', {default: false})

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User, Stats } from 'src/typeorm';
+import { User, Stats, MatchHistory } from 'src/typeorm';
 import { GameInterface } from './game.interface';
 import { UsersService } from 'src/users/users.service';
 import { Cron, CronExpression } from '@nestjs/schedule';
@@ -13,6 +13,7 @@ export class GameService {
         private userService: UsersService,
         @InjectRepository(User) private usersRepository: Repository<User>,
         @InjectRepository(Stats) private statsRepository: Repository<Stats>,
+        @InjectRepository(MatchHistory) private matchHistory: Repository<MatchHistory>
     ) {}
     private gameList: GameInterface [] = []
 
@@ -297,8 +298,19 @@ export class GameService {
             winner = game.player2;
 
         console.log("game: ", game);
+        
         const user1 = await this.userService.findOne(game.player1);
         const user2 = await this.userService.findOne(game.player2);
+
+        let score = game.score1.toString() + '-' + game.score2.toString();
+        console.log("score in string: ", score);
+        
+        const match = new MatchHistory();
+        match.player1 = user1.nickname;
+        match.player2 = user2.nickname;
+        match.score = score;
+        const newMatch = await this.matchHistory.save(match)
+        console.log('match: ', newMatch)              
 
         console.log("user1: ", user1)
         console.log("user2: ", user2)
@@ -315,7 +327,7 @@ export class GameService {
         
         console.log("stat1: ", stat1, " stat2: ", stat2);
 
-        if (!stat1)
+        /*if (!stat1)
         {
             stat1 = new Stats();
             stat1.user = user1;
@@ -343,8 +355,8 @@ export class GameService {
                 stat2.victories = 0;
                 stat2.defeats = 1;
             }
-        }
-        else {
+        }*/
+        //else {
             stat1.games++;
             stat2.games++;
             if (user1.user_id == winner) {
@@ -355,7 +367,7 @@ export class GameService {
                 stat2.victories++;
                 stat1.defeats++;
             }
-        }
+        //}
 
         const newStat1 = await this.statsRepository.save(stat1);
         const newStat2 = await this.statsRepository.save(stat2);
@@ -364,8 +376,6 @@ export class GameService {
         console.log("newStat2: ", newStat2)
 
         return winner;
-
-        
     }
 
 }
