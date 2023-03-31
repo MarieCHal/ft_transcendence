@@ -17,7 +17,7 @@ import router from "@/router";
     onMounted(async () => {
         const headers = { Authorization: `Bearer ${store.getters.getToken}`};
         const response = await axios.get(`/chat/users/${store.getters.getChanContext.chanel_chat_id}`, {headers});
-        store.commit('setWhat', 'UsersInChan');
+        //store.commit('setWhat', 'UsersInChan');
         store.commit("setUsers", response.data.users);
         const chatHistory = await axios.get(`/chat/history/${store.getters.getChanContext.chanel_chat_id}`,  {headers});
         store.commit("setChatHistory", chatHistory.data.history);
@@ -38,9 +38,10 @@ import router from "@/router";
         });
 
         socket.on('notifChat', async (msg: string)  => {
-          if (msg == 'userInChan'){
+          console.log("msg =", msg)
+          if (msg == 'users'){
             const response = await axios.get(`/chat/users/${store.getters.getChanContext.chanel_chat_id}`, {headers});
-            store.commit('setWhat', 'UsersInChan');
+            //store.commit('setWhat', 'UsersInChan');
             store.commit("setUsers", response.data.users);
           }
           else if (msg == 'userContext'){

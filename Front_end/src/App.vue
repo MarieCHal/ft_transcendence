@@ -1,7 +1,6 @@
 <script setup lang="ts">
   import navBar from "./components/navBar.vue"
   import notif from "./components/notif.vue"
-  import { onMounted } from 'vue'
   import { RouterView } from "vue-router"
   import  { useStore} from 'vuex'
     
@@ -40,9 +39,6 @@
   color: rgb(122, 122, 122);
 
 }
-header{
-
-}
 
 main{
   display: flex;
@@ -59,6 +55,7 @@ footer {
   display: flex;
   justify-content: center;
   align-items: center;
+  
   height: 50px;
 }
 

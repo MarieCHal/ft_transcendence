@@ -39,21 +39,45 @@
 <template>
     <div>
        <form @submit.prevent="submmit">
-        <div class="navButton">
-            <input class="navButton" type="text" name="codeChat" autocomplete="off"
+        <div class="disp">
+            <input class="chatButton" type="text" name="codeChat" autocomplete="off"
             placeholder="Name channel" v-model="newChanel" required>
         </div>
-        <div class="navButton">
-            <input class="navButton" type="text" name="code" autocomplete="off"
+        <div class="disp">
+            <input class="chatButton" type="text" name="code" autocomplete="off"
             placeholder="PWD" minlength="4" maxlength="4" v-model="Pwd">
         </div>
-        <button class="navButton">
-            submit
-        </button>
+        <div class="disp">
+            <button class="chatButton">
+                submit
+            </button>
+        </div>
        </form>
     </div>
 </template>
 
 <style scoped lang="scss">
-    
+
+.disp{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 3em;
+}
+
+.chatButton{
+    max-width: 100px;
+    text-align: center;
+    margin: 5px;
+    height: 30px;
+	border: none;
+    border-right: 2px dotted red;
+	border-radius: 10px;
+	color: rgb(122, 122, 122);
+	background: none;
+	letter-spacing: 1.5px;
+	font-family: 'emoji';
+	cursor: pointer;
+
+}
 </style>
