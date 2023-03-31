@@ -3,6 +3,7 @@
     import capsuleUser from '@/components/capsuleUser.vue';
     import doubleAuth from '../components/button/doubleAuth.vue'
     import listFriendsRequest from "@/components/listFriendsRequest.vue";
+    import matchHistory from '@/components/matchHistory.vue';
     import { useStore } from "vuex"
     import { onMounted, onUnmounted } from 'vue';
     import axios from "axios";
@@ -31,6 +32,9 @@
         </div>
         <div class="listFriendsRequest">
             <listFriendsRequest />
+        </div>
+        <div>
+        <matchHistory />
         </div>
     </div>
 

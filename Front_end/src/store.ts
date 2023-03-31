@@ -67,6 +67,7 @@ const store = createStore({
     
     //user
     isUserId: 0,
+    isMatchHistory: [],
     isAllUsers: [],
     isUsers: [],
     isOneUser: [],
@@ -117,6 +118,8 @@ const store = createStore({
   },
 
   mutations: {
+    setMatchHistory(state, isMatchHistory) {state.isMatchHistory = isMatchHistory;},
+
     setPlayStart(state, isPlayStart) {state.isPlayStart = isPlayStart;},
     setColorRect1(state, isColorRect1) {state.isColorRect1 = isColorRect1;},
     setColorRect2(state, isColorRect2) {state.isColorRect2 = isColorRect2;},
@@ -179,6 +182,8 @@ const store = createStore({
   },
 
   getters: {
+    getMatchHistory: state => state.isMatchHistory,
+
     getPlayStart: state => state.isPlayStart,
     getColorRect1: state => state.isColorRect1,
     getColorRect2: state => state.isColorRect2,

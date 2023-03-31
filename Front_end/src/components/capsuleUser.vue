@@ -10,7 +10,7 @@
     onMounted(async () => {
         getuserAvatar(user.user_user_id)
     });
-
+    console.log('me', user);
     async function getuserAvatar(userId: number) {
         try {
             const url = await getAvatar(store, userId);
@@ -31,7 +31,7 @@
             </div>
             <div>
                 user_nickname = {{ user.user_nickname }}
-                <div class="status-indicator" :class="{ 'status-online': user.user_isActive, 'status-offline': !user.user_isActive }"></div>
+                <div class="status-indicator" :class="{ 'status-online': user.user_isActive === 1, 'status-offline': user.user_isActive === 0, 'status-inGame': user.user_isActive === 3}"></div>
             </div>
         </div>
         <div>
@@ -75,5 +75,8 @@ img{
 
 .status-offline {
     background-color: red;
+}
+.status-inGame{
+    background-color: orange;
 }
 </style>
