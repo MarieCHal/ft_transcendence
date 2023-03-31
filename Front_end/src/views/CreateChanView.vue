@@ -21,6 +21,7 @@
             const headers = { Authorization: `Bearer ${store.getters.getToken}` };
             const data = {protected: statuscode, private: false, name: newChanel, pwd: Pwd}
             const response = await axios.post('/chat/create', data,  {headers})
+            console.log('contextchan', response.data)
             store.commit("setChanContext", response.data);
             const response1 = await axios.get(`/chat/join/${response.data.chanel_chat_id}`, {headers});
             store.commit('setUserContext', response1.data);
@@ -40,8 +41,7 @@
        <form @submit.prevent="submmit">
         <div class="navButton">
             <input class="navButton" type="text" name="codeChat" autocomplete="off"
-            placeholder="Name channel" v-model="newChanel">
-            obligatoire
+            placeholder="Name channel" v-model="newChanel" required>
         </div>
         <div class="navButton">
             <input class="navButton" type="text" name="code" autocomplete="off"

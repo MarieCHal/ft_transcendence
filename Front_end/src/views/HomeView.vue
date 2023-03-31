@@ -17,7 +17,7 @@
 
     const welcome = async (code: any) => {
         try {
-            const response = await axios.post('/wellcome', {code: code});
+            const response = await axios.post('/auth/wellcome', {code: code});
             if (response.data.doubleAuth == true) {
                 store.commit('setDoubleAuth', true);
                 store.commit('setCode',  true);

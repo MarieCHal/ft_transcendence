@@ -1,6 +1,6 @@
 <template>
     <div >
-        <button @click="Quit()">
+        <button class="navButton" @click="Quit()">
             X
         </button>
         <canvas id="pong" width="600" height="400"></canvas>
@@ -15,13 +15,6 @@
     const store = useStore();
     const router = useRouter();
     const socket = store.getters.getWebSocket;
-
-    let ColorRect1 = "WHITE"
-    let ColorRect2 = "WHITE"
-    let ColorBall = "WHITE"
-    let ColorBackGround = "BLACK"
-    let ColorNet = "WHITE"
-    let ColorText = "WHITE"
 
     function Quit(){
         socket.emit("game", store.getters.getRoom, "quit");
@@ -94,10 +87,10 @@
         const ctx = cvs.getContext("2d") as CanvasRenderingContext2D;
     function end(){
         if (store.getters.getId == store.getters.getStatusCode){
-            drawText("YOU WIN", cvs.width/3, cvs.height/2, "YELLOW")
+            drawText("YOU WIN", cvs.width/3, cvs.height/2, store.getters.getColorText)
         }
         else{
-            drawText("YOU LOSE", cvs.width/3, cvs.height/2, "YELLOW")
+            drawText("YOU LOSE", cvs.width/3, cvs.height/2, store.getters.getColorText)
         }
     }
     const user1 = {
@@ -105,7 +98,7 @@
         y: cvs.height/2 - 100/2,
         width: 10,
         height: 100,
-        color: "WHITE",
+        color: store.getters.getColorRect1,
         score: 0,
     }
     const user2 = {
@@ -113,21 +106,21 @@
         y: cvs.height/2 - 100/2,
         width: 10,
         height: 100,
-        color: "WHITE",
+        color: store.getters.getColorRect2,
         score: 0,
     }
     const ball = {
         x: cvs.width/2,
         y: cvs.height/2,
         radius: 8,
-        color: "WHITE"
+        color: store.getters.getColorBall
     }
     const net = {
         x: cvs.width/2 - 1,
         y: 0,
         width: 2,
         height: 10,
-        color: "WHITE",
+        color: store.getters.getColorNet,
     }
     function drawNet(){
         for(let i = 0; i <= cvs.height; i += 15){
@@ -138,7 +131,7 @@
         ctx.fillStyle = color;
         ctx.fillRect(x, y, w, h);
     }
-    drawRect(0, 0, cvs.width, cvs.height, "black")
+    drawRect(0, 0, cvs.width, cvs.height, store.getters.getColorBackGround)
     function drawCircle(x: number, y: number, r: number, color: string){
         ctx.fillStyle = color;
         ctx.beginPath();
@@ -158,10 +151,10 @@
         ball.y = store.getters.getBallY;
         user1.score = store.getters.getScoreUser1;
         user2.score = store.getters.getScoreUser2;
-        drawRect(0, 0, cvs.width, cvs.height, "BLACK");
+        drawRect(0, 0, cvs.width, cvs.height, store.getters.getColorBackGround);
         drawNet();
-        drawText(user1.score, cvs.width/4, cvs.height/5, "WHITE");
-        drawText(user2.score, 3*cvs.width/4, cvs.height/5, "WHITE");
+        drawText(user1.score, cvs.width/4, cvs.height/5, store.getters.getColorText);
+        drawText(user2.score, 3*cvs.width/4, cvs.height/5, store.getters.getColorText);
         drawRect(user1.x, user1.y, user1.width, user1.height, user1.color);
         drawRect(user2.x, user2.y, user2.width, user2.height, user2.color);
         drawCircle(ball.x, ball.y, ball.radius, ball.color);
@@ -202,7 +195,7 @@
 onUnmounted (async () => {
     clearInterval(store.getters.getInterval);
     store.commit("setInterval", 0);
-    //store.commit('setPlayStart', false);
+    store.commit('setPlayStart', false);
 });
 </script>
 

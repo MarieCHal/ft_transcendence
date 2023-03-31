@@ -27,6 +27,13 @@ import router from "@/router";
         });
         socket.emit('join', `${store.getters.getChanContext.chanel_chat_id}`, true);
         socket.on('chat', (message: any) => {
+            console.log('message = ', message);
+            console.log('userBlocked = ', store.getters.userBlocked);
+            /*for (let index = 0; index < store.getters.userBlocked.length; index++) {  
+              if (store.getters.userBlocked[index] == message.sender_user_id){
+
+              }  
+            }*/
             chatMessages.value.push(message);
         });
 

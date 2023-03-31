@@ -12,7 +12,7 @@
 </script>
 
 <template>
-    <customPong v-if="!store.getters.getPlayStart"/>
+    <customPong v-if="store.getters.getPlayStart == false"/>
     <pong v-else/>
 </template>
 

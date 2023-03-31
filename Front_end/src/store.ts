@@ -100,13 +100,13 @@ const store = createStore({
     isInterval: 0,
     isPlayer: 0,
     isMatchmaking: false,
-    isColorRect1: "",
-    isColorRect2: "",
-    isColorBall: "",
-    isColorBackGround: "",
-    isColorNet: "",
-    isColorText: "",
-
+    isColorRect1: "#ffffff",
+    isColorRect2: "#ffffff",
+    isColorBall: "#ffffff",
+    isColorBackGround: "#000000",
+    isColorNet: "#ffffff",
+    isColorText: "#ffffff",
+    isPlayStart: false,
     //socket
     isWebSocket: null,
 
@@ -117,6 +117,7 @@ const store = createStore({
   },
 
   mutations: {
+    setPlayStart(state, isPlayStart) {state.isPlayStart = isPlayStart;},
     setColorRect1(state, isColorRect1) {state.isColorRect1 = isColorRect1;},
     setColorRect2(state, isColorRect2) {state.isColorRect2 = isColorRect2;},
     setColorBall(state, isColorBall) {state.isColorBall = isColorBall;},
@@ -178,6 +179,7 @@ const store = createStore({
   },
 
   getters: {
+    getPlayStart: state => state.isPlayStart,
     getColorRect1: state => state.isColorRect1,
     getColorRect2: state => state.isColorRect2,
     getColorBall: state => state.isColorBall,

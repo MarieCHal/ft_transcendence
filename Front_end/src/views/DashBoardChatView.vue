@@ -15,8 +15,10 @@
     const getDashboard = async () => {
         try {
             const headers = {"Authorization": `Bearer ${store.getters.getToken}`};
+            const response1 = await axios.get("/users/all", {headers});
+            store.commit('setAllUsers', response1.data);
             const response = await axios.get('/chat/all', {headers});
-            console.log('data /chat/all on dashbord', response.data)
+            console.log('chan', response.data)
             store.commit('setChans', response.data);
             store.commit('setChanId', 0);
         } catch (error: any) {
@@ -29,9 +31,7 @@
             const headers = {"Authorization": `Bearer ${store.getters.getToken}`};
             const response = await axios.get(`/chat/join/${chan.chanel_chat_id}`, {headers});
             store.commit('setChanContext', chan);
-            console.log()
             store.commit('setUserContext', response.data);
-            console.log('data /chat/join on dashbord', response.data)
             const UserContext = store.getters.getUserContext;
             if (UserContext.banned){
                 alert("YOU ARE BANNED");
@@ -57,7 +57,6 @@
             }
             const response = await axios.post(`/chat/quit`, data, {headers});
             //store.commit('setUserContext', response.data.owner)
-            console.log('data /chat/quit on dashbord', response.data)
             store.commit('setChans', response.data);
         } 
         catch (error) {
@@ -65,8 +64,12 @@
         }
     }
     
-    function createMsg(){
+    function createChan(){
         router.push('/CreateChan');
+    }
+
+    function createPrivChan(){
+        router.push('CreatePrivChan')
     }
     
     function createPrivMsg(){
@@ -77,17 +80,22 @@
 <template>
     <div class="main-dashboard">
         <h1 id="H1">My channel</h1>
-        <div class="create-msg">
-            <button id="plus" @click="createMsg()">
-                +
+        <div class="create-Chan">
+            <button class="navButton" @click="createChan()">
+                create room
+            </button>
+        </div>
+        <div class="create-privChan">
+            <button class="navButton" @click="createPrivChan()">
+                creat private room
             </button>
         </div>
         <div class="liste-chan-pub" v-for="(chanPublicJoined, index) in store.getters.getChans.Mychanels" :key="index">
             <button id="quitchan" @click="clickChan(chanPublicJoined)">
                 {{ chanPublicJoined.chanel_name }}
             </button>
-            <button id="plus" @click="quitChan(chanPublicJoined)">
-                -
+            <button class="navButton" @click="quitChan(chanPublicJoined)">
+                quit room
             </button>
         </div>
         <h1>Other channel</h1>
@@ -98,13 +106,13 @@
             <formChanCode v-if="store.getters.getUserContext.pwd == true && store.getters.getChanId == chanPublicNotJoined.chanel_chat_id" />
         </div>
         <h1>PrivMsg</h1>
-        <div class="create-msg">
-            <button id="plus" @click="createPrivMsg()">
-                +
+        <div class="create-Chan">
+            <button class="navButton" @click="createPrivMsg()">
+                creat private message
             </button>
         </div>
         <div class="liste-privMsg" v-for="(chanPrivate, index) in store.getters.getChans.privMsg" :key="index">
-            <button id="quitchan" @click="clickChan(chanPrivate)">
+            <button class="navButton" @click="clickChan(chanPrivate)">
                 {{ chanPrivate.users_nickname }}
             </button>
         </div>
@@ -112,10 +120,6 @@
 </template>
 
 <style scoped lang="scss">
-.liste-chan-pub{
-}
-.liste-privMsg{
-}
 
 #plus{
     background-color: #007bff;
