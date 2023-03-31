@@ -45,7 +45,7 @@
 </script>
 
 <template>
-    <button @click="bloquer()">
+    <button class="navButton" @click="bloquer()">
         <div v-if="store.getters.getBlockBool == true">
             debloquer
         </div>
@@ -56,6 +56,5 @@
 </template>
 
 <style scoped lang="scss">
-
 
 </style>

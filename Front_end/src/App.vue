@@ -24,7 +24,7 @@
         <RouterView />
     </main>
     <footer v-if="getToken()">
-        <a href="https://42lausanne.ch/"> 42 Lausanne</a>
+      <a href="https://42lausanne.ch/"> 42 Lausanne</a>
     </footer>
   </div>
 </template>

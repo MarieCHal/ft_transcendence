@@ -20,7 +20,7 @@
 </script>
 
 <template>
-    <button @click="friendRequest()">
+    <button class="navButton" @click="friendRequest()">
         Friends request
     </button>
 </template>

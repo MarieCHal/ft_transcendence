@@ -53,7 +53,6 @@
     flex-direction: column;
     align-items: center;
     margin-top: -10%;
-    overflow:scroll;
 }
 .navUser{
     display: flex;

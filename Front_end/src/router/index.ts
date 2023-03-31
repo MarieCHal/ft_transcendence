@@ -9,7 +9,7 @@ import CreateChan from '../views/CreateChanView.vue'
 import ChanView from '../views/ChatView.vue'
 import PlayView from '../views/PlayView.vue'
 import PlayStartView from '../views/PlayStartView.vue'
-
+import CreatePrivChan from '../views/CreatePrivChanView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -58,6 +58,11 @@ const router = createRouter({
       path: '/CreateChan',
       name: 'CreateChan',
       component: CreateChan,
+    },
+    {
+      path: '/CreatePrivChan',
+      name: 'CreatePrivChan',
+      component: CreatePrivChan,
     },
     {
       path: '/chat',

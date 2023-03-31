@@ -5,6 +5,7 @@
     import sendMsg from '@/components/button/sendMsg.vue';
     import playInvit from '@/components/button/playInvit.vue';
     import bloquer from '@/components/button/bloquer.vue';
+    import matchHistory from '@/components/matchHistory.vue';
     //import { useStore } from "vuex"
     //const store = useStore();
     //const user = store.getters.getOneUser;

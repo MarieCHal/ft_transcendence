@@ -82,12 +82,11 @@ div{
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 10%;
-    
+    margin-top: 5vh;
 }
 
 #msg{
-    margin-top: 20%;
+    margin-top: 60px;
 }
 
 </style>

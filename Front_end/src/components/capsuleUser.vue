@@ -10,7 +10,7 @@
     onMounted(async () => {
         getuserAvatar(user.user_user_id)
     });
-
+    console.log('me', user);
     async function getuserAvatar(userId: number) {
         try {
             const url = await getAvatar(store, userId);

@@ -12,7 +12,7 @@
 </script>
 
 <template>
-    <button @click="play()">
+    <button class="navButton" @click="play()">
         play
     </button>
 </template>
