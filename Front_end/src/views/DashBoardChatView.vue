@@ -32,6 +32,7 @@
             const response = await axios.get(`/chat/join/${chan.chanel_chat_id}`, {headers});
             store.commit('setChanContext', chan);
             store.commit('setUserContext', response.data);
+            console.log("usercontext =", store.getters.getUserContext);
             const UserContext = store.getters.getUserContext;
             if (UserContext.banned){
                 alert("YOU ARE BANNED");

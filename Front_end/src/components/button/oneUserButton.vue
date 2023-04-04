@@ -12,6 +12,7 @@
     
     onMounted(async () => {
         await fetchData();
+        console.log('repalle');
     });
 
     function click(data: any){
@@ -137,8 +138,7 @@
             class="img"
             @click="click(data)"
             v-if="store.getters.getArrayAvatar(data.user_user_id)"
-            :style="{ 'background-image': 'url(' + store.getters.getArrayAvatar(data.user_user_id) + ')'}"
-            >
+            :style="{ 'background-image': 'url(' + store.getters.getArrayAvatar(data.user_user_id) + ')'}">
             <img :src="store.getters.getArrayAvatar(data.user_user_id)" />
         </button>
         {{ data.user_nickname }}

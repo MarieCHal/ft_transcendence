@@ -17,8 +17,9 @@ import router from "@/router";
     onMounted(async () => {
         const headers = { Authorization: `Bearer ${store.getters.getToken}`};
         const response = await axios.get(`/chat/users/${store.getters.getChanContext.chanel_chat_id}`, {headers});
-        //store.commit('setWhat', 'UsersInChan');
+        store.commit('setWhat', 'UsersInChan');
         store.commit("setUsers", response.data.users);
+
         const chatHistory = await axios.get(`/chat/history/${store.getters.getChanContext.chanel_chat_id}`,  {headers});
         store.commit("setChatHistory", chatHistory.data.history);
 
@@ -41,16 +42,32 @@ import router from "@/router";
           console.log("msg =", msg)
           if (msg == 'users'){
             const response = await axios.get(`/chat/users/${store.getters.getChanContext.chanel_chat_id}`, {headers});
-            //store.commit('setWhat', 'UsersInChan');
+            store.commit('setWhat', 'UsersInChan');
             store.commit("setUsers", response.data.users);
           }
           else if (msg == 'userContext'){
-            const response = await axios.get(`/chat/join/${store.getters.getChanContext.chanel_chat_id}`, {headers});
+            console.log("je suis la")
+            const response1 = await axios.get(`/chat/update/${store.getters.getChanContext.chanel_chat_id}`, {headers});
+
             store.commit('setUserContext', response.data);
-            if (store.getters.getUserContext.banned){
-              alert("YOU ARE BANNED");
+           // console.log("response =", response1.data);
+            store.commit('setUserContext', response1.data);
+            //console.log("setusercontexxt =", store.getters.getUserContext)
+            const response2 = await axios.get(`/chat/users/${store.getters.getChanContext.chanel_chat_id}`, {headers});
+            store.commit('setWhat', 'UsersInChan');
+            store.commit("setUsers", response2.data.users);
+
+            /*
+            else if(store.getters.getUserContext.kick){
+              alert("YOU ARE KICK");
               router.push('dashBoardChat')
             }
+            else if(store.getters.getUserContext.admin){
+
+            }
+            else if(store.getters.getUserContext.ower){
+
+            }*/
           }
           
         })
@@ -60,6 +77,7 @@ import router from "@/router";
       socket.emit('join', `${store.getters.getChanContext.chanel_chat_id}`, false);
       socket.off('join');
       socket.off('chat');
+      socket.off('notifChat')
       store.commit('setUserContext', []);
     });
 
@@ -120,7 +138,6 @@ import router from "@/router";
 .chat-messages {
     display: flex;
     flex-direction: column;
-    //background-color: cyan;
     border: 1px solid #ccc;
     border-radius: 10px;
     padding: 5px;
