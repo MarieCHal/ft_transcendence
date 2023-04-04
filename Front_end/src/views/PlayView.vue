@@ -15,7 +15,7 @@
 
     const submit = async () => {
         const headers = { Authorization: `Bearer ${store.getters.getToken}`};
-        const response = await axios.get("http://c1r2s3:3000/users/all", {headers});
+        const response = await axios.get("/users/all", {headers});
         store.commit('setUsers', response.data.allUsers)
         console.log('user store', store.getters.getUsers)
     }
