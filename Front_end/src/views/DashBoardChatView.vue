@@ -10,6 +10,7 @@
     
     onMounted(() => {
         getDashboard();
+        console.log("token =", store.getters.getToken);
     });
     
     const getDashboard = async () => {
@@ -152,11 +153,6 @@ h1{
 
 }
 
-#plus{
-    margin: 5px;
-    border-radius: 9px;
-}
-
 .quitchan{
     padding: 4px 8px;
     margin: 5px;
@@ -167,10 +163,10 @@ h1{
     border: none;
     cursor: pointer;
 }
+
 #main-dashboard{
     display: flex;
     flex-direction: column;
-    margin: 10vh;
     color: black;
 }
 

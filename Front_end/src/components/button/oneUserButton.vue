@@ -9,10 +9,12 @@
     
     const userContext = store.getters.getUserContext;
     const chanContext = store.getters.getChanContext;
+    let length = 0;
     
     onMounted(async () => {
         await fetchData();
         console.log('repalle');
+        console.log("userContext IN UserButtron =", userContext);
     });
 
     function click(data: any){
@@ -31,7 +33,9 @@
         }
         else if(store.getters.getWhat === 'friends'){
             const user = store.getters.getAllUsers.myFriends;
-            const length = user.length;
+            if (user.length){
+                length = user.length;
+            }
             for (let index = 0; index < length; index++) {
                 await pushAvatarUrl(user[index].user_user_id)
             }
@@ -39,7 +43,9 @@
         }
         else if (store.getters.getWhat === 'UsersInChan'){
             const user = store.getters.getUsers;
-            const length = user.length;
+            if (user.length){
+                length = user.length;
+            }
             for (let index = 0; index < length; index++) {
                 await pushAvatarUrl(user[index].user_user_id)
             }
