@@ -64,3 +64,4 @@ button{
     max-width: 450px;
     min-width: 340px;
 }
+</style>
