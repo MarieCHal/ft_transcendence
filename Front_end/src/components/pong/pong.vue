@@ -17,13 +17,14 @@
     const socket = store.getters.getWebSocket;
 
     function Quit(){
+        console.log("store.getters.getRoom === ", store.getters.getRoom)
         socket.emit("game", store.getters.getRoom, "quit");
         console.log('quit',store.getters.getRoom)
     }
     
     
     onMounted(async () => {
-
+        console.log("room =", store.getters.getRoom)
         socket.on("init" ,(ballx: number, bally: number, user1: number, user2: number) => {
             store.commit("setBallX", ballx)
             store.commit("setBallY", bally)
@@ -40,6 +41,7 @@
             socket.off("player");
             socket.off("game");
             socket.off("init");
+            store.commit("setRoom", "")
             alert(msg);
             
             setTimeout(() =>{
@@ -56,11 +58,12 @@
                 store.commit("setRoom", player)
             }
         });
-        console.log('isMatchmaking', store.getters.getMatchmaking)
-        console.log('isNameNotif', store.getters.getNameNotif)
+        //console.log('isMatchmaking', store.getters.getMatchmaking)
+        //console.log('isNameNotif', store.getters.getNameNotif)
         socket.emit('startgame', store.getters.getMatchmaking, store.getters.getNameNotif)
         store.commit('setNameNotif', "")
-        socket.on("game", (ballx: number, bally: number, user1: number, user2: number, score1: number, score2: number ) => {           
+        socket.on("game", (ballx: number, bally: number, user1: number, user2: number, score1: number, score2: number ) => {      
+               
             if (store.getters.getPlayer == 1){
                 store.commit("setBallX", ballx)
                 store.commit("setBallY", bally)
@@ -86,6 +89,7 @@
     function game(){
         const cvs = document.getElementById("pong") as HTMLCanvasElement;
         const ctx = cvs.getContext("2d") as CanvasRenderingContext2D;
+
     function end(){
         if (store.getters.getId == store.getters.getStatusCode){
             drawText("YOU WIN", cvs.width/3, cvs.height/2, store.getters.getColorText)
@@ -146,17 +150,17 @@
         ctx.fillText(text, x, y);
     }
     function render(){
-        //user1.y = store.getters.getUser1;
+       // user1.y = store.getters.getUser1;
         user2.y = store.getters.getUser2;
         ball.x = store.getters.getBallX;
         ball.y = store.getters.getBallY;
         user1.score = store.getters.getScoreUser1;
         user2.score = store.getters.getScoreUser2;
+
         drawRect(0, 0, cvs.width, cvs.height, store.getters.getColorBackGround);
         drawNet();
         drawText(user1.score, cvs.width/4, cvs.height/5, store.getters.getColorText);
         drawText(user2.score, 3*cvs.width/4, cvs.height/5, store.getters.getColorText);
-        //console.log("user1: ", user1.y, "user2: ", user2.y)
         drawRect(user1.x, user1.y, user1.width, user1.height, user1.color);
         drawRect(user2.x, user2.y, user2.width, user2.height, user2.color);
         drawCircle(ball.x, ball.y, ball.radius, ball.color);
