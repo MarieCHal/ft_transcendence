@@ -24,59 +24,59 @@
 </script>
 
 <template>
-    <div class="capsule">
-        <div class="notMe" v-if="user.user_user_id != store.getters.getId" >
-            <div >
+    <div>
+        <div class="capsule" v-if="user.user_user_id != store.getters.getId" >
+            <div class="dispo">
                 <img :src="store.getters.getUserAvatar" />
             </div>
-            <div>
-                user_nickname = {{ user.user_nickname }}
-                <div class="status-indicator" :class="{ 'status-online': user.user_isActive === 1, 'status-offline': user.user_isActive === 0, 'status-inGame': user.user_isActive === 3}"></div>
-            </div>
+            <div class="status-indicator" :class="{ 'status-online': user.user_isActive == 1, 'status-offline': user.user_isActive == 0, 'status-playing': user.user_isActive == 2}"></div>
         </div>
-        <div>
+        <div class="dispo">
+            user_nickname = {{ user.user_nickname }}
+        </div>
+        <div class="dispo">
             nb parties = {{ user.stats_games }}
         </div>
-        <div>
+        <div class="dispo">
             nb victoires = {{ user.stats_victories }}
         </div>
-        <div>
+        <div class="dispo">
             nb defaites = {{ user.stats_defeats }}
         </div>
     </div>    
 </template>
 
 <style scoped lang="scss">  
-.notMe{
-    background-color: aquamarine;
-}
-.capsule{
 
-    background-color: darkmagenta;
+.capsule{
+    display: flex;
 }
+
 img{
     max-width: 150px;
     height: 150px;
     border-radius: 50%;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-}
-.status-indicator {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    margin: auto;
 }
 
+.status-indicator {
+    display: flex;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+.dispo{
+    margin: 5px;
+}
 .status-online {
-    background-color: green;
+    background-color: rgb(0, 255, 0);
 }
 
 .status-offline {
     background-color: red;
 }
-.status-inGame{
-    background-color: orange;
+
+.status-playing {
+    background-color: rgb(0, 179, 255);
 }
 </style>

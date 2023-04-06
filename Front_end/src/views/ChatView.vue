@@ -11,7 +11,8 @@ import router from "@/router";
     const store = useStore();
     const chatMessages = ref<any[]>([]);
     const socket = store.getters.getWebSocket;
-
+    const componentKey = ref(0);
+    const userBlocked = store.getters.getUserBlocked;
     store.commit("setBool", false)
 
     onMounted(async () => {
@@ -19,6 +20,8 @@ import router from "@/router";
         const response = await axios.get(`/chat/users/${store.getters.getChanContext.chanel_chat_id}`, {headers});
         store.commit('setWhat', 'UsersInChan');
         store.commit("setUsers", response.data.users);
+        console.log("componentKey Muted =",  componentKey.value)
+
         const chatHistory = await axios.get(`/chat/history/${store.getters.getChanContext.chanel_chat_id}`,  {headers});
         store.commit("setChatHistory", chatHistory.data.history);
 
@@ -27,29 +30,68 @@ import router from "@/router";
         });
         socket.emit('join', `${store.getters.getChanContext.chanel_chat_id}`, true);
         socket.on('chat', (message: any) => {
-            console.log('message = ', message);
-            console.log('userBlocked = ', store.getters.userBlocked);
-            /*for (let index = 0; index < store.getters.userBlocked.length; index++) {  
-              if (store.getters.userBlocked[index] == message.sender_user_id){
-
-              }  
-            }*/
-            chatMessages.value.push(message);
+          //  console.log('message = ', message);
+          //  console.log('userBlocked = ', store.getters.userBlocked);
+          /*for (let index = 0; index < store.getters.userBlocked.length; index++) {  
+            if (store.getters.userBlocked[index] == message.sender_user_id){
+              
+            }  
+          }*/
+          //console.log("userBlocked: ", userBlocked)
+          //console.log("sender id: ", message.sender_user_id)
+          //console.log("user blocked length: ", userBlocked.length)
+          let i = 0
+            for (i ; i < userBlocked.length;)
+            {
+              //console.log('userBlocked id: ', userBlocked[i].blocked_user_id)
+              if (userBlocked[i].blocked_user_id != message.sender_user_id)
+                i++;
+              else
+                break;
+            }
+            if (i == userBlocked.length)
+                chatMessages.value.push(message);
         });
 
         socket.on('notifChat', async (msg: string)  => {
-          if (msg == 'userInChan'){
+          //console.log("msg =", msg)
+          if (msg == 'users'){
+            console.log("je suis la dans users")
             const response = await axios.get(`/chat/users/${store.getters.getChanContext.chanel_chat_id}`, {headers});
             store.commit('setWhat', 'UsersInChan');
             store.commit("setUsers", response.data.users);
+            
+            forceRender();
           }
           else if (msg == 'userContext'){
-            const response = await axios.get(`/chat/join/${store.getters.getChanContext.chanel_chat_id}`, {headers});
-            store.commit('setUserContext', response.data);
-            if (store.getters.getUserContext.banned){
-              alert("YOU ARE BANNED");
+            console.log("je suis la dans userContext")
+            const response1 = await axios.get(`/chat/update/${store.getters.getChanContext.chanel_chat_id}`, {headers});
+
+           // console.log("response =", response1.data);
+            store.commit('setUserContext', response1.data.userContext);
+            //console.log("setusercontexxt =", store.getters.getUserContext)
+            store.commit('setWhat', 'UsersInChan');
+            store.commit("setUsers", response1.data.users);
+            if (response1.data.isKicked == true || response1.data.userContext.banned == true){
+           ////   socket.off('join');
+            ///  socket.off('chat');
+             //////// socket.off('notifChat')
+              alert("YOU ARE A NOOB");
+              router.push('dashBoardChat')
+              return ;
+            }
+            forceRender();
+            /*
+            else if(store.getters.getUserContext.kick){
+              alert("YOU ARE KICK");
               router.push('dashBoardChat')
             }
+            else if(store.getters.getUserContext.admin){
+
+            }
+            else if(store.getters.getUserContext.ower){
+
+            }*/
           }
           
         })
@@ -59,16 +101,22 @@ import router from "@/router";
       socket.emit('join', `${store.getters.getChanContext.chanel_chat_id}`, false);
       socket.off('join');
       socket.off('chat');
+      socket.off('notifChat')
       store.commit('setUserContext', []);
     });
 
+    const forceRender = () => {
+      componentKey.value += 1;
+    }
+
+//v-if="store.getters.getWhat === 'UsersInChan'"
 </script>
 
 <template>
   <div>
     <h1> users </h1>
     <div>
-      <oneUserButton v-if="store.getters.getWhat === 'UsersInChan'"/>
+      <oneUserButton :key="componentKey" v-if="store.getters.getWhat === 'UsersInChan'"/>
     </div>
   </div>
   <div v-if="store.getters.getUserContext.owner">
@@ -119,7 +167,6 @@ import router from "@/router";
 .chat-messages {
     display: flex;
     flex-direction: column;
-    //background-color: cyan;
     border: 1px solid #ccc;
     border-radius: 10px;
     padding: 5px;

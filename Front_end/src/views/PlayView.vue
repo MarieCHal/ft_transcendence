@@ -15,7 +15,7 @@
 
     const submit = async () => {
         const headers = { Authorization: `Bearer ${store.getters.getToken}`};
-        const response = await axios.get("/users/all", {headers});
+        const response = await axios.get("http://c1r2s3:3000/users/all", {headers});
         store.commit('setUsers', response.data.allUsers)
         console.log('user store', store.getters.getUsers)
     }
@@ -36,7 +36,7 @@
             InviteFriends
         </button>
         <div  v-for="(user, index) in store.getters.getUsers">
-            <button class="navButton" v-if="user.user_isActive" @click="play(user.user_user_id)">
+            <button class="navButton" v-if="user.user_isActive == 1" @click="play(user.user_user_id)"> 
                     {{ user.user_nickname }}
             </button>
         </div>

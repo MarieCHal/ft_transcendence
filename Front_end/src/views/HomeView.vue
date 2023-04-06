@@ -68,23 +68,25 @@
 
 <template>
     <div>
-        <h1>
-            Bienvenue sur ft_trantran
-        </h1>
         <navButtonLogin v-if="!getToken()" @click="clicklogin()"/>
         <formLoginCode  v-if="store.getters.getCode == true"/>
+        <div id="msg" v-if="getToken()">
+           Bienvenu sur ft_trantran
+        </div>
     </div>
 </template>
 
 <style scoped lang="scss">
+
 div{
     display: flex;
     flex-direction: column;
-    align-items:center ;
+    align-items: center;
+    margin-top: 5vh;
 }
-h1{
-    width: auto;
-    height: auto;
+
+#msg{
+    margin-top: 60px;
 }
 
 </style>

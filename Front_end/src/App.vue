@@ -1,7 +1,6 @@
 <script setup lang="ts">
   import navBar from "./components/navBar.vue"
   import notif from "./components/notif.vue"
-  import { onMounted } from 'vue'
   import { RouterView } from "vue-router"
   import  { useStore} from 'vuex'
     
@@ -37,21 +36,32 @@
 	flex-direction: column;
 	align-items: center;
   min-height: 100%;
-  color: blanchedalmond;
+  color: rgb(122, 122, 122);
 
 }
-header{
 
-}
 main{
-  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10%;
 }
-footer{
 
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  height: 50px;
 }
+
 a{
   text-align: center;
-  color: white;
+  color: #71c0d4;
   text-decoration: none;
 }
 

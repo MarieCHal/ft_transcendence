@@ -9,9 +9,12 @@
     
     const userContext = store.getters.getUserContext;
     const chanContext = store.getters.getChanContext;
+    let length = 0;
     
     onMounted(async () => {
         await fetchData();
+        console.log('repalle');
+        console.log("userContext IN UserButtron =", userContext);
     });
 
     function click(data: any){
@@ -30,7 +33,9 @@
         }
         else if(store.getters.getWhat === 'friends'){
             const user = store.getters.getAllUsers.myFriends;
-            const length = user.length;
+            if (user.length){
+                length = user.length;
+            }
             for (let index = 0; index < length; index++) {
                 await pushAvatarUrl(user[index].user_user_id)
             }
@@ -38,7 +43,9 @@
         }
         else if (store.getters.getWhat === 'UsersInChan'){
             const user = store.getters.getUsers;
-            const length = user.length;
+            if (user.length){
+                length = user.length;
+            }
             for (let index = 0; index < length; index++) {
                 await pushAvatarUrl(user[index].user_user_id)
             }
@@ -137,8 +144,7 @@
             class="img"
             @click="click(data)"
             v-if="store.getters.getArrayAvatar(data.user_user_id)"
-            :style="{ 'background-image': 'url(' + store.getters.getArrayAvatar(data.user_user_id) + ')'}"
-            >
+            :style="{ 'background-image': 'url(' + store.getters.getArrayAvatar(data.user_user_id) + ')'}">
             <img :src="store.getters.getArrayAvatar(data.user_user_id)" />
         </button>
         {{ data.user_nickname }}
@@ -166,6 +172,8 @@
   border-radius: 50%;
   background-size: cover;
   background-position: center;
+  border: none;
+  margin: 5px;
 }
 img{
   display: none;
@@ -179,7 +187,6 @@ img{
 .ownerButton{
     display: flex;
     justify-content: center;
-    //background-color: gray;
 }
 
 </style>

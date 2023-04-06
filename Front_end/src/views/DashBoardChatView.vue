@@ -10,6 +10,7 @@
     
     onMounted(() => {
         getDashboard();
+        console.log("token =", store.getters.getToken);
     });
     
     const getDashboard = async () => {
@@ -32,6 +33,7 @@
             const response = await axios.get(`/chat/join/${chan.chanel_chat_id}`, {headers});
             store.commit('setChanContext', chan);
             store.commit('setUserContext', response.data);
+            console.log("usercontext =", store.getters.getUserContext);
             const UserContext = store.getters.getUserContext;
             if (UserContext.banned){
                 alert("YOU ARE BANNED");
@@ -78,70 +80,106 @@
 </script>
 
 <template>
-    <div class="main-dashboard">
-        <h1 id="H1">My channel</h1>
-        <div class="create-Chan">
-            <button class="navButton" @click="createChan()">
-                create room
-            </button>
+    <div id="main-dashboard" class="dashboard">
+        <div class="dashboard__section dashboard__section--column">
+                <button class="chatButton" @click="createChan()">
+                    create room
+                </button>
+                <button class="chatButton" @click="createPrivChan()">
+                    creat private room
+                </button>
+                <button class="chatButton chatButton--create" @click="createPrivMsg()">
+                    creat private message
+                </button>
         </div>
-        <div class="create-privChan">
-            <button class="navButton" @click="createPrivChan()">
-                creat private room
-            </button>
-        </div>
-        <div class="liste-chan-pub" v-for="(chanPublicJoined, index) in store.getters.getChans.Mychanels" :key="index">
-            <button id="quitchan" @click="clickChan(chanPublicJoined)">
-                {{ chanPublicJoined.chanel_name }}
-            </button>
-            <button class="navButton" @click="quitChan(chanPublicJoined)">
-                quit room
-            </button>
-        </div>
-        <h1>Other channel</h1>
-        <div class="liste-chan-pub" v-for="(chanPublicNotJoined, index) in store.getters.getChans.chanels" :key="index">
-            <button id="quitchan" @click="clickChan(chanPublicNotJoined)">
-                {{ chanPublicNotJoined.chanel_name }}
-            </button>
-            <formChanCode v-if="store.getters.getUserContext.pwd == true && store.getters.getChanId == chanPublicNotJoined.chanel_chat_id" />
-        </div>
-        <h1>PrivMsg</h1>
-        <div class="create-Chan">
-            <button class="navButton" @click="createPrivMsg()">
-                creat private message
-            </button>
-        </div>
-        <div class="liste-privMsg" v-for="(chanPrivate, index) in store.getters.getChans.privMsg" :key="index">
-            <button class="navButton" @click="clickChan(chanPrivate)">
-                {{ chanPrivate.users_nickname }}
-            </button>
+        <div class="dashboard__section">
+            <div class="display">
+                <h1>My channel</h1>
+                <div class="create-Chan"></div>
+                <div class="liste-chan-pub" v-for="(chanPublicJoined, index) in store.getters.getChans.Mychanels" :key="index">
+                    <button class="quitchan" @click="clickChan(chanPublicJoined)">
+                        {{ chanPublicJoined.chanel_name }}
+                    </button>
+                    <button class="chatButton" @click="quitChan(chanPublicJoined)">
+                        quit room
+                    </button>
+                </div>
+            </div>
+            <div class="display">
+                <h1>Other channel</h1>
+                <div class="liste-chan-pub" v-for="(chanPublicNotJoined, index) in store.getters.getChans.chanels" :key="index">
+                    <button class="quitchan" @click="clickChan(chanPublicNotJoined)">
+                        {{ chanPublicNotJoined.chanel_name }}
+                    </button>
+                    <formChanCode v-if="store.getters.getUserContext.pwd == true && store.getters.getChanId == chanPublicNotJoined.chanel_chat_id" />
+                </div>
+            </div>
+            <div class="display">
+                <h1>PrivMsg</h1>
+            </div>
+            <div class="liste-privMsg" v-for="(chanPrivate, index) in store.getters.getChans.privMsg" :key="index">
+                <button class="navButton" @click="clickChan(chanPrivate)">
+                    {{ chanPrivate.users_nickname }}
+                </button>
+            </div>
         </div>
     </div>
 </template>
 
 <style scoped lang="scss">
 
-#plus{
-    background-color: #007bff;
-    margin: 5px;
-    border-radius: 9px;
+.display{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2%;
 }
 
-#quitchan{
+h1{
+    color: rgb(94, 95, 95);
+}
+
+.chatButton{
+    margin: 10px;
+	border: none;
+    border-right: 2px dotted red;
+    max-width: 100px;
+	border-radius: 10px;
+	color: rgb(122, 122, 122);
+	background: none;
+	letter-spacing: 1.5px;
+	font-family: 'emoji';
+	cursor: pointer;
+
+}
+
+.quitchan{
     padding: 4px 8px;
     margin: 5px;
+    width: auto;
     border-radius: 5px;
-    background-color: #0475ee;
+    background-color: #02d1ff29;
     color: #fff;
     border: none;
     cursor: pointer;
-    overflow: auto;
 }
-.main-dashboard{
+
+#main-dashboard{
     display: flex;
     flex-direction: column;
-    width: 25rem;
-    background-color: rgb(253, 253, 253);
     color: black;
+}
+
+.dashboard {
+    &__section {
+        display: flex;
+        justify-content: center;
+        align-content: center;
+
+        &--column {
+            flex-direction: column;
+            align-items: center;
+        }
+    }
 }
 </style>

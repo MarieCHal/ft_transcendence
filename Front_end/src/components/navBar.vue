@@ -10,11 +10,11 @@
 <template>
     <nav class="nav">
         <navButtonLogo />
-        <navButtonPlay />
-        <navButtonUsers />
-        <navButtonChat />
+        <navButtonPlay id="button"/>
+        <navButtonUsers id="button"/>
+        <navButtonChat id="button"/>
         <navButtonProfile />
-        <navButtonLogout />
+        <navButtonLogout id="button"/>
     </nav>
 </template>
 
@@ -22,7 +22,8 @@
 <style scoped lang="scss">
 .nav {
     display: flex;
+    margin-top: 10px;
+    padding: 20px;
     //justify-content: space-between;
     //background-color: rgb(52, 147, 230);
 }
-</style>

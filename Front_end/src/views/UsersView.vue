@@ -42,8 +42,8 @@
             <userButtonAll @click="clickCheckWhat('all')"/>
             <userButtonFriends @click="clickCheckWhat('friends')"/>
         </div>
-        <oneUserButton v-if="store.getters.getWhat == 'all'"/>
-        <oneUserButton v-if="store.getters.getWhat == 'friends'"/>
+            <oneUserButton v-if="store.getters.getWhat == 'all'"/>
+            <oneUserButton v-if="store.getters.getWhat == 'friends'"/>
     </div>
   </template>
 
@@ -52,14 +52,12 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    max-height: 100%;
-    background-color: aquamarine;
+    margin-top: -10%;
 }
 .navUser{
     display: flex;
+    max-height: 50%;
     flex-direction:row;
     justify-content: center;
-    max-height: 5em;
-    background-color: darkblue;
 }
 </style>

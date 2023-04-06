@@ -19,13 +19,10 @@
 </script>
 
 <template>
-    <button class="navButton" @click="logout()">
+    <button class="navButton" id="logout" @click="logout()">
         logout
     </button>
 </template>
 
 <style scoped lang="scss">
-    button{
-        background-color: red;
-    }
-</style>
+
