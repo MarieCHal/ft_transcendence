@@ -9,12 +9,18 @@
 
 <template>
     <nav class="nav">
-        <navButtonLogo />
-        <navButtonPlay id="button"/>
-        <navButtonUsers id="button"/>
-        <navButtonChat id="button"/>
-        <navButtonProfile />
-        <navButtonLogout id="button"/>
+        <div class="un">
+            <navButtonLogo />
+            <div>
+                <navButtonPlay />
+                <navButtonUsers />
+                <navButtonChat />
+            </div>
+        </div>
+        <div class="deux">
+            <navButtonLogout />
+            <navButtonProfile />
+        </div>
     </nav>
 </template>
 
@@ -24,8 +30,15 @@
     display: flex;
     margin-top: 10px;
     padding: 20px;
-    //justify-content: space-between;
-    //background-color: rgb(52, 147, 230);
 }
 
+.un{
+    display: flex;
+    align-items: center;
+}
+.deux{
+    display: flex;
+    align-items: center;
+    justify-content: end;
+}
 </style>

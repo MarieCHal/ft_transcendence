@@ -27,40 +27,22 @@
 </template>
 
 <style scoped lang="scss">
-
-
-button{
-    max-width: 100px;
-	height: 30px;
-	border-radius: none;
-	width: 65px;
-	color: rgb(122, 122, 122);
-	border: none;
-	letter-spacing: 1.5px;
-	font-family: 'emoji';
-    background:  none;
-    margin: 5px;
-    //background-color:  #06FFFF;
-    cursor: pointer;
-}
 .userButton {
-        display: flex;
-        justify-content: flex-start; 
-        gap: 10px;
-        margin: 10px;
-        height: 100%;
-        border-top: 1px solid #06FFFF;
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+    justify-content:space-evenly;
+    padding-top: 0.5rem;
+    border-top: 1px solid #06FFFF;
 }
 
 .card {
-    position: static;
     background-color: rgba(123, 211, 211, 0.098);
     border-radius: 5px;
     box-shadow: 3.5px 3.5px 9px rgba(79, 200, 209, 0.94);
-    padding: 20px;
+    padding: 1rem;
     transition: opacity 0.2s ease-in-out;
     opacity: 0.8;
-    width: 40%;
     max-width: 450px;
     min-width: 340px;
 }

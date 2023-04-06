@@ -70,14 +70,14 @@ table {
 }
 
 .navButton{
-	max-width: 100px;
-	height: 30px;
-	border-radius: 12px;
-	width: 50px;
+	width: 4rem;
 	color: rgb(122, 122, 122);
 	border: none;
 	background: none;
 	letter-spacing: 1.5px;
 	font-family: 'emoji';
 	cursor: pointer;
+}
+.navButton:hover{
+	color: rgb(189, 187, 187);
 }

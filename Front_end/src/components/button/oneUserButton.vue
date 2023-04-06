@@ -139,15 +139,17 @@
 </script>
 
 <template>
-    <div class="avatarButton" v-for="(data ,index) in store.getters.getUsers" :key="index" >
-        <button 
-            class="img"
-            @click="click(data)"
-            v-if="store.getters.getArrayAvatar(data.user_user_id)"
-            :style="{ 'background-image': 'url(' + store.getters.getArrayAvatar(data.user_user_id) + ')'}">
-            <img :src="store.getters.getArrayAvatar(data.user_user_id)" />
-        </button>
-        {{ data.user_nickname }}
+    <div class="card" v-for="(data ,index) in store.getters.getUsers" :key="index" >
+        <div class="avatar">
+            <button 
+                class="img"
+                @click="click(data)"
+                v-if="store.getters.getArrayAvatar(data.user_user_id)"
+                :style="{ 'background-image': 'url(' + store.getters.getArrayAvatar(data.user_user_id) + ')'}">
+                <img :src="store.getters.getArrayAvatar(data.user_user_id)" />
+            </button>
+            {{ data.user_nickname }}
+        </div>
         <div class="ownerButton" v-if="userContext.owner || userContext.admin">
             <button class="navButton" @click="kick(data.user_user_id)">
                 kick
@@ -178,15 +180,31 @@
 img{
   display: none;
 }
-.avatarButton{
+.card{
+    background-color: rgba(123, 211, 211, 0.098);
+    border-radius: 5px;
+    box-shadow: 3.5px 3.5px 9px rgba(79, 200, 209, 0.94);
+    padding: 0.5rem;
+    transition: opacity 0.2s ease-in-out;
+    opacity: 0.8;
+    max-width: 10rem;
+}
+.avatar{
     display: flex;
-    flex-direction: column;
     align-items: center;
-    max-height: 100%;
+    justify-content:space-evenly;
 }
 .ownerButton{
     display: flex;
     justify-content: center;
+    border-top: 1px solid #06FFFF;
+    padding-top: 0.5rem;
+    margin-top: 0.5rem;
 }
-
+.card:hover {
+    opacity: 1;
+}
+button{
+    font-size: xx-small;
+}
 </style>
