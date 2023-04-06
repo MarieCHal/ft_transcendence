@@ -18,6 +18,7 @@
 
     function Quit(){
         socket.emit("game", store.getters.getRoom, "quit");
+        console.log('quit',store.getters.getRoom)
     }
     
     
@@ -63,7 +64,7 @@
             if (store.getters.getPlayer == 1){
                 store.commit("setBallX", ballx)
                 store.commit("setBallY", bally)
-                store.commit("setUser1", user1)
+                //store.commit("setUser1", user1)
                 store.commit("setUser2", user2)
                 store.commit("setScoreUser1", score1)
                 store.commit("setScoreUser2", score2)
@@ -72,7 +73,7 @@
                 store.commit("setBallX", 600 - ballx)
                 store.commit("setBallY", bally)
                 store.commit("setUser2", user1)
-                store.commit("setUser1", user2)
+                //store.commit("setUser1", user2)
                 store.commit("setScoreUser2", score1)
                 store.commit("setScoreUser1", score2)
             }
@@ -145,7 +146,7 @@
         ctx.fillText(text, x, y);
     }
     function render(){
-        user1.y = store.getters.getUser1;
+        //user1.y = store.getters.getUser1;
         user2.y = store.getters.getUser2;
         ball.x = store.getters.getBallX;
         ball.y = store.getters.getBallY;
@@ -210,7 +211,7 @@ onUnmounted (async () => {
 
 <style scoped lang="scss">
 #pong{
-    width: 100%;
+    width: 60%;
     height: auto;
 }
 </style>
