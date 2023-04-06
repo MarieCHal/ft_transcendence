@@ -6,10 +6,10 @@
     import playInvit from '@/components/button/playInvit.vue';
     import bloquer from '@/components/button/bloquer.vue';
     import matchHistory from '@/components/matchHistory.vue';
-    import { useStore } from "vuex"
-    const store = useStore();
+    //import { useStore } from "vuex"
+    //const store = useStore();
     //const user = store.getters.getOneUser;
-    console.log(store.getters.getOneUser);
+
 </script>
 
 <template>
@@ -20,7 +20,7 @@
         <div class="userButton">
             <friendRequest />
             <sendMsg />
-            <playInvit v-if="store.getters.getOneUser.user_isActive == 1"/>
+            <playInvit />
             <bloquer />
         </div>
     </div>

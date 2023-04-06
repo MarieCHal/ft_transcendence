@@ -1,6 +1,6 @@
 
 
-export async function getAvatar(store: any, id: any) {
+export async function getAvatar(store: any, id: any) {//params token pas obligatoire, il se trouve dans le store
     try {
         const headers = { Authorization: `Bearer ${store.getters.getToken}` };
         const response = await fetch(`http://c1r2s3:4000/users/avatar/${id}`, {headers});

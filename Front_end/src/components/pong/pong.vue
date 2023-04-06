@@ -19,7 +19,6 @@
     function Quit(){
         console.log("store.getters.getRoom === ", store.getters.getRoom)
         socket.emit("game", store.getters.getRoom, "quit");
-        console.log('quit',store.getters.getRoom)
     }
     
     
