@@ -1,7 +1,7 @@
 import { Column, Entity, CreateDateColumn, JoinColumn, ManyToMany, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 import { Chat } from "./Chat.entity";
-import { User } from "./Users.entity";
+import { Users } from "./Users.entity";
 
 @Entity()
 export class Mute {
@@ -11,9 +11,9 @@ export class Mute {
     })
     mute_id: number
 
-    @ManyToOne((type) => User)
+    @ManyToOne((type) => Users)
     @JoinColumn()
-    users: User
+    users: Users
 
     @ManyToOne(() => Chat, (chat) => chat.muted)
     chat: Chat

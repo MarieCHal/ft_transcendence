@@ -13,10 +13,17 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 export class UserController {
     constructor(private usersService: UsersService) {}
 
+    @Get('me')
+    //@UseGuards(JwtAuthGuard)
+    async getMySelf(@Request() req: any) {
+        console.log('me', req.user);
+        return await this.usersService.mySelf(req.user.user_id);
+    }
 
     @Get('avatar/:id')
-    async getAllUsers(@Param('id') id, @Res({passthrough: true}) res: Response)
+    async getAllUsers(@Param('id') id: number, @Res({passthrough: true}) res: Response)
     {
+        
         res.set({'Content-Type': 'image/jpeg'});
 
         const user = await this.usersService.findOne(id);
@@ -26,55 +33,54 @@ export class UserController {
     }
 
     @Get('profile/:id') 
-    @UseGuards(JwtAuthGuard)
-    async getProfile (@Param('id') id: any){
-        return this.usersService.returnProfile(id);
+    //@UseGuards(JwtAuthGuard)
+    async getProfile (@Param('id') id: number){
+        return await this.usersService.returnProfile(id);
     }
 
     @Get('all') 
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     async getAllProfile (@Request() req: any) {
         console.log("get all profile", req.user);
-        return this.usersService.findAll(req.user);
+        return await this.usersService.findAll(req.user);
     }
 
-    @Get('me')
-    @UseGuards(JwtAuthGuard)
-    async getMySelf(@Request() req: any) {
-        console.log('me', req.user);
-        return this.usersService.mySelf(req.user.user_id);
-    }
 
     @Post('friend-request')
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     async friendRequest(@Request() req: any) {
         console.log('friend-request', req.body);
         console.log('re.user: ', req.user);
-        return this.usersService.friendRequest(req.user, req.body.id)
+        return await this.usersService.friendRequest(req.user, req.body.id)
     }
 
     @Post('friend-accept')
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     async acceptFriends(@Request() req: any) {
         console.log('friend-accept', req.body.id);
         console.log('friend-accept', req.body.decision);
         if (req.body.decision == true)
-            return this.usersService.acceptFriendRequest(req.user, req.body.id)
+            return await this.usersService.acceptFriendRequest(req.user, req.body.id)
         else if (req.body.decision == false)
-            return this.usersService.rejectFriendRequest(req.user, req.body.id);
+            return await this.usersService.rejectFriendRequest(req.user, req.body.id);
     }
 
     @Post('delete-friend')
-    @UseGuards(JwtAuthGuard)
+    //@UseGuards(JwtAuthGuard)
     async deleteFriend(@Request() req: any) {
         return this.usersService.stopFrienship(req.user, req.body.id);
     }
 
     @Post('doubleAuth')
-    @UseGuards(JwtAuthGuard)
+    ////@UseGuards(JwtAuthGuard)
     async modifyDoubleAuth(@Request() req: any) {
         console.log("doubleAuth:", req.body);
-        this.usersService.doubleAuth(req.user, req.body.doubleAuth);
+        return await this.usersService.doubleAuth(req.user, req.body.doubleAuth);
+    }
+
+    @Get('match-history/:id')
+    async getMatchHistory(@Request() req: any, @Param('id') id: number) {
+        return await this.usersService.returnMatch(id)
     }
 
 }

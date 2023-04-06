@@ -1,23 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import { Stats, User } from 'src/typeorm';
+import { Stats, Users } from 'src/typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { config } from 'process'; 
 import { AuthService } from 'src/auth/services/auth.service';
 import { Observable } from 'rxjs';
+import { urlencoded } from 'express';
 
 @Injectable()
 export class ProfileService {
 
     constructor (
-        @InjectRepository(User) private usersRepository: Repository<User>,
+        @InjectRepository(Users) private usersRepository: Repository<Users>,
+        @InjectRepository(Stats) private statsRepository: Repository<Stats>
     ) {}
 
     // checks if the user already loggedin once, else create a profile with default 
     // pic and login as nickname
     async createProfile(data: any)
     {
-            const newUser = await this.usersRepository.create({login: data.login, avatar: 'super.png'});
+            const newUser = await this.usersRepository.create({login: data.login, email: data.email, avatar: 'super.png'});
             await this.usersRepository.save(newUser);
             const user = await this.usersRepository.findOne ({
                 where: {
@@ -25,17 +27,20 @@ export class ProfileService {
                 }
             })
             user.nickname = 'user' + user.user_id;
-            user.stats = new Stats()
+            user.doubleAuth = false;
+            user.isActive = 0; 
+            //user.stats = new Stats()
             const userSave = await this.usersRepository.save(user);
 
-            /*const stat = new Stats()
-            stat.user = userSave*/
-            console.log(user.nickname);
+            const stat = new Stats()
+            stat.user = userSave;
+            await this.statsRepository.save(stat);
+            //console.log(user.nickname);
             return user;
     }
     
 
-    async modifyNickname(nickname: string, user: User) 
+    async modifyNickname(nickname: string, user: Users) 
     {
         const other = await this.usersRepository.findOne({
             where: { 
@@ -44,8 +49,14 @@ export class ProfileService {
         })
         if (!other)
         {
-            user.nickname = nickname;
-            await this.usersRepository.save(user);
+            try {
+                user.nickname = nickname;
+                await this.usersRepository.save(user);
+
+            }
+            catch (error) { 
+                console.log("error: ", error)
+            }
             return "Your nickname is changed"
         }
         return {
@@ -53,7 +64,7 @@ export class ProfileService {
             message: "Nickname already taken" };
     }
 
-    async modifyAvatar(avatar: string, user: User)
+    async modifyAvatar(avatar: string, user: Users)
     {
         user.avatar = avatar;
         await this.usersRepository.save(user);

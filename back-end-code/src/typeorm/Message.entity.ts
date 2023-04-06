@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, CreateDateColumn } from "typeorm"
-import { User } from "./Users.entity";
+import { Users } from "./Users.entity";
 import { Chat } from "./Chat.entity"
 
 @Entity() 
@@ -10,8 +10,8 @@ export class Message {
     @ManyToOne((type) => Chat, chat => chat.messages, {onDelete: 'CASCADE'})
     chanel: Chat
 
-    @ManyToOne((type) => User,)
-    sender: User
+    @ManyToOne((type) => Users,)
+    sender: Users
 
     @Column()
     text: string

@@ -27,17 +27,17 @@ export class ProfileController {
 
     constructor (private readonly profileService: ProfileService ){}
 
-
     @Post('modify/nickname')
-    modifyNickanme(@Request()req: any) {
+    async modifyNickanme(@Request()req: any) {
         console.log("nickname");
         console.log(req.user);
-        return this.profileService.modifyNickname(req.body.nickname, req.user);
+        console.log(req.body.nickname)
+        return await this.profileService.modifyNickname(req.body.nickname, req.user);
     }
 
     @Post('modify/avatar')
     @UseInterceptors(FileInterceptor('avatar', storage))
-    modifyAvatar(@Request()req: any, @UploadedFile() avatar: Express.Multer.File) {
-        return this.profileService.modifyAvatar(avatar.filename, req.user);
+    async modifyAvatar(@Request()req: any, @UploadedFile() avatar: Express.Multer.File) {
+        return await this.profileService.modifyAvatar(avatar.filename, req.user);
     }
 }

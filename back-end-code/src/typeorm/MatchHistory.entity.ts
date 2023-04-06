@@ -15,4 +15,9 @@ export class MatchHistory {
     @Column()
     score: string;
 
+    @CreateDateColumn({
+        type: 'date'
+    })
+    date: string;
+
 }

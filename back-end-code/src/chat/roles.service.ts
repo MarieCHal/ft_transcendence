@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Mute, User } from 'src/typeorm';
+import { Mute, Users } from 'src/typeorm';
 import { Chat } from 'src/typeorm';
 import { UsersService } from 'src/users/users.service';
 import { createQueryBuilder, Repository } from 'typeorm';
 import { ChatService } from 'src/chat/chat.service';
+import { SocketService } from 'src/socket/socket.service';
+import { Socket, Server} from 'socket.io';
 
 
 
@@ -12,12 +14,15 @@ import { ChatService } from 'src/chat/chat.service';
 export class RolesService {
    constructor (
      @InjectRepository(Chat) private readonly chatRepository: Repository<Chat>,
-     @InjectRepository(User) private readonly userRepository: Repository<User>,
+     @InjectRepository(Users) private readonly userRepository: Repository<Users>,
      @InjectRepository(Mute) private readonly muteRepository: Repository<Mute>,
     private userService: UsersService,
+    private socketService: SocketService,
     ) {}
     
-    async isOwner(user: User, chanelId: number) {
+    //server: Server = this.socketService.getServer()
+
+    async isOwner(user: Users, chanelId: number) {
         const isOwner = await this.chatRepository
                                 .createQueryBuilder('chat')
                                 .leftJoinAndSelect('chat.owner', 'owner')
@@ -30,7 +35,7 @@ export class RolesService {
             return false;
     }
 
-    async isBanned(user: User, chanelId: number) {
+    async isBanned(user: Users, chanelId: number) {
         console.log(chanelId);
         const isBanned = await this.chatRepository.createQueryBuilder('chat')
                                     .leftJoinAndSelect('chat.banned', 'banned')
@@ -45,7 +50,7 @@ export class RolesService {
     return false;
     }
 
-   async isAdmin(user: User, chanelId: number) {
+   async isAdmin(user: Users, chanelId: number) {
     const isAdmin = await this.chatRepository
                 .createQueryBuilder('chat')
                 .leftJoinAndSelect('chat.admins', 'admins')
@@ -59,7 +64,7 @@ export class RolesService {
     return false;
     }
 
-    async isMuted(user: User, chanelId: number)
+    async isMuted(user: Users, chanelId: number)
     {
         const now = new Date();
         const time = 30000; // 30 sec in millisec
@@ -94,7 +99,7 @@ export class RolesService {
         return true
     }
 
-    async isInChanel(user: User, chanelId: number) {
+    async isInChanel(user: Users, chanelId: number) {
         const isChanel = await this.chatRepository
                     .createQueryBuilder('chat')
                     .leftJoinAndSelect('chat.users', 'users')
@@ -102,7 +107,6 @@ export class RolesService {
                     //.andWhere('admins.user_id = :id', {id: user.user_id})
                     .getRawMany()
     
-        //console.log("isChanel: ", isChanel)
         for (let i = 0; isChanel[i]; i++)
         {
            if (isChanel[i].users_user_id == user.user_id)
@@ -112,7 +116,7 @@ export class RolesService {
     }
 
 
-    async getAllUsers(user: User, chanelId: number) {
+    async getAllUsers(user: Users, chanelId: number) {
         const isInChan = await this.isInChanel(user, chanelId);
         if (isInChan == false)
             return "Sorry, you can't access that data, you are not part of this channel";
@@ -130,7 +134,7 @@ export class RolesService {
         }
     }
 
-    async toAdmin(user: User, toBeAdmin: number, chanelId: number)
+    async toAdmin(user: Users, toBeAdmin: number, chanelId: number)
     {
         console.log("user.user_id: ", user.user_id)
         console.log("otherId: ", toBeAdmin)
@@ -161,12 +165,20 @@ export class RolesService {
                                     .add(toAdmin)
         
         console.log("newAdmin: ", newAdmin);
+        //let room = chan.chat_id.toString();
+        let server: Server = this.socketService.getServer()
+        //server.to(room).emit('notifChat', 'userContext')
+        //console.log("ADMIIIINNNN ")
+        //this.socketService.returnAll();
+        let socket = this.socketService.getSocket(toAdmin);
+        console.log("admin socket: ", socket)
+        server.to(socket).emit('notifChat', 'userContext')
         return {
             message: `You succesfuly made ${toAdmin.nickname} admin of th channel: ${chan.name}`
         }
     }
 
-    async toMute(user: User, toBemute: number, chanelId: number) {
+    async toMute(user: Users, toBemute: number, chanelId: number) {
         console.log("user.user_id: ", user.user_id)
         console.log("otherId: ", toBemute)
         console.log("chanelId: ", chanelId)
@@ -194,12 +206,15 @@ export class RolesService {
                         .of(newChat)
                         .add(toMute);
         //console.log(newMuted);
+        let server: Server = this.socketService.getServer()
+        let socket = this.socketService.getSocket(toMute);
+        server.to(socket).emit('notifChat', 'userContext')
         return {
             message: `You successfully made ${toMute.nickname} admin of channel ${chat.name}`
         }
     }
 
-    async isBlocked(user: User, otherId: number) {
+    async isBlocked(user: Users, otherId: number) {
         const isBlocked = await this.userRepository
                                     .createQueryBuilder('user')
                                     .leftJoinAndSelect('user.blocked', 'blocked')
@@ -214,7 +229,7 @@ export class RolesService {
     }
 
     // remove otherId from the user.user_id's list of blocked users
-    async unBlock(user: User, otherId: number) {
+    async unBlock(user: Users, otherId: number) {
          const user_blocked = await this.userRepository.createQueryBuilder('user')
                                     .leftJoinAndSelect('user.blocked', 'blocked')
                                     .where('user.user_id = :user_id', {user_id: user.user_id})
@@ -225,7 +240,7 @@ export class RolesService {
         if (!user_blocked)
             return `User ${other.nickname} isn't blocked`;
         const remove = await this.userRepository.createQueryBuilder()
-                                    .relation(User, "blocked")
+                                    .relation(Users, "blocked")
                                     .of(user)
                                     //.of(user_blocked)
                                     .remove(other)
@@ -234,7 +249,7 @@ export class RolesService {
     }
 
     // adds otherId to user.user_id's list of blocked users
-    async blockUser(user: User, otherId: number) {
+    async blockUser(user: Users, otherId: number) {
         const checkBlock = await this.isBlocked(user, otherId)
 
         const other = await this.userService.findOne(otherId);
@@ -249,7 +264,7 @@ export class RolesService {
         }
         const user2 = await this.userRepository
                                     .createQueryBuilder()
-                                    .relation(User, "blocked")
+                                    .relation(Users, "blocked")
                                     .of(user)
                                     .add(other)
         const blocked = await this.getBlocked(user);
@@ -260,7 +275,7 @@ export class RolesService {
     }
 
     // returns an array containing the ids of the users blocked by user.user_id
-    async getBlocked(user: User) {
+    async getBlocked(user: Users) {
         const blocked = await this.userRepository
                                 .createQueryBuilder('user')
                                 .leftJoinAndSelect('user.blocked', 'blocked')

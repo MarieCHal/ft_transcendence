@@ -63,7 +63,6 @@ export class AuthController {
         )
       )
     console.log("data: ", data);
-
     return this.authService.registerUser(data.access_token);
   }
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/typeorm';
+import { Users } from 'src/typeorm';
 import { Chat } from 'src/typeorm';
 import { Message } from 'src/typeorm';
 import { Mute } from 'src/typeorm';
@@ -11,28 +11,19 @@ import * as bcrypt from 'bcrypt';
 import { AppGateway } from 'src/app/app.gateway';
 import { SocketService } from 'src/socket/socket.service';
 import { Socket, Server} from 'socket.io';
-import {
-    WebSocketGateway,
-  WebSocketServer,
-  SubscribeMessage,
-  OnGatewayConnection,
-  OnGatewayDisconnect,
-  OnGatewayInit,
-  } from '@nestjs/websockets'
-import { UsersModule } from 'src/users/users.module';
-
 
 @Injectable()
 export class ChatService {
    constructor (
      @InjectRepository(Chat) private readonly chatRepository: Repository<Chat>,
      @InjectRepository(Message) private readonly messRepository: Repository<Message>,
-     @InjectRepository(User) private readonly userRepository: Repository<User>,
+     @InjectRepository(Users) private readonly userRepository: Repository<Users>,
     private userService: UsersService,
     private rolesService: RolesService,
-    private socketService: SocketService
-    //private appGateway: AppGateway,
+    private socketService: SocketService,
    ) {}
+
+   //server: Server = this.socketService.getServer()
 
    async findOne(chanelId: number) {
     const chan = await this.chatRepository.findOne({
@@ -68,7 +59,7 @@ export class ChatService {
 
    //creates a new chat 
    //!!!!! check the boleans condition private
-    async createChanel(user: User, params: any) {
+    async createChanel(user: Users, params: any) {
         console.log('params: ', params)
         if (params.direct == true) // if it is a privmsg
         {
@@ -117,7 +108,7 @@ export class ChatService {
         return toReturn;
     }
 
-    async createDirectMessage(user: User, params: any ) {
+    async createDirectMessage(user: Users, params: any ) {
         const other = await this.userService.findOne(params.otherId);
             let name:string;
             name = user.nickname + '-' + other.nickname;
@@ -150,7 +141,7 @@ export class ChatService {
             return toReturn;
     }
 
-    async createPrivateChan(user: User, params: any) {
+    async createPrivateChan(user: Users, params: any) {
         let array = <number[]>([]);
         array = params.tabUsersId;
         console.log("type: ", params.tabUsersId.type)
@@ -158,7 +149,7 @@ export class ChatService {
 
         //console.log('length: ', params.tabUsersId.length())
 
-        let users: User[]
+        let users: Users[]
         console.log("array: ", array)
         if (array.length > 0)
         {
@@ -200,7 +191,7 @@ export class ChatService {
         return toReturn;
     }
 
-    async deleteChan(user: User, chanelId: number) {
+    async deleteChan(user: Users, chanelId: number) {
         
         const chan = await this.findOne(chanelId);
         if (!chan)
@@ -215,7 +206,7 @@ export class ChatService {
     }
 
     // get all the discussions of the user
-    async getMyChans(user: User) {
+    async getMyChans(user: Users) {
         
         console.log("userId get My chans: ", user);
         const userChan = await this.userRepository.createQueryBuilder('user')  // get all channels in which the user is
@@ -286,9 +277,10 @@ export class ChatService {
             }                        
     }
 
-    async userContext(user: User, chanelId: number) {
+    async userContext(user: Users, chanelId: number) {
         
         //console.log(userId, chanelId);
+        let server: Server = this.socketService.getServer()
         const chan = await this.findOne(chanelId);
         //const user = await this.userService.findOne(userId);
         
@@ -322,7 +314,10 @@ export class ChatService {
                                     .add(user)
             let room = chan.chat_id.toString();
             console.log("room  = ", room)
-            //this.socketService.socket.emit('notifChat', 'userInChan')
+            if (!server)
+                console.log("IL N Y A PA AAAAASSSS DE CHAUSSEETTTEE SERVEEEERR")
+            else
+                server.to(room).emit('notifChat', 'users')
             console.log(user)
             console.log(result)
         }
@@ -336,26 +331,17 @@ export class ChatService {
         }
     }
 
-    async leaveChanel(user: User, chanelId: number) {
-        
-        /*const user_chan = await this.userRepository
-                                    .createQueryBuilder('user')
-                                    .leftJoinAndSelect('user.chanel', 'chanel')
-                                    .where('user.user_id = :user_id', {user_id: user.user_id})
-                                    .andWhere('chanel.chat_id = :chat_id', {chat_id: chanelId})
-                                    .getOne()
+    async leaveChanel(user: Users, chanelId: number) {
+        console.log(user)
 
-        console.log("user: ", user);
-        if (!user)
-            return `No such channel`;
-        const chan = await this.findOne(chanelId);*/
+        const isInChan = await this.rolesService.isInChanel(user, chanelId)
+        if (!isInChan)
+            return `You are not aprt of this channel`;
+
         const chan = await this.chatRepository.createQueryBuilder('chat')
                                     .leftJoinAndSelect('chat.users', 'users')
                                     .where('chat.chat_id = :chat_id', {chat_id: chanelId})
-                                    .andWhere('users.user_id = :user_id', {user_id: user.user_id})
                                     .getOne()
-        if (!chan)
-            return `No such channel`;
         console.log("chan nb users: ", chan.nb_users)
         if (chan.nb_users < 2)
         {
@@ -366,9 +352,10 @@ export class ChatService {
         chan.nb_users--;
         if ((await this.rolesService.isOwner(user, chanelId)) == true)
         {
-            let newOwner: User 
+            let newOwner: Users 
             for(let i = 0; chan.users[i]; i++)
             {
+                newOwner = chan.users[i];
                 if (chan.users[i] != user)
                 {
                     chan.owner = newOwner;
@@ -393,15 +380,24 @@ export class ChatService {
             .of(newChan)
             .remove(user)
 
-        let room = newChan.chat_id.toString();
-        console.log("room: ", room);
-        //this.socketService.socket.to(room).emit('notifChat', 'userInChan')
+        //let room = newChan.chat_id.toString();
+        //console.log("room: ", room);
+        //server.to(room).emit('notifChat', 'users')
+        let server: Server = this.socketService.getServer()
+        for (let i = 0; chan.users[i]; i++) {
+            if (chan.users[i] != user)
+            {
+                let socket = this.socketService.getSocket(chan.users[i])
+                console.log(" =========================== socket: ", socket, "of user: ", chan.users[i])
+                server.to(socket).emit('notifChat', 'users')
+            }
+        }
         const result = await this.getChannelInfo(chanelId)
         console.log("chan infos after user leaving: ", result)
 
     }
 
-    async toKick(user: User, toBeKicked: number, chanelId: number) {
+    async toKick(user: Users, toBeKicked: number, chanelId: number) {
         const toKick = await this.userService.findOne(toBeKicked);
         const checkKick = await this.rolesService.isInChanel(toKick, chanelId);
         if (!checkKick)
@@ -424,13 +420,16 @@ export class ChatService {
             kick: false
         } 
         await this.leaveChanel(toKick, chanelId);
+        let server: Server = this.socketService.getServer()
+        let socket = this.socketService.getSocket(toKick);
+        server.to(socket).emit('notifChat', 'userContext')
         return {
             message: `You successfully kicked ${toKick.nickname}`,
             kick: true
         }
     }
 
-    async toBan(user: User, toBeBanned: number, chanelId: number) {
+    async toBan(user: Users, toBeBanned: number, chanelId: number) {
         const toBan = await this.userService.findOne(toBeBanned);
         const checkBan = await this.rolesService.isBanned(toBan, chanelId);
         if (checkBan == true)
@@ -459,7 +458,13 @@ export class ChatService {
                                     .relation(Chat, "banned")
                                     .of(chan)
                                     .add(toBan)
-
+            
+        //let room = chan.chat_id.toString();
+        //let server: Server = this.socketService.getServer()
+        //server.to(room).emit('notifChat', 'userContext')
+        let server: Server = this.socketService.getServer()
+        let socket = this.socketService.getSocket(toBan);
+        server.to(socket).emit('notifChat', 'userContext')
             return {
             message: `You successfully banned ${toBan.nickname}`,
             ban: false
@@ -467,7 +472,7 @@ export class ChatService {
     }
 
 
-    async checkChanPwd(user: User, chanelId: number, pwd: string) {
+    async checkChanPwd(user: Users, chanelId: number, pwd: string) {
         const chanel = await this.findOne(chanelId);
         //const user = await this.userService.findOne(UserId);
         const isInChan = await this.rolesService.isInChanel(user, chanelId)
@@ -492,7 +497,7 @@ export class ChatService {
             //return `Incorrect Password ${chanel.name}`;
     }
 
-    async getChanHistory(user: User, chanelId: number) {
+    async getChanHistory(user: Users, chanelId: number) {
         const chan = await this.rolesService.getBlocked(user)
         console.log('blocked users: ', chan);
         let blocked = [];
@@ -536,7 +541,7 @@ export class ChatService {
     }
 
     /** MESSAGES */ 
-    async newMessage(user: User, chanelId: number, text: string) : Promise<Message> {
+    async newMessage(user: Users, chanelId: number, text: string) : Promise<Message> {
         const isMuted = await this.rolesService.isMuted(user, chanelId);
         if (isMuted == true)
             return null
@@ -563,7 +568,7 @@ export class ChatService {
         return returnMess;
     }
 
-    async changePwd(user: User, ChanelId: number, pwd: string)
+    async changePwd(user: Users, ChanelId: number, pwd: string)
     {
         const chan = await this.findOne(ChanelId);
         const isOwner = await this.rolesService.isOwner(user, ChanelId);

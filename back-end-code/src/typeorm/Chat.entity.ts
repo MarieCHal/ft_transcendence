@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, OneToOne, JoinTable, ManyToMany } from "typeorm"
-import { User } from "./Users.entity";
+import { Users } from "./Users.entity";
 import { Message } from "./Message.entity"
 import { Mute } from "./Mute.entity";
 
@@ -36,25 +36,25 @@ export class Chat {
     @OneToMany(() => Message, (message) => message.chanel)
     messages: Message[];
 
-    @ManyToOne(() => User)
-    owner: User;
+    @ManyToOne(() => Users)
+    owner: Users;
     
-    @ManyToMany(() => User)
+    @ManyToMany(() => Users)
     @JoinTable()
-    admins: User[];
+    admins: Users[];
 
-    @ManyToMany(() => User, (user) => user.chanel, {
+    @ManyToMany(() => Users, (user) => user.chanel, {
         cascade: true
     })
     @JoinTable()
-    users: User[];
+    users: Users[];
 
 
-    @ManyToMany(() => User, {
+    @ManyToMany(() => Users, {
         cascade: true
     })
     @JoinTable()
-    banned: User[];
+    banned: Users[];
 
     @OneToMany(() => Mute, (muted) => muted.chat)
     @JoinTable()

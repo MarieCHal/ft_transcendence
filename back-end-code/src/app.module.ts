@@ -21,6 +21,7 @@ import { GameModule } from './game/game.module';
 import { JwtModule } from '@nestjs/jwt';
 import { SocketModule } from './socket/socket.module';
 import { RequestMethod } from '@nestjs/common';
+import { Server } from 'socket.io';
 
 
 @Module({
@@ -39,10 +40,15 @@ import { RequestMethod } from '@nestjs/common';
     ChatModule,
     GameModule,
     JwtModule,
-    SocketModule
+    SocketModule,
   ],
   controllers: [AppController],
-  providers: [AppService, AppGateway
+  providers: [AppService,
+    {
+    provide: Server,
+    useValue: require('./main')
+  }, 
+  AppGateway
     /*{
       provide: APP_GUARD,
       useClass: JwtAuthGuard

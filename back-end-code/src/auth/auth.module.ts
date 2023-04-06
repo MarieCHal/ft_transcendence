@@ -9,7 +9,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { jwtConfig } from 'src/config/jwt.config';
 import { MailModule } from 'src/mail/mail.module';
 import { ProfileModule } from 'src/profile/profile.module';
-import { User } from 'src/typeorm';
+import { Stats, Users } from 'src/typeorm';
 import { TypeOrmModule } from '@nestjs/typeorm'; 
 import { HttpModule } from '@nestjs/axios';
 import { ProfileService } from 'src/profile/profile.service';
@@ -22,7 +22,7 @@ import { ProfileService } from 'src/profile/profile.service';
             MailModule,
             HttpModule,
             JwtModule.registerAsync(jwtConfig),
-            TypeOrmModule.forFeature([User])],
+            TypeOrmModule.forFeature([Users, Stats])],
   providers: [AuthService, LocalStrategy, JwtStrategy, ProfileService],
   controllers: [AuthController],
   exports: [AuthService]

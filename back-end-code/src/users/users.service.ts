@@ -1,6 +1,6 @@
 import { Injectable, StreamableFile } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {Friends, User } from 'src/typeorm';
+import {Friends, Users } from 'src/typeorm';
 import { Not, Repository } from 'typeorm';
 import { MatchHistory } from 'src/typeorm';
 import { MailService } from 'src/mail/mail.service';
@@ -9,13 +9,13 @@ import { MailService } from 'src/mail/mail.service';
 @Injectable()
 export class UsersService {
     constructor (
-        @InjectRepository(User) private usersRepository: Repository<User>,
+        @InjectRepository(Users) private usersRepository: Repository<Users>,
         @InjectRepository(Friends) private friendsRepository: Repository<Friends>,
         @InjectRepository(MatchHistory) private matchHistory: Repository<MatchHistory>
     ) {}
 
     /** @summary returns all users excepted yourself in public mode */
-    async findAll(user: User) {
+    async findAll(user: Users) {
         const users = await this.usersRepository
                         .createQueryBuilder("user")
                         .leftJoinAndSelect("user.stats", "stats")
@@ -34,7 +34,7 @@ export class UsersService {
     }
 
     /** @summary return an array of users in public mode corresponding to the user's friends*/
-    async getFriends(user: User) {
+    async getFriends(user: Users) {
 
         const friends = await this.friendsRepository
                             .createQueryBuilder("friends")
@@ -76,11 +76,8 @@ export class UsersService {
                                 .select(['user.nickname', 'user.user_id', 'user.isActive', 'stats'])
                                 .where('user.user_id = :id', {id: userId})
                                 .getRawOne()
-        const matchHistory = await this.returnMatch(user)
-        return {
-            user,
-            matchHistory
-        }
+        //const matchHistory = await this.returnMatch(user)
+        return user
     }
     
 
@@ -101,16 +98,15 @@ export class UsersService {
                                         .select(['user.user_id', 'user.nickname'])
                                         .getRawMany()
 
-        const matchHistory = await this.returnMatch(me);
         console.log(friendRequests);
         return {
             me,
             pending: friendRequests,
-            matchHistory
         }
     }
 
-    async returnMatch(user: User) {
+    async returnMatch(id: number) {
+        const user = await this.findOne(id);
         const history = await this.matchHistory.createQueryBuilder('match')
                                     .where('match.player1 = :player1_id', {player1_id: user.nickname})
                                     .orWhere('match.player2 = :player2_id', {player2_id: user.nickname})
@@ -121,7 +117,7 @@ export class UsersService {
     }
 
     /** @summary creates a new friend request if not yet existing (from user to friendId) */
-    async friendRequest(user: User, friendId: number) { 
+    async friendRequest(user: Users, friendId: number) { 
 
         if (user.user_id == friendId)
             "I hope you don't need to ask yourSelf to be friend with your own person"
@@ -158,7 +154,7 @@ export class UsersService {
     /* accept a friend request, create new row in friend table with friend one being the personne that made the request
      * set the two rows corresponfin to the friendship to status = true
      */
-    async acceptFriendRequest(user: User, friendId: number) {
+    async acceptFriendRequest(user: Users, friendId: number) {
         console.log("l'autre: ", friendId)
         console.log("moi: ", user)
         const pending = await this.friendsRepository
@@ -181,7 +177,7 @@ export class UsersService {
     }
 
     /** @brief reject a friend request and remove the corresponding row  */
-    async rejectFriendRequest(user: User, friendId: number)
+    async rejectFriendRequest(user: Users, friendId: number)
     {
         console.log("l'autre: ", friendId)
         console.log("moi: ", user.user_id)
@@ -198,7 +194,7 @@ export class UsersService {
 
     // front
     /** @brief remove both rows in friend table concerning the friendship */
-    async stopFrienship(user: User, friendId: number)
+    async stopFrienship(user: Users, friendId: number)
     {
         const toStop = await this.friendsRepository
                                     .createQueryBuilder('friends')
@@ -219,13 +215,13 @@ export class UsersService {
 
 
     /** @brief change the double authentification  */
-    async doubleAuth(user: User, doubleAuth: boolean) {
+    async doubleAuth(user: Users, doubleAuth: boolean) {
         user.doubleAuth = doubleAuth;
         return await this.usersRepository.save(user);
     }
 
     /** @summary change status state */
-    async isActive(user: User, status: number) {
+    async isActive(user: Users, status: number) {
         user.isActive = status;
         await this.usersRepository.save(user);
     }

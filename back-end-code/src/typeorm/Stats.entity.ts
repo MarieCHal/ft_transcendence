@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn, OneToOne} from "typeorm";
-import { User } from "./Users.entity";
+import { Users } from "./Users.entity";
 
 @Entity()
 export class Stats {
@@ -9,8 +9,8 @@ export class Stats {
     })
     stats_it: number;
 
-    @OneToOne(() => User, (user) => user.stats)
-    user: User;
+    @OneToOne(() => Users, (user) => user.stats)
+    user: Users;
 
     @Column({default: 0})
     games: number;

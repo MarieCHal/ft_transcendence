@@ -5,7 +5,7 @@ import { CodeInterface } from '../interfaces/code.interface';
 import { LoginUserDto } from '../dto/login.dto';
 import { MailService } from 'src/mail/mail.service';
 import { Repository } from 'typeorm';
-import { User } from 'src/typeorm';
+import { Users } from 'src/typeorm';
 import { ProfileService } from 'src/profile/profile.service';
 import { HttpService } from '@nestjs/axios';
 import { catchError, firstValueFrom } from 'rxjs';
@@ -16,7 +16,7 @@ import { StateInterface } from '../interfaces/state.interface';
 export class AuthService {
     constructor(
         //private usersService: UsersService, 
-        @InjectRepository(User) private readonly userRepository: Repository<User>,
+        @InjectRepository(Users) private readonly userRepository: Repository<Users>,
         private profileService: ProfileService,
         private jwtService: JwtService, 
         private mailService: MailService,
@@ -37,13 +37,14 @@ export class AuthService {
               headers: { Authorization: `Bearer ${apiToken}`},
             },
           ))
-          console.log(data.login)
+          //console.log(data.nickname)
           console.log(data.email)
           const user = await this.userRepository.findOne({ // cherche le user dans la base de donnee
             where: {
-                login: data.login,
+                email: data.email,
                 }
             })
+            console.log("user: ", user);
             if (!user) // if the user never went on the website
             {
                 const newUser = await this.profileService.createProfile(data);
@@ -90,14 +91,13 @@ export class AuthService {
                 nickname: nickname,
             }
         })
-        if (code == 1234)
-        {
-            return this.generateAccessToken(user);
-        }
-        /*for (let i = 0; i < this.verifCode.length; i++)
+        console.log("nickname: ", nickname)
+        console.log("pwd: ", code)
+        for (let i = 0; i < this.verifCode.length; i++)
         {
             const tmp = this.verifCode[i];
-            if (tmp.login == nickname && tmp.Code == code)
+            console.log("tmp: ", tmp);
+            if (tmp.nickname == nickname && tmp.Code == code)
             {
                 this.verifCode.splice(i, 1)
                 const user = await this.userRepository.findOne({
@@ -107,24 +107,24 @@ export class AuthService {
                 });
                 return this.generateAccessToken(user);
             }
-        }*/
+        }
         throw new BadRequestException("Invalid Code")
     }
 
-    async sendMail(user: User) {
+    async sendMail(user: Users) {
 
         for (let i = 0; i < this.verifCode.length; i++)
         {
             const tmp = this.verifCode[i];
-            if (this.verifCode[i].login == user.login)
+            if (this.verifCode[i].nickname == user.nickname)
             this.verifCode.splice(i, 1)
         }
         const rdmNumber = Math.floor(4000 + (Math.random() * 5000))
         console.log(rdmNumber)
         this.verifCode.push({
-            login: user.login,
+            nickname: user.nickname,
             Code: rdmNumber,
         });
-        //await this.mailService.sendUserConfirmation(user.login, user.email, rdmNumber);
+        await this.mailService.sendUserConfirmation(user.nickname, user.email, rdmNumber);
     }
 }

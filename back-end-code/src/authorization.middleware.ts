@@ -13,17 +13,15 @@ export class AuthorizationMiddleware implements NestMiddleware{
       private configService: ConfigService
    ){}  
    async use(req: Request, res: Response, next: NextFunction){
-      // get token and decode or any custom auth logic
+      
+      // check the token 
       let token = req.headers.authorization;
       let cleanToken = token.replace('Bearer','').trim();
-      console.log("token before: ", token)
-      console.log("token after: ", cleanToken)
       if (!token)
       {
          console.log("no token")
          throw new UnauthorizedException;
       }
-      console.log("token secret: ", this.configService.get('APP_SECRET'))
       let userToken = this.jwtService.verify(
          cleanToken, {
            secret: this.configService.get('APP_SECRET')
@@ -33,8 +31,26 @@ export class AuthorizationMiddleware implements NestMiddleware{
       let user = await this.usersService.findOne(userToken.sub)
       if (!user)
          throw new UnauthorizedException;
-      console.log("user in middleware: ", user)
       req.user = user;
+
+      // check the content of the req.body to check if undefined variables are present
+      const bodyFields = [];
+      for (const field in req.body) // field 
+      {
+         if (req.body.hasOwnProperty(field) && req.body[field] === undefined) {
+            bodyFields.push(field);
+      }
+     }
+     if (bodyFields.length > 0) { // if there are undefined files in the body the request will not be proceeded
+       return res.status(400).json({ message: `Missing fields: ${bodyFields.join(', ')}` });
+     }
+
+     // check the id in the param
+     /*const id = req.params.id
+     if (id === undefined) {
+      return res.status(400).json({ message: `id in ${req.baseUrl} is undefined` });
+     }*/
+
       next(); 
    }
 }

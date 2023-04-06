@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToOne,PrimaryGeneratedColumn} from "typeorm"
-import { User } from "./Users.entity";
+import { Users } from "./Users.entity";
 
 @Entity()
 export class Friends {
@@ -9,8 +9,8 @@ export class Friends {
     })
     friends_id: number;
     // the user'id of the one that requested
-    @ManyToOne((type) => User, user => user.friends)
-    friend_one: User;
+    @ManyToOne((type) => Users, user => user.friends)
+    friend_one: Users;
 
     // the usser's id of the one that recieved the request
     @Column()

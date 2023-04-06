@@ -9,7 +9,7 @@ import { Friends } from "./Friends.entity";
 import { Stats } from "./Stats.entity";
 
 @Entity()
-export class User {
+export class Users {
 
     //Primary generated column unique id
     @PrimaryGeneratedColumn({
@@ -18,6 +18,11 @@ export class User {
     })
     user_id: number;
 
+    @Column({
+        default: '',
+    })
+    email: string;
+    
     // 42 Login
     @Column({
         default: '',
@@ -31,8 +36,9 @@ export class User {
     nickname: string;
 
     // true user is logeed in - false user isn't
-    @Column({default: 0})
-    isActive: number = 0;
+    @Column()
+    isActive: number;
+
 
     // true send mail when login for double auth
     @Column('boolean', {default: false})
@@ -44,9 +50,9 @@ export class User {
     })
     avatar: string;
 
-    @ManyToMany(() => User)
+    @ManyToMany(() => Users)
     @JoinTable()
-    blocked: User
+    blocked: Users
 
     // -------- Relations with other tables ----------- 
     // one to one unidirectional relationship with avatar table
@@ -57,8 +63,7 @@ export class User {
     @ManyToMany((type) => Chat, (chat) => chat.users)
     chanel: Chat[]; 
 
-    @OneToOne(() => Stats, (stats) => stats.user)
+    @OneToOne((type) => Stats, (stats) => stats.user)
     @JoinColumn()
     stats: Stats
-
 }

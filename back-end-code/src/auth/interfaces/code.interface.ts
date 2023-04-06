@@ -1,4 +1,4 @@
 export interface CodeInterface {
-    login: string,
+    nickname: string,
     Code: number
 }

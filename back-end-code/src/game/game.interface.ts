@@ -1,4 +1,4 @@
-import { User } from "src/typeorm";
+import { Users } from "src/typeorm";
 
 export interface GameInterface {
     room: string,
