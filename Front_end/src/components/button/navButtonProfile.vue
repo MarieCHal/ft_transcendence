@@ -41,6 +41,7 @@
     inset: 0;
     animation: pulse 2s infinite;
     box-shadow: 0 0 20px rgba(0, 233, 177, 1);
+    cursor: pointer;
 }
 
 @keyframes pulse {

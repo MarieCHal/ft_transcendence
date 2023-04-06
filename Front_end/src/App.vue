@@ -45,6 +45,7 @@ main{
   align-items: center;
   justify-content: center;
   margin-top: 10%;
+  overflow: auto;
 }
 
 footer {
