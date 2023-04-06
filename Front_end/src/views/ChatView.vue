@@ -12,6 +12,7 @@ import router from "@/router";
     const chatMessages = ref<any[]>([]);
     const socket = store.getters.getWebSocket;
     const componentKey = ref(0);
+    const userBlocked = store.getters.getUserBlocked;
     store.commit("setBool", false)
 
     onMounted(async () => {
@@ -31,12 +32,25 @@ import router from "@/router";
         socket.on('chat', (message: any) => {
           //  console.log('message = ', message);
           //  console.log('userBlocked = ', store.getters.userBlocked);
-            /*for (let index = 0; index < store.getters.userBlocked.length; index++) {  
-              if (store.getters.userBlocked[index] == message.sender_user_id){
-
-              }  
-            }*/
-            chatMessages.value.push(message);
+          /*for (let index = 0; index < store.getters.userBlocked.length; index++) {  
+            if (store.getters.userBlocked[index] == message.sender_user_id){
+              
+            }  
+          }*/
+          //console.log("userBlocked: ", userBlocked)
+          //console.log("sender id: ", message.sender_user_id)
+          //console.log("user blocked length: ", userBlocked.length)
+          let i = 0
+            for (i ; i < userBlocked.length;)
+            {
+              //console.log('userBlocked id: ', userBlocked[i].blocked_user_id)
+              if (userBlocked[i].blocked_user_id != message.sender_user_id)
+                i++;
+              else
+                break;
+            }
+            if (i == userBlocked.length)
+                chatMessages.value.push(message);
         });
 
         socket.on('notifChat', async (msg: string)  => {

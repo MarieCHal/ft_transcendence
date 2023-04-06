@@ -36,7 +36,7 @@
             InviteFriends
         </button>
         <div  v-for="(user, index) in store.getters.getUsers">
-            <button class="navButton" v-if="user.user_isActive" @click="play(user.user_user_id)">
+            <button class="navButton" v-if="user.user_isActive == 1" @click="play(user.user_user_id)"> 
                     {{ user.user_nickname }}
             </button>
         </div>

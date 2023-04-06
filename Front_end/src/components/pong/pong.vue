@@ -155,6 +155,7 @@
         drawNet();
         drawText(user1.score, cvs.width/4, cvs.height/5, store.getters.getColorText);
         drawText(user2.score, 3*cvs.width/4, cvs.height/5, store.getters.getColorText);
+        //console.log("user1: ", user1.y, "user2: ", user2.y)
         drawRect(user1.x, user1.y, user1.width, user1.height, user1.color);
         drawRect(user2.x, user2.y, user2.width, user2.height, user2.color);
         drawCircle(ball.x, ball.y, ball.radius, ball.color);
@@ -163,13 +164,20 @@
     {
         let rect = cvs.getBoundingClientRect();
         //let prop = rect.height/40;
+        const speed = cvs.height/20;
         if (event.code == 'KeyW') // Touche "haut"
         { 
-            user1.y -= 10;
+            if (user1.y > 0)
+            {
+                user1.y -= 10;
+            }
         } 
         else if (event.code == 'KeyS') // Touche "bas"
         {
-            user1.y += 10;
+            if (user1.y < 300)
+            {
+                user1.y += 10;
+            }
         }
         
         if (store.getters.getRoom){
@@ -178,7 +186,7 @@
     });
  
     function playgame(){
-        console.log('1')
+        //console.log('1')
         if (store.getters.getStatusCode < 0){
             render();
         }

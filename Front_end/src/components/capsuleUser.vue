@@ -29,7 +29,7 @@
             <div class="dispo">
                 <img :src="store.getters.getUserAvatar" />
             </div>
-            <div class="status-indicator" :class="{ 'status-online': user.user_isActive, 'status-offline': !user.user_isActive }"></div>
+            <div class="status-indicator" :class="{ 'status-online': user.user_isActive == 1, 'status-offline': user.user_isActive == 0, 'status-playing': user.user_isActive == 2}"></div>
         </div>
         <div class="dispo">
             user_nickname = {{ user.user_nickname }}
@@ -74,5 +74,9 @@ img{
 
 .status-offline {
     background-color: red;
+}
+
+.status-playing {
+    background-color: rgb(0, 179, 255);
 }
 </style>
