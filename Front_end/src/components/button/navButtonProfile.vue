@@ -51,4 +51,21 @@
       box-shadow: 0 0 0 10px rgba(0, 233, 177, 0);
     }
   }
+
+img{
+  display: none;
+}
+#nickname{
+    display: flex;
+    font-size: small;
+    justify-content: end;
+    align-content: end;
+}
+.avatarButton{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    max-height: 100%;
+    padding: 6.5px;
+}
 </style>

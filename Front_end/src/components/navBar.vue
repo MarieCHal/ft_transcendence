@@ -20,11 +20,12 @@
 
 
 <style scoped lang="scss">
-.nav{
+.nav {
     display: flex;
     margin-top: 10px;
     padding: 20px;
     //justify-content: space-between;
     //background-color: rgb(52, 147, 230);
 }
+
 </style>

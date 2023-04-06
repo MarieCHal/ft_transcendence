@@ -43,4 +43,11 @@
     flex-direction: column;
     justify-content: center;
 }
+
+.doubleAuth{
+    height: 200px;
+}
+.listFriendsRequest{
+    height: 200px;
+}
 </style>

@@ -64,4 +64,8 @@ button{
     max-width: 450px;
     min-width: 340px;
 }
+
+.card:hover {
+    opacity: 1;
+}
 </style>
