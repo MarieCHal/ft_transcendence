@@ -34,14 +34,13 @@
   margin-right: 10px;
   padding: 5px 10px;
   border-radius: 5px;
-  border: 1px solid #ccc;
 }
 
 #prompt button {
   padding: 5px 10px;
   border-radius: 5px;
-  background-color: #007bff;
-  color: #fff;
+  background:  none;
+  color: rgb(21, 198, 201);
   border: none;
   cursor: pointer;
   overflow: auto;

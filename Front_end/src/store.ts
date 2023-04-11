@@ -241,7 +241,7 @@ const store = createStore({
   },
   actions: {
     initWebSocket({ commit }) {
-      const webSocket = io('http://c1r2s3:4000/', {
+      const webSocket = io('http://c1r2s3:3000/', {
         auth: {
           token: store.getters.getToken,
         }

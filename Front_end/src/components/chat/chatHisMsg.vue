@@ -25,7 +25,6 @@
 #name{
     text-decoration: underline;
     font-size:smaller;
-    color: rgb(225, 117, 22);
 }
 #corp{
     display: flex;
@@ -33,9 +32,7 @@
     margin-top: 0.3rem;
 }
 #msg{
-    word-wrap: break-word;
     overflow: hidden;
-    background-color: darkkhaki;
 }
 #date{
     height: 0.7rem;

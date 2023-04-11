@@ -28,6 +28,8 @@
 <style scoped lang="scss">
 .chat-messages {
     display: flex;
+    width: 60%;
+    margin: 5px;
     flex-direction: column;
     //background-color: cyan;
     border: 1px solid #ccc;
@@ -37,15 +39,14 @@
     overflow: auto;
 }
 .chat-myMsg{
-    background-color: rgb(117, 74, 218);
+   // background-color: rgb(117, 74, 218);
 }
 .chat-hisMsg{
-    background-color: rgb(22, 232, 15);
+   // background-color: rgb(22, 232, 15);
 }
 #name{
-    text-decoration: underline;
     font-size:smaller;
-    color: rgb(225, 117, 22);
+    color: darkcyan;
 }
 #corp{
     display: flex;
@@ -55,7 +56,6 @@
 #msg{
     word-wrap: break-word;
     overflow: hidden;
-    background-color: darkkhaki;
 }
 #date{
     height: 0.7rem;

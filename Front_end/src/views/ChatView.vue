@@ -12,6 +12,7 @@ import router from "@/router";
     const chatMessages = ref<any[]>([]);
     const socket = store.getters.getWebSocket;
     const componentKey = ref(0);
+    let bool = ref(false);
     const userBlocked = store.getters.getUserBlocked;
     store.commit("setBool", false)
 
@@ -109,80 +110,118 @@ import router from "@/router";
       componentKey.value += 1;
     }
 
+    function ShowUsers(){
+      if(store.getters.getBool == false)
+      {
+        store.commit("setBool", true)
+        return ;
+      }
+      else if(store.getters.getBool == true){
+        store.commit("setBool", false)
+        return ;
+      }
+    }
 //v-if="store.getters.getWhat === 'UsersInChan'"
 </script>
 
 <template>
-  <div>
-    <h1> users </h1>
-    <div>
-      <oneUserButton :key="componentKey" v-if="store.getters.getWhat === 'UsersInChan'"/>
-    </div>
-  </div>
-  <div v-if="store.getters.getUserContext.owner">
-    <formChangePwdChat />
-  </div>
-    <h1> {{ store.getters.getChanContext.chanel_name}} </h1>
-    <div class="chat-container">
-      <div class="chat-history">
-        <chatHistory />
-      </div>
-      <div class="chat-currentMsg" v-for="(msg, index) in chatMessages" :key="index">
-        <div v-if="typeof msg === 'object' && msg.messages_text" class="chat-messages" :class="{ 'chat-myMsg': msg.sender_user_id === store.getters.getId, 'chat-hisMsg': msg.sender_user_id != store.getters.getId}">
-          <div id="name">
-            {{ msg.sender_nickname }}
+  <div class="chat">
+    <div class="button">
+      <div>
+        <button class="boubou" @click="ShowUsers()">
+          <div v-if="store.getters.getBool">
+            <oneUserButton :key="componentKey" v-if="store.getters.getWhat === 'UsersInChan'"/>
           </div>
-          <div id="corp">
-            <div id="msg">
-              {{ msg.messages_text }}
-            </div>
-            <div id="date">
-              {{ msg.messages_createdAtTime }}
+        </button>
+      </div>
+      <h1> channel {{ store.getters.getChanContext.chanel_name}} </h1>
+      <div v-if="store.getters.getUserContext.owner">
+        <formChangePwdChat />
+      </div>
+      </div>
+      <div>
+        <div class="chat-container">
+          <div class="chat-history">
+            <chatHistory />
+          </div>
+          <div class="chat-currentMsg" v-for="(msg, index) in chatMessages" :key="index">
+            <div v-if="typeof msg === 'object' && msg.messages_text" class="chat-messages" :class="{ 'chat-myMsg': msg.sender_user_id === store.getters.getId, 'chat-hisMsg': msg.sender_user_id != store.getters.getId}">
+              <div id="name">
+                {{ msg.sender_nickname }}
+              </div>
+              <div id="corp">
+                <div id="msg">
+                  {{ msg.messages_text }}
+                </div>
+                <div id="date">
+                  {{ msg.messages_createdAtTime }}
+                </div>
+              </div>
             </div>
           </div>
         </div>
+        <div id="prompt-container">
+          <chatPrompt />
+        </div>
       </div>
-      <div id="prompt-container">
-        <chatPrompt />
-      </div>
-    </div>
+  </div>
 </template>
 
 <style scoped lang="scss">
+.chat{
+  display: flex;
+  flex-direction: column;
+}
+.button{
+  display: flex;
+  height: 40px;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+.boubou{
+  width: 100px;
+  height: 100px;
+}
 .chat-container {
-  position: fixed;
-  max-width: 500px;
-  margin: 40px;
-  bottom: 0;
-  //width: 50%;
-  height: 50%;
-  background-color: #fff;
-  border: 1px solid #ccc;
+  margin: 10% auto; /* Définit la marge supérieure à 90 pixels et les marges latérales automatiques pour centrer horizontalement */
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(123, 211, 211, 0.098);
+  box-shadow: 3.5px 3.5px 9px rgba(79, 200, 209, 0.94);
+  bottom: -65px;
+  padding: 2%;
+  height: 400px;
   border-radius: 10px;
-  padding: 10px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  transition: opacity 0.2s ease-in-out;
+  opacity: 0.8;
+  width: 30%;
+  max-width: 450px;
+  min-width: 350px;
+  max-height: 400px;
   overflow: auto;
 }
-
+.chat-container:hover {
+    opacity: 1;
+}
+.chat-container::-webkit-scrollbar{
+  display: none;
+}
 .chat-messages {
     display: flex;
     flex-direction: column;
     border: 1px solid #ccc;
     border-radius: 10px;
     padding: 5px;
+    width: 60%;
+    margin: 5px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     overflow: auto;
 }
-.chat-myMsg{
-    background-color: brown;
-}
-.chat-hisMsg{
-    background-color: rgb(232, 160, 15);
-}
+
 #name{
-    text-decoration: underline;
     font-size:smaller;
-    color: rgb(225, 117, 22);
+    color: darkcyan;
 }
 #corp{
     display: flex;
@@ -192,7 +231,6 @@ import router from "@/router";
 #msg{
     word-wrap: break-word;
     overflow: hidden;
-    background-color: darkkhaki;
 }
 #date{
     height: 0.7rem;
@@ -203,17 +241,18 @@ import router from "@/router";
 }
 
 #prompt-container {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  //width: auto;
-  padding: 10px;
-  background-color: #fff;
+  position: relative;
+  left: 50%; /* Déplace le bloc de 50% vers la droite */
+  transform: translateX(-50%) translateY(-1%); /* Déplace le bloc de moitié de sa largeur vers la gauche et de 40 pixels vers le haut pour le centrer et le remonter */
+  width: 300px;
+  background-color: none;
   border-top: 1px solid #ccc;
-  //display: flex;
-  //justify-content: center;
-  //align-items: center;
 }
-
+@media screen and (max-width: 500px) {
+    .chat-container {
+      height: 300px;
+      margin-top: 10px;
+  }
+}
 
 </style>
