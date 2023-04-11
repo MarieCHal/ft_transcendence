@@ -13,6 +13,8 @@ import { Stats, Users } from 'src/typeorm';
 import { TypeOrmModule } from '@nestjs/typeorm'; 
 import { HttpModule } from '@nestjs/axios';
 import { ProfileService } from 'src/profile/profile.service';
+import { TwoFactorAuthenticationController } from './controllers/twoFactorAuthentication.controller';
+import { TwoFactorAuthenticationService } from './services/twoFactorAuthentication.service';
 
 // to remove (profile service)
 @Module({
@@ -23,8 +25,8 @@ import { ProfileService } from 'src/profile/profile.service';
             HttpModule,
             JwtModule.registerAsync(jwtConfig),
             TypeOrmModule.forFeature([Users, Stats])],
-  providers: [AuthService, LocalStrategy, JwtStrategy, ProfileService],
-  controllers: [AuthController],
+  providers: [AuthService, LocalStrategy, JwtStrategy, ProfileService, TwoFactorAuthenticationService],
+  controllers: [AuthController, TwoFactorAuthenticationController],
   exports: [AuthService]
 })
 export class AuthModule {}

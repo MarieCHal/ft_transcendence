@@ -29,13 +29,11 @@ export class ProfileService {
             user.nickname = 'user' + user.user_id;
             user.doubleAuth = false;
             user.isActive = 0; 
-            //user.stats = new Stats()
             const userSave = await this.usersRepository.save(user);
 
             const stat = new Stats()
             stat.user = userSave;
             await this.statsRepository.save(stat);
-            //console.log(user.nickname);
             return user;
     }
     

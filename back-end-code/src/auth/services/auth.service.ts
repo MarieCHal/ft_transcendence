@@ -55,7 +55,7 @@ export class AuthService {
             {
                 console.log("this is the user:", user);
                 if (user.doubleAuth == true) {
-                    this.sendMail(user);
+                    //this.sendMail(user);
                     return {
                         doubleAuth: true,
                         nickname: user.nickname
@@ -84,7 +84,7 @@ export class AuthService {
         };
     }
     
-    async checkDoubleAuthCode(nickname: string, code: number): Promise<any> {
+    /*async checkDoubleAuthCode(nickname: string, code: number): Promise<any> {
 
         const user = await this.userRepository.findOne({
             where: {
@@ -126,5 +126,5 @@ export class AuthService {
             Code: rdmNumber,
         });
         await this.mailService.sendUserConfirmation(user.nickname, user.email, rdmNumber);
-    }
+    }*/
 }

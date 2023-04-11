@@ -9,19 +9,20 @@ export class SocketService {
     //public socket: Server = null;
     //@WebSocketServer() socket: Server;
     private static socket: Server; // maybe not static
-    private static usersSockets: {[Key: string]: Users;} = {}
+    private static usersSockets: {[Key: string]: Users;} = {}       
 
-    getServer()
+
+    getServer() // return the server instance
     {
         return SocketService.socket;
     }
 
-    setServer(server: Server) 
+    setServer(server: Server) // set the server instance (appGateway)
     {
         SocketService.socket = server;
     }
 
-    getUser(key : string) : Users {
+    getUser(key : string) : Users {     // return the user corresonding to the socket
         return SocketService.usersSockets[key];
     }
 

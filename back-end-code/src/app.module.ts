@@ -44,10 +44,10 @@ import { Server } from 'socket.io';
   ],
   controllers: [AppController],
   providers: [AppService,
-    {
+    /*{
     provide: Server,
     useValue: require('./main')
-  }, 
+  },*/ 
   AppGateway
     /*{
       provide: APP_GUARD,
@@ -61,6 +61,6 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthorizationMiddleware)
-      .exclude('auth/(.*)')
+      .exclude('auth/(.*)', '2fa/authenticate')
       .forRoutes({ path: '*', method: RequestMethod.ALL });
   }}

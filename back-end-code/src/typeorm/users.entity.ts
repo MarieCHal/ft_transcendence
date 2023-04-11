@@ -41,9 +41,11 @@ export class Users {
 
 
     // true send mail when login for double auth
-    @Column('boolean', {default: false})
-    doubleAuth: boolean = false;
+    @Column('boolean')
+    doubleAuth: boolean
 
+    @Column({ nullable: true})
+    twoFactorAuthenticationSecret: string;
 
     @Column({
         nullable: true

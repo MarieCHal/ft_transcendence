@@ -2,7 +2,6 @@ import { Injectable, NestMiddleware, Next, UnauthorizedException } from "@nestjs
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import { Request, Response, NextFunction } from "express";
-import { nextTick } from "process";
 import { UsersService } from "./users/users.service";
 
 @Injectable()
@@ -16,6 +15,8 @@ export class AuthorizationMiddleware implements NestMiddleware{
       
       // check the token 
       let token = req.headers.authorization;
+      console.log("token in middleware: ", token);
+      console.log("url: ", req.url)
       let cleanToken = token.replace('Bearer','').trim();
       if (!token)
       {
@@ -27,7 +28,7 @@ export class AuthorizationMiddleware implements NestMiddleware{
            secret: this.configService.get('APP_SECRET')
          }
        );
-      console.log("token: ", userToken)
+      console.log("token in middleware: ", userToken)
       let user = await this.usersService.findOne(userToken.sub)
       if (!user)
          throw new UnauthorizedException;
@@ -50,7 +51,6 @@ export class AuthorizationMiddleware implements NestMiddleware{
      if (id === undefined) {
       return res.status(400).json({ message: `id in ${req.baseUrl} is undefined` });
      }*/
-
       next(); 
    }
 }

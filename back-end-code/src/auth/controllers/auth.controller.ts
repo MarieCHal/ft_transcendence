@@ -39,11 +39,11 @@ export class AuthController {
 
     //@Public()
     //@UseGuards(LocalAuthGuard)
-    @Post('code')
+    /*@Post('code')
     async DoubleAuthentification(@Request() req: any) {
         console.log("this is the req.body:", req.body);
         return this.authService.checkDoubleAuthCode(req.body.nickname, req.body.codeMail);
-    }
+    }*/
 
     @Post('wellcome')
     async helloFriend( @Body() body: any) {

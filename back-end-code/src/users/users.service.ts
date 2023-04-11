@@ -220,6 +220,12 @@ export class UsersService {
         return await this.usersRepository.save(user);
     }
 
+    async setTwoFact(secret: string, userId: number) {
+        return this.usersRepository.update(userId, {
+            twoFactorAuthenticationSecret: secret
+        });
+    }
+
     /** @summary change status state */
     async isActive(user: Users, status: number) {
         user.isActive = status;

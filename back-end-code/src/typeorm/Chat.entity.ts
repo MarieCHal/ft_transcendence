@@ -30,7 +30,7 @@ export class Chat {
     @Column('boolean', {default: false})
     isProtected: boolean = false
 
-    @Column({default: 0})
+    @Column()
     nb_users: number;
     
     @OneToMany(() => Message, (message) => message.chanel)

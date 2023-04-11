@@ -17,13 +17,11 @@ import { JwtService } from '@nestjs/jwt';
 import { SocketService } from 'src/socket/socket.service';
 import { ConfigService } from '@nestjs/config';
 
-@WebSocketGateway({
+@WebSocketGateway({       // allow us to make use of the socket.io functionality
   cors: {
       origin: '*',
   },
-}) // allow us to make use of the socket.io functionality
-
-//OnGatewayInit,
+}) 
 
 @WebSocketGateway()
 export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
@@ -33,17 +31,14 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
               private jwtService: JwtService,
               private socketService: SocketService,
               private configService: ConfigService) {}
-              //private server: Server ){}
-  @WebSocketServer() server: Server;   // test
+  @WebSocketServer() server: Server;   
   
 
-  afterInit(server: any) {
-    console.log('init: server')
+  afterInit(server: any) {                  // initialize the server instance in the socketService to be able to use it else where
     this.socketService.setServer(server);
   }
 
   rooms: string[] = [];                     // number of rooms for the game that are active (emit on the every x time to update positions)
-  //usersSockets: {[Key: string]: User;} = {}   // dictionary with key being the user's socket and the data the user itself
   invite: {                                 // an array of invite accepted containing the room name and IDs, used to attribute a room to the players in startgame
     user1: number,
     user2: number,
@@ -61,35 +56,31 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
         }
       );
       let user = await this.usersService.findOne(userToken.sub)
-      if (!user) // if no user in database with user_id (extracted from token) diaconnect socket
+      if (!user) // if no user in database with user_id (extracted from token) disconnect socket
         client.disconnect()
       else {
-        //console.log("user: ", user)
         this.socketService.setSocket(client.id, user); // add a new socket/user to userSockets
         this.socketService.returnAll();
-        //this.usersSockets[client.id] = user; // add a new socket/user to userSockets
-  
-        if (!this.invite) // init invite
-          this.invite = [];
+        //if (!this.invite) // init invite
+          //this.invite = [];
         
-        console.log("user ============= : ", user);
+        //console.log("user ============= : ", user);
         await this.usersService.isActive(user, 1);
-        console.log(`client connected: ${client.id}`)
+        console.log(`client connected: ${client.id}, ${user.nickname}`)
       }
     }
   
     async handleDisconnect(client: Socket) {
 
       const user = this.socketService.getUser(client.id);
-      console.log("user ============= : ", user);
-      // await this.usersService.isActive(user, 0); // the user is not any more active
-      console.log(`client disconnected: ${client.id}`)
+      //console.log("user ============= : ", user);
+      //await this.usersService.isActive(user, 0); // the user is not any more active
+      console.log(`client disconnected: ${client.id}, ${user.nickname}`)
      
-      this.socketService.removeSocket(client.id);
-      //delete this.usersSockets[client.id]; // delete the socket from the lists of active users
+      this.socketService.removeSocket(client.id); // delete the socket from the lists of active users
     }
   
-    @SubscribeMessage('join') // used to listening to incoming messages.
+    @SubscribeMessage('join')   // used to listening to incoming messages.
     async joinChat(client: Socket, payload: string) { // client (reference to a socket), message( data from client)
 
       const user = this.socketService.getUser(client.id);

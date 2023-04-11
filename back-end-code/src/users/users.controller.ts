@@ -72,7 +72,6 @@ export class UserController {
     }
 
     @Post('doubleAuth')
-    ////@UseGuards(JwtAuthGuard)
     async modifyDoubleAuth(@Request() req: any) {
         console.log("doubleAuth:", req.body);
         return await this.usersService.doubleAuth(req.user, req.body.doubleAuth);
