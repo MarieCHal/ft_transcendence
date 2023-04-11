@@ -20,15 +20,17 @@
 </script>
 
 <template>
-    <div class="ProfileUser">
-        <div class="form">
-            <FormModifProfil />
-        </div>
-        <div class="caps">
-            <capsuleUser />
-        </div>
-        <div class="doubleAuth">
-            <doubleAuth />
+    <div class="all">
+        <div class="ProfileUser">
+            <div class="form">
+                <FormModifProfil />
+            </div>
+            <div class="caps">
+                <capsuleUser />
+            </div>
+            <div class="doubleAuth">
+                <doubleAuth />
+            </div>
         </div>
         <div class="listFriendsRequest">
             <listFriendsRequest />
@@ -38,10 +40,36 @@
 </template>
 
 <style scoped lang="scss">
-.ProfileUser{
+.all{
     display: flex;
     flex-direction: column;
-
+    align-items: center;
+}
+.listFriendsRequest{
+    margin: 1rem;
+    background-color: rgba(123, 211, 211, 0.098);
+    border-radius: 5px;
+    box-shadow: 3.5px 3.5px 9px rgba(79, 200, 209, 0.94);
+    padding: 1rem;
+    transition: opacity 0.2s ease-in-out;
+    opacity: 0.8;
+    max-width: 450px;
+    min-width: 340px;
+}
+.ProfileUser{
+    background-color: rgba(123, 211, 211, 0.098);
+    border-radius: 5px;
+    box-shadow: 3.5px 3.5px 9px rgba(79, 200, 209, 0.94);
+    padding: 1rem;
+    transition: opacity 0.2s ease-in-out;
+    opacity: 0.8;
+    max-width: 450px;
+    min-width: 340px;
+}
+.caps{
+    background-color: rgba(123, 211, 211, 0.098);
+    border-radius: 5px;
+    margin-top: 1em;
 }
 
 

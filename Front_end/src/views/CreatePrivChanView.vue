@@ -32,28 +32,46 @@
 </script>
 
 <template>
-    <div>
-       <form @submit.prevent="submmit">
-            <div class="navButton">
+       <form class="disp" @submit.prevent="submmit">
                 <label for="nameChat"></label>
                 <input class="navButton" type="text" name="codeChat" autocomplete="off"
-                placeholder="Name channel" v-model="newChanel" required>
-            </div>
-            <div>
+                    placeholder="Name channel" v-model="newChanel" required>
                 <h1>Select users for invite on this room</h1>
-                <div v-for="(user, index) in store.getters.getAllUsers.allUsers" :key="index">
+                <div class="user" v-for="(user, index) in store.getters.getAllUsers.allUsers" :key="index">
                     <div class="navButton" @click="selectUser(user.user_user_id, index)">
                         {{ user.user_nickname }}
                     </div>
                 </div>
-            </div>
             <button class="navButton">
                 submit
             </button>
        </form>
-    </div>
 </template>
 
 <style scoped lang="scss">
-    
+.disp{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+}
+.user{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+button{
+    margin-top: 1rem;
+    border-radius: 1px;
+    width: auto;
+    background-color:aquamarine ;
+}
+input{
+    width: auto;
+    text-align: center;
+}
+h1{
+    margin: 1rem;
+    text-align: center;
+}
 </style>

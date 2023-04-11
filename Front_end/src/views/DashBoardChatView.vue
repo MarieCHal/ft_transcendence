@@ -80,35 +80,34 @@
 </script>
 
 <template>
-    <div id="main-dashboard" class="dashboard">
-        <div class="dashboard__section dashboard__section--column">
-                <button class="chatButton" @click="createChan()">
+    <div  class="dashboard">
+        <div class="dashboard__section__createChan">
+                <button class="navButton" @click="createChan()">
                     create room
                 </button>
-                <button class="chatButton" @click="createPrivChan()">
+                <button class="navButton" @click="createPrivChan()">
                     creat private room
                 </button>
-                <button class="chatButton chatButton--create" @click="createPrivMsg()">
+                <button class="navButton" @click="createPrivMsg()">
                     creat private message
                 </button>
         </div>
         <div class="dashboard__section">
             <div class="display">
                 <h1>My channel</h1>
-                <div class="create-Chan"></div>
-                <div class="liste-chan-pub" v-for="(chanPublicJoined, index) in store.getters.getChans.Mychanels" :key="index">
-                    <button class="quitchan" @click="clickChan(chanPublicJoined)">
+                <div class="liste-chan" v-for="(chanPublicJoined, index) in store.getters.getChans.Mychanels" :key="index">
+                    <button class="navButton" @click="clickChan(chanPublicJoined)">
                         {{ chanPublicJoined.chanel_name }}
                     </button>
-                    <button class="chatButton" @click="quitChan(chanPublicJoined)">
+                    <button class="navButton" @click="quitChan(chanPublicJoined)">
                         quit room
                     </button>
                 </div>
             </div>
             <div class="display">
                 <h1>Other channel</h1>
-                <div class="liste-chan-pub" v-for="(chanPublicNotJoined, index) in store.getters.getChans.chanels" :key="index">
-                    <button class="quitchan" @click="clickChan(chanPublicNotJoined)">
+                <div class="liste-chan" v-for="(chanPublicNotJoined, index) in store.getters.getChans.chanels" :key="index">
+                    <button class="navButton" @click="clickChan(chanPublicNotJoined)">
                         {{ chanPublicNotJoined.chanel_name }}
                     </button>
                     <formChanCode v-if="store.getters.getUserContext.pwd == true && store.getters.getChanId == chanPublicNotJoined.chanel_chat_id" />
@@ -116,70 +115,79 @@
             </div>
             <div class="display">
                 <h1>PrivMsg</h1>
-            </div>
-            <div class="liste-privMsg" v-for="(chanPrivate, index) in store.getters.getChans.privMsg" :key="index">
-                <button class="navButton" @click="clickChan(chanPrivate)">
-                    {{ chanPrivate.users_nickname }}
-                </button>
+                <div class="liste-chan" v-for="(chanPrivate, index) in store.getters.getChans.privMsg" :key="index">
+                    <button class="navButton" @click="clickChan(chanPrivate)">
+                        {{ chanPrivate.users_nickname }}
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 </template>
 
 <style scoped lang="scss">
-
-.display{
+.dashboard{
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 2%;
+    padding: 1rem;
 }
-
-h1{
-    color: rgb(94, 95, 95);
-}
-
-.chatButton{
-    margin: 10px;
-	border: none;
-    border-right: 2px dotted red;
-    max-width: 100px;
-	border-radius: 10px;
-	color: rgb(122, 122, 122);
-	background: none;
-	letter-spacing: 1.5px;
-	font-family: 'emoji';
-	cursor: pointer;
-
-}
-
-.quitchan{
-    padding: 4px 8px;
-    margin: 5px;
-    width: auto;
+.dashboard__section__createChan{
+    display: flex;
+    justify-content: space-evenly;
+    background-color: rgba(123, 211, 211, 0.098);
     border-radius: 5px;
-    background-color: #02d1ff29;
-    color: #fff;
-    border: none;
-    cursor: pointer;
+    box-shadow: 3.5px 3.5px 9px rgba(79, 200, 209, 0.94);
+    padding: 1rem;
+    transition: opacity 0.2s ease-in-out;
+    opacity: 0.8;
 }
-
-#main-dashboard{
+.dashboard__section{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.display{
     display: flex;
     flex-direction: column;
-    color: black;
+    overflow: scroll;
+    margin: 0.5rem;
+    margin-top: 2rem;
+    background-color: rgba(123, 211, 211, 0.098);
+    border-radius: 5px;
+    box-shadow: 3.5px 3.5px 9px rgba(79, 200, 209, 0.94);
+    padding: 1rem;
+    transition: opacity 0.2s ease-in-out;
+    opacity: 0.8;
+    min-height: 30rem;
 }
-
-.dashboard {
-    &__section {
-        display: flex;
-        justify-content: center;
-        align-content: center;
-
-        &--column {
-            flex-direction: column;
-            align-items: center;
-        }
+.display::-webkit-scrollbar {
+  display: none;
+}
+.liste-chan{
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between;
+}
+h1{
+    margin-bottom: 1rem;
+}
+button{
+    margin: 0.2rem;
+    border-radius: 1px;
+    width: auto;
+    background-color:aquamarine ;
+}
+@media screen and (max-width: 700px) {
+    .dashboard__section {
+        flex-direction:column;
+        overflow-y: scroll;
+        height: 500px;
+    }
+    .dashboard__section::-webkit-scrollbar {
+    display: none;
     }
 }
+
 </style>

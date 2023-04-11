@@ -31,16 +31,23 @@
             doubleAuth
         </button>
         <div v-if="doubleAuthStore == true">
-            cliquer pour desactiver
+            *cliquer pour desactiver
         </div>
         <div v-else>
-            cliquer pour activer
+            *cliquer pour activer
         </div>
     </div>
 </template>
 
 <style scoped lang="scss">
 .doubleAuthButton{
-    height: 200px;
+    display: flex;
+    flex-direction: row;
+    margin-top: 1rem;
+}
+button{
+    border-radius: 1px;
+    width: auto;
+    background-color:aquamarine ;
 }
 </style>

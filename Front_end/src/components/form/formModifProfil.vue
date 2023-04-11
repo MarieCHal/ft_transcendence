@@ -70,33 +70,37 @@
             <div class="submit">
                 <input class="navButton" type="text" name="Nickname" placeholder="Nickname" autocomplete="off" required v-model="nickname">
                 <button class="navButton">
-                    submit nickname
+                    submit
                 </button>
             </div>
         </form>
 </template>
 
 <style scoped lang="scss">
-span{
-
-    //text-align: center;
-    
-}
 .formModifProfile{
-
-    //background-color: darkslateblue;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    background-color: rgba(123, 211, 211, 0.098);
+    border-radius: 5px;
+}
+button{
+    width: auto;
+    border-radius: 1px;
+    background-color:aquamarine ;
 }
 .submit{
 
 }
 img{
-    width: 100px;
+    max-width: 100px;
     height: 100px;
-    display: block;
-    margin: auto;
-    border-radius: 50px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    border: none;
 }
 .file-select > input {
-display: none;
+    display: none;
 }
 </style>

@@ -47,5 +47,10 @@
 </template>
 
 <style scoped lang="scss">
-    
+button{
+    margin: 0.2em;
+    width: auto;
+    border-radius: 1px;
+    background-color:aquamarine ;
+}
 </style>

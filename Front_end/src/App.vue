@@ -30,8 +30,6 @@
 
 <style scoped lang="scss">
 .mainDiv{
-  overflow: hidden;
-  position: relative;
   display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -39,23 +37,26 @@
   color: rgb(122, 122, 122);
 
 }
+header{
+  position: absolute;
+  height: auto;
+}
 
 main{
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 10%;
+  margin-top: 8rem;
 }
 
 footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  position: absolute;
   display: flex;
   justify-content: center;
   align-items: center;
-  
+  bottom: 0;
+  left: 0;
+  right: 0;
   height: 50px;
 }
 
