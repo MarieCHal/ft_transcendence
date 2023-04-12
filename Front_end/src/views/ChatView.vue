@@ -6,7 +6,7 @@
     import { onMounted, ref, onUnmounted } from 'vue';
     import { useStore } from "vuex"
     import axios from 'axios';
-import router from "@/router";
+    import router from "@/router";
 
     const store = useStore();
     const chatMessages = ref<any[]>([]);
@@ -15,6 +15,7 @@ import router from "@/router";
     let bool = ref(false);
     const userBlocked = store.getters.getUserBlocked;
     store.commit("setBool", false)
+    const chatContainerRef = ref<HTMLElement | null>(null);
 
     onMounted(async () => {
         const headers = { Authorization: `Bearer ${store.getters.getToken}`};
@@ -31,31 +32,20 @@ import router from "@/router";
         });
         socket.emit('join', `${store.getters.getChanContext.chanel_chat_id}`, true);
         socket.on('chat', (message: any) => {
-          //  console.log('message = ', message);
-          //  console.log('userBlocked = ', store.getters.userBlocked);
-          /*for (let index = 0; index < store.getters.userBlocked.length; index++) {  
-            if (store.getters.userBlocked[index] == message.sender_user_id){
-              
-            }  
-          }*/
-          //console.log("userBlocked: ", userBlocked)
-          //console.log("sender id: ", message.sender_user_id)
-          //console.log("user blocked length: ", userBlocked.length)
           let i = 0
             for (i ; i < userBlocked.length;)
             {
-              //console.log('userBlocked id: ', userBlocked[i].blocked_user_id)
               if (userBlocked[i].blocked_user_id != message.sender_user_id)
                 i++;
               else
                 break;
             }
-            if (i == userBlocked.length)
-                chatMessages.value.push(message);
+            if (i == userBlocked.length){
+              chatMessages.value.push(message);
+            }
         });
 
         socket.on('notifChat', async (msg: string)  => {
-          //console.log("msg =", msg)
           if (msg == 'users'){
             console.log("je suis la dans users")
             const response = await axios.get(`/chat/users/${store.getters.getChanContext.chanel_chat_id}`, {headers});
@@ -67,32 +57,15 @@ import router from "@/router";
           else if (msg == 'userContext'){
             console.log("je suis la dans userContext")
             const response1 = await axios.get(`/chat/update/${store.getters.getChanContext.chanel_chat_id}`, {headers});
-
-           // console.log("response =", response1.data);
             store.commit('setUserContext', response1.data.userContext);
-            //console.log("setusercontexxt =", store.getters.getUserContext)
             store.commit('setWhat', 'UsersInChan');
             store.commit("setUsers", response1.data.users);
             if (response1.data.isKicked == true || response1.data.userContext.banned == true){
-           ////   socket.off('join');
-            ///  socket.off('chat');
-             //////// socket.off('notifChat')
               alert("YOU ARE A NOOB");
               router.push('dashBoardChat')
               return ;
             }
             forceRender();
-            /*
-            else if(store.getters.getUserContext.kick){
-              alert("YOU ARE KICK");
-              router.push('dashBoardChat')
-            }
-            else if(store.getters.getUserContext.admin){
-
-            }
-            else if(store.getters.getUserContext.ower){
-
-            }*/
           }
           
         })
@@ -110,29 +83,20 @@ import router from "@/router";
       componentKey.value += 1;
     }
 
-    function ShowUsers(){
-      if(store.getters.getBool == false)
-      {
-        store.commit("setBool", true)
-        return ;
-      }
-      else if(store.getters.getBool == true){
-        store.commit("setBool", false)
-        return ;
-      }
-    }
 //v-if="store.getters.getWhat === 'UsersInChan'"
+/*<button class="boubou" @click="ShowUsers()">
+  <div v-if="store.getters.getBool">
+      <oneUserButton :key="componentKey" v-if="store.getters.getWhat === 'UsersInChan'"/>
+  </div>
+  </button>*/
 </script>
 
 <template>
   <div class="chat">
     <div class="button">
-      <div>
-        <button class="boubou" @click="ShowUsers()">
-          <div v-if="store.getters.getBool">
-            <oneUserButton :key="componentKey" v-if="store.getters.getWhat === 'UsersInChan'"/>
-          </div>
-        </button>
+      <div class="SeaUsers">
+        <h1> users </h1>
+        <oneUserButton :key="componentKey" v-if="store.getters.getWhat === 'UsersInChan'"/>
       </div>
       <h1> channel {{ store.getters.getChanContext.chanel_name}} </h1>
       <div v-if="store.getters.getUserContext.owner">
@@ -168,23 +132,27 @@ import router from "@/router";
 </template>
 
 <style scoped lang="scss">
+.SeaUsers{
+  overflow: auto;
+  max-height: 100px;
+}
+.SeaUsers::-webkit-scrollbar{
+  display: none;
+}
+
 .chat{
   display: flex;
   flex-direction: column;
 }
 .button{
   display: flex;
-  height: 40px;
   text-align: center;
   justify-content: center;
   align-items: center;
 }
-.boubou{
-  width: 100px;
-  height: 100px;
-}
+
 .chat-container {
-  margin: 10% auto; /* Définit la marge supérieure à 90 pixels et les marges latérales automatiques pour centrer horizontalement */
+  margin: 3% auto; 
   align-items: center;
   justify-content: center;
   background-color: rgba(123, 211, 211, 0.098);
@@ -207,6 +175,7 @@ import router from "@/router";
 .chat-container::-webkit-scrollbar{
   display: none;
 }
+
 .chat-messages {
     display: flex;
     flex-direction: column;

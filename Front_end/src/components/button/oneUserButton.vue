@@ -174,6 +174,7 @@
   background-position: center;
   border: none;
   margin: 5px;
+  cursor: pointer;
 }
 img{
   display: none;

@@ -10,7 +10,7 @@
     
     onMounted(() => {
         getDashboard();
-        console.log("token =", store.getters.getToken);
+       // console.log("token =", store.getters.getToken);
     });
     
     const getDashboard = async () => {
@@ -19,7 +19,7 @@
             const response1 = await axios.get("/users/all", {headers});
             store.commit('setAllUsers', response1.data);
             const response = await axios.get('/chat/all', {headers});
-            console.log('chan', response.data)
+           // console.log('chan', response.data)
             store.commit('setChans', response.data);
             store.commit('setChanId', 0);
         } catch (error: any) {
@@ -33,7 +33,7 @@
             const response = await axios.get(`/chat/join/${chan.chanel_chat_id}`, {headers});
             store.commit('setChanContext', chan);
             store.commit('setUserContext', response.data);
-            console.log("usercontext =", store.getters.getUserContext);
+            //console.log("usercontext =", store.getters.getUserContext);
             const UserContext = store.getters.getUserContext;
             if (UserContext.banned){
                 alert("YOU ARE BANNED");
