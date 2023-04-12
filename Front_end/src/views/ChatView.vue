@@ -109,7 +109,6 @@ import router from "@/router";
       componentKey.value += 1;
     }
 
-//v-if="store.getters.getWhat === 'UsersInChan'"
 </script>
 
 <template>
@@ -122,30 +121,30 @@ import router from "@/router";
   <div v-if="store.getters.getUserContext.owner">
     <formChangePwdChat />
   </div>
-    <h1> {{ store.getters.getChanContext.chanel_name}} </h1>
-    <div class="chat-container">
-      <div class="chat-history">
-        <chatHistory />
-      </div>
-      <div class="chat-currentMsg" v-for="(msg, index) in chatMessages" :key="index">
-        <div v-if="typeof msg === 'object' && msg.messages_text" class="chat-messages" :class="{ 'chat-myMsg': msg.sender_user_id === store.getters.getId, 'chat-hisMsg': msg.sender_user_id != store.getters.getId}">
-          <div id="name">
-            {{ msg.sender_nickname }}
+  <h1> {{ store.getters.getChanContext.chanel_name}} </h1>
+  <div class="chat-container">
+    <div class="chat-history">
+      <chatHistory />
+    </div>
+    <div class="chat-currentMsg" v-for="(msg, index) in chatMessages" :key="index">
+      <div v-if="typeof msg === 'object' && msg.messages_text" class="chat-messages" :class="{ 'chat-myMsg': msg.sender_user_id === store.getters.getId, 'chat-hisMsg': msg.sender_user_id != store.getters.getId}">
+        <div id="name">
+          {{ msg.sender_nickname }}
+        </div>
+        <div id="corp">
+          <div id="msg">
+            {{ msg.messages_text }}
           </div>
-          <div id="corp">
-            <div id="msg">
-              {{ msg.messages_text }}
-            </div>
-            <div id="date">
-              {{ msg.messages_createdAtTime }}
-            </div>
+          <div id="date">
+            {{ msg.messages_createdAtTime }}
           </div>
         </div>
       </div>
-      <div id="prompt-container">
-        <chatPrompt />
-      </div>
     </div>
+    <div id="prompt-container">
+      <chatPrompt />
+    </div>
+  </div>
 </template>
 
 <style scoped lang="scss">
@@ -161,7 +160,7 @@ import router from "@/router";
   border-radius: 10px;
   padding: 10px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-  overflow: auto;
+  overflow-y: scroll;
 }
 
 .chat-messages {
@@ -174,9 +173,15 @@ import router from "@/router";
     overflow: auto;
 }
 .chat-myMsg{
+    width: auto;
+    max-width: 360px;
+    float: right;
     background-color: brown;
 }
 .chat-hisMsg{
+    width: auto;
+    max-width: 360px;
+    float: left;
     background-color: rgb(232, 160, 15);
 }
 #name{
@@ -190,6 +195,8 @@ import router from "@/router";
     margin-top: 0.3rem;
 }
 #msg{
+    width: auto;
+    max-width: 360px;
     word-wrap: break-word;
     overflow: hidden;
     background-color: darkkhaki;

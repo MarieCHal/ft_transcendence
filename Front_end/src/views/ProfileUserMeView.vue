@@ -14,7 +14,6 @@
         const headers = { Authorization: `Bearer ${store.getters.getToken}` };
         const response = await axios.get("/users/me", {headers});
         store.commit('setMe', response.data);
-        console.log('oneUser myProfile',  response.data)
     });
 
 </script>

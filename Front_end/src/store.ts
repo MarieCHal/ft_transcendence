@@ -57,6 +57,8 @@ const store = createStore({
     isNickname: "",
     isAvatar: "",
     isMe: [],
+    isQrCode: "",
+
     //truc
     isBool: false,
     isCode: false,
@@ -118,6 +120,7 @@ const store = createStore({
   },
 
   mutations: {
+    setQrCode(state, payload) {state.isQrCode = payload;},
     setMatchHistory(state, isMatchHistory) {state.isMatchHistory = isMatchHistory;},
 
     setPlayStart(state, isPlayStart) {state.isPlayStart = isPlayStart;},
@@ -182,6 +185,7 @@ const store = createStore({
   },
 
   getters: {
+    getQrCode: state => state.isQrCode,
     getMatchHistory: state => state.isMatchHistory,
 
     getPlayStart: state => state.isPlayStart,
@@ -241,7 +245,7 @@ const store = createStore({
   },
   actions: {
     initWebSocket({ commit }) {
-      const webSocket = io('http://c1r2s3:4000/', {
+      const webSocket = io('http://c1r2s3:3000/', {
         auth: {
           token: store.getters.getToken,
         }

@@ -94,7 +94,7 @@
         </div>
         <div class="dashboard__section">
             <div class="display">
-                <h1>My channel</h1>
+                <h1 style="height: 100%;">My channel</h1>
                 <div class="liste-chan" v-for="(chanPublicJoined, index) in store.getters.getChans.Mychanels" :key="index">
                     <button class="navButton" @click="clickChan(chanPublicJoined)">
                         {{ chanPublicJoined.chanel_name }}
@@ -127,7 +127,6 @@
 
 <style scoped lang="scss">
 .dashboard{
-    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -153,7 +152,7 @@
     flex-direction: column;
     overflow: scroll;
     margin: 0.5rem;
-    margin-top: 2rem;
+    margin-top: 1rem;
     background-color: rgba(123, 211, 211, 0.098);
     border-radius: 5px;
     box-shadow: 3.5px 3.5px 9px rgba(79, 200, 209, 0.94);
@@ -161,21 +160,24 @@
     transition: opacity 0.2s ease-in-out;
     opacity: 0.8;
     min-height: 30rem;
+    max-height: 30rem;
 }
 .display::-webkit-scrollbar {
-  display: none;
+    display: none;
 }
 .liste-chan{
     display: flex;
     flex-direction: row;
     justify-content:space-between;
+    min-height: 2rem;
 }
 h1{
     margin-bottom: 1rem;
+    min-height: 2rem;
 }
 button{
     margin: 0.2rem;
-    border-radius: 1px;
+    border-radius: 2px;
     width: auto;
     background-color:aquamarine ;
 }
@@ -186,7 +188,7 @@ button{
         height: 500px;
     }
     .dashboard__section::-webkit-scrollbar {
-    display: none;
+        display: none;
     }
 }
 

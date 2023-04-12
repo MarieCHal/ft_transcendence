@@ -37,9 +37,17 @@
     overflow: auto;
 }
 .chat-myMsg{
+    width: auto;
+    max-width: 360px;
+    //min-width: 50px;
+    float: right;
     background-color: rgb(117, 74, 218);
 }
 .chat-hisMsg{
+    width: auto;
+    max-width: 360px;
+    //min-width: 50px;
+    float: left;
     background-color: rgb(22, 232, 15);
 }
 #name{
@@ -53,6 +61,9 @@
     margin-top: 0.3rem;
 }
 #msg{
+    width: auto;
+    max-width: 360px;
+    //min-width: 50px;
     word-wrap: break-word;
     overflow: hidden;
     background-color: darkkhaki;

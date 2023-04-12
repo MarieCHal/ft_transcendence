@@ -13,7 +13,7 @@
     const fileUpload = async (event: any) => {
         const file = event.target.files[0];
         const avatar = URL.createObjectURL(file);
-        
+        console.log('avatar', avatar)
         if (store.getters.getAvatar != avatar)
         {
             try {
