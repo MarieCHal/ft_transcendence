@@ -3,6 +3,7 @@
     import axios from "axios";
     import { useRouter } from 'vue-router'
     import { useStore } from 'vuex';
+    import PongPlayGame from "../pongPlayGame.vue";
 
     const store = useStore();
     const router = useRouter();
@@ -53,25 +54,53 @@
 </script>
 
 <template>
-    <div >
+    <div class="display">
         <legend>Select custom option:</legend>
-        <div>   
-            <button @click="selectColor('pink')">
+        <div class="gameButton">   
+            <button class="gameButton" @click="selectColor('pink')">
                 pink
             </button>
-            <button @click="selectColor('green')">
+            <button class="gameButton" @click="selectColor('green')">
                 green
             </button>
-            <button @click="selectColor('normal')">
+            <button class="gameButton" @click="selectColor('normal')">
                 normal
             </button>
         </div>
         <div>
             visualisation pong static
         </div>
+        <div>
+            <PongPlayGame/>
+        </div>
     </div>
 </template>
 
 <style scoped lang="scss">
+.display{
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
 
+}
+.gameButton{
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    width: auto;
+    flex-direction: column;
+    margin: 10px;
+    color: darkcyan;
+    font-size: large;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+}
+.gameButton:hover {
+    color: #e6e6e6;
+}
 </style>

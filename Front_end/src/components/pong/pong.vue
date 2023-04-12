@@ -1,5 +1,5 @@
 <template>
-    <div >
+    <div class="centered-container">
         <button class="navButton" @click="Quit()">
             X
         </button>
@@ -213,8 +213,21 @@ onUnmounted (async () => {
 
 
 <style scoped lang="scss">
+.centered-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 #pong{
     width: 60%;
     height: auto;
+    border: 1px solid aqua;
+    border-radius: 4px;
 }
 </style>

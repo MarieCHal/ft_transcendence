@@ -177,6 +177,7 @@
 }
 .chat-container::-webkit-scrollbar{
   display: none;
+  bottom: 0;
 }
 
 .chat-messages {

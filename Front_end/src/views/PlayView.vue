@@ -26,23 +26,48 @@
 </script>
 
 <template>
-    <div>
-        <button class="navButton" id="InviteFriends" @click="goMatchmaking()">
-            Matchmaking
-        </button>
-    </div>
-    <div>
-        <button class="navButton" @click="submit">
-            InviteFriends
-        </button>
-        <div  v-for="(user, index) in store.getters.getUsers">
-            <button class="navButton" v-if="user.user_isActive == 1" @click="play(user.user_user_id)"> 
-                    {{ user.user_nickname }}
+    <div class="playButtonContainer">
+        <div class="playButton">
+            <button class="playButton" id="InviteFriends" @click="goMatchmaking()">
+                Matchmaking
             </button>
+        </div>
+        <div class="playButton">
+            <button class="playButton" @click="submit">
+                InviteFriends
+            </button>
+            <div v-for="(user, index) in store.getters.getUsers">
+                <button class="playButton" v-if="user.user_isActive == 1" @click="play(user.user_user_id)">
+                    {{ user.user_nickname }}
+                </button>
+            </div>
         </div>
     </div>
 </template>
 
 <style scoped lang="scss">
+.playButtonContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 40vh; /* Assure que le conteneur occupe la hauteur de la fenêtre */
+}
 
+.playButton {
+    width: auto;
+    margin: 10px;
+    align-items: center;
+    justify-content: center;
+    color: darkcyan;
+    background: none;
+    border: none;
+    font-size: large;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+}
+
+.playButton:hover {
+    color: #e6e6e6;
+}
 </style>
