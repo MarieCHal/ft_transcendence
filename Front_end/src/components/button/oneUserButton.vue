@@ -188,6 +188,9 @@ img{
     transition: opacity 0.2s ease-in-out;
     opacity: 0.8;
     max-width: 10rem;
+    max-height: 10rem;
+    min-height: 7rem;
+    margin: 0.3rem;
 }
 .avatar{
     display: flex;

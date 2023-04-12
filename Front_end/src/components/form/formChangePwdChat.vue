@@ -67,5 +67,7 @@
 </template>
 
 <style scoped lang="scss">
-
+button{
+  width: auto;
+}
 </style>

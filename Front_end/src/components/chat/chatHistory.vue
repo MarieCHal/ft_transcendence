@@ -8,7 +8,7 @@
 </script>
 
 <template>
-    <div v-for="(msg, index) in store.getters.getChatHistory" :key="index">
+    <div class="chat" v-for="(msg, index) in store.getters.getChatHistory" :key="index">
         <div v-if="msg.messages_text" class="chat-messages" :class="{ 'chat-myMsg': msg.sender_user_id === store.getters.getId, 'chat-hisMsg': msg.sender_user_id != store.getters.getId}">
             <div id="name">
             {{ msg.sender_nickname }}
@@ -26,29 +26,26 @@
 </template>
 
 <style scoped lang="scss">
+.chat{
+}
 .chat-messages {
     display: flex;
     flex-direction: column;
-    //background-color: cyan;
     border: 1px solid #ccc;
     border-radius: 10px;
     padding: 5px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    overflow: auto;
+    margin: 2px;
+    height: 3rem;
 }
 .chat-myMsg{
     width: auto;
     max-width: 360px;
-    //min-width: 50px;
     float: right;
-    background-color: rgb(117, 74, 218);
 }
 .chat-hisMsg{
     width: auto;
     max-width: 360px;
-    //min-width: 50px;
     float: left;
-    background-color: rgb(22, 232, 15);
 }
 #name{
     text-decoration: underline;
@@ -63,16 +60,14 @@
 #msg{
     width: auto;
     max-width: 360px;
-    //min-width: 50px;
+    color: #ccc;
     word-wrap: break-word;
     overflow: hidden;
-    background-color: darkkhaki;
 }
 #date{
-    height: 0.7rem;
-    width: 2.5rem;
-    background-color: darkcyan;
-    font-size: x-small;
-    color: rgb(150, 147, 147);
+  height: 0.7rem;
+  width: 2.5rem;
+  font-size: x-small;
+  color: rgb(150, 147, 147);
 }
 </style>

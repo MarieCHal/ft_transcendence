@@ -29,21 +29,27 @@
 </template>
 
 <style scoped lang="scss">
+#prompt{
+  display: flex;
+  padding-right: 11px;
+  height: 37px;
+}
 #prompt input{
   flex: 1;
-  margin-right: 10px;
+  margin-right: 5px;
   padding: 5px 10px;
   border-radius: 5px;
+  background-color:#0e0f0f ;
   border: 1px solid #ccc;
+  color: #fff;
 }
 
 #prompt button {
-  padding: 5px 10px;
-  border-radius: 5px;
-  background-color: #007bff;
   color: #fff;
+  border-radius: 5px;
+  width: auto;
+  background-color: #007bff;
   border: none;
   cursor: pointer;
-  overflow: auto;
 }
 </style>

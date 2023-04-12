@@ -20,30 +20,20 @@ import router from "@/router";
         const response = await axios.get(`/chat/users/${store.getters.getChanContext.chanel_chat_id}`, {headers});
         store.commit('setWhat', 'UsersInChan');
         store.commit("setUsers", response.data.users);
-        console.log("componentKey Muted =",  componentKey.value)
-
+        
         const chatHistory = await axios.get(`/chat/history/${store.getters.getChanContext.chanel_chat_id}`,  {headers});
         store.commit("setChatHistory", chatHistory.data.history);
+        
+        console.log("owner",  store.getters.getUserContext.owner)
 
         socket.on('join', (message: any) => {
             chatMessages.value.push(message);
         });
         socket.emit('join', `${store.getters.getChanContext.chanel_chat_id}`, true);
         socket.on('chat', (message: any) => {
-          //  console.log('message = ', message);
-          //  console.log('userBlocked = ', store.getters.userBlocked);
-          /*for (let index = 0; index < store.getters.userBlocked.length; index++) {  
-            if (store.getters.userBlocked[index] == message.sender_user_id){
-              
-            }  
-          }*/
-          //console.log("userBlocked: ", userBlocked)
-          //console.log("sender id: ", message.sender_user_id)
-          //console.log("user blocked length: ", userBlocked.length)
           let i = 0
             for (i ; i < userBlocked.length;)
             {
-              //console.log('userBlocked id: ', userBlocked[i].blocked_user_id)
               if (userBlocked[i].blocked_user_id != message.sender_user_id)
                 i++;
               else
@@ -52,46 +42,24 @@ import router from "@/router";
             if (i == userBlocked.length)
                 chatMessages.value.push(message);
         });
-
         socket.on('notifChat', async (msg: string)  => {
-          //console.log("msg =", msg)
           if (msg == 'users'){
-            console.log("je suis la dans users")
             const response = await axios.get(`/chat/users/${store.getters.getChanContext.chanel_chat_id}`, {headers});
             store.commit('setWhat', 'UsersInChan');
             store.commit("setUsers", response.data.users);
-            
             forceRender();
           }
           else if (msg == 'userContext'){
-            console.log("je suis la dans userContext")
             const response1 = await axios.get(`/chat/update/${store.getters.getChanContext.chanel_chat_id}`, {headers});
-
-           // console.log("response =", response1.data);
             store.commit('setUserContext', response1.data.userContext);
-            //console.log("setusercontexxt =", store.getters.getUserContext)
             store.commit('setWhat', 'UsersInChan');
             store.commit("setUsers", response1.data.users);
             if (response1.data.isKicked == true || response1.data.userContext.banned == true){
-           ////   socket.off('join');
-            ///  socket.off('chat');
-             //////// socket.off('notifChat')
               alert("YOU ARE A NOOB");
               router.push('dashBoardChat')
               return ;
             }
             forceRender();
-            /*
-            else if(store.getters.getUserContext.kick){
-              alert("YOU ARE KICK");
-              router.push('dashBoardChat')
-            }
-            else if(store.getters.getUserContext.admin){
-
-            }
-            else if(store.getters.getUserContext.ower){
-
-            }*/
           }
           
         })
@@ -108,35 +76,37 @@ import router from "@/router";
     const forceRender = () => {
       componentKey.value += 1;
     }
-
+//v-if="store.getters.getUserContext.owner"
 </script>
 
 <template>
-  <div>
-    <h1> users </h1>
-    <div>
+  <div class="title">
+    <div class="tilte-tilte">
+      <h1> {{ store.getters.getChanContext.chanel_name}} </h1>
+      <formChangePwdChat v-if="store.getters.getUserContext.owner"/>
+    </div>
+    <div class="userButton">
       <oneUserButton :key="componentKey" v-if="store.getters.getWhat === 'UsersInChan'"/>
     </div>
   </div>
-  <div v-if="store.getters.getUserContext.owner">
-    <formChangePwdChat />
-  </div>
-  <h1> {{ store.getters.getChanContext.chanel_name}} </h1>
+
   <div class="chat-container">
     <div class="chat-history">
       <chatHistory />
     </div>
-    <div class="chat-currentMsg" v-for="(msg, index) in chatMessages" :key="index">
-      <div v-if="typeof msg === 'object' && msg.messages_text" class="chat-messages" :class="{ 'chat-myMsg': msg.sender_user_id === store.getters.getId, 'chat-hisMsg': msg.sender_user_id != store.getters.getId}">
-        <div id="name">
-          {{ msg.sender_nickname }}
-        </div>
-        <div id="corp">
-          <div id="msg">
-            {{ msg.messages_text }}
+    <div class="chat-currentMsg">
+      <div  v-for="(msg, index) in chatMessages" :key="index">
+        <div v-if="typeof msg === 'object' && msg.messages_text" class="chat-messages" :class="{ 'chat-myMsg': msg.sender_user_id === store.getters.getId, 'chat-hisMsg': msg.sender_user_id != store.getters.getId}">
+          <div id="name">
+            {{ msg.sender_nickname }}
           </div>
-          <div id="date">
-            {{ msg.messages_createdAtTime }}
+          <div id="corp">
+            <div id="msg">
+              {{ msg.messages_text }}
+            </div>
+            <div id="date">
+              {{ msg.messages_createdAtTime }}
+            </div>
           </div>
         </div>
       </div>
@@ -148,79 +118,120 @@ import router from "@/router";
 </template>
 
 <style scoped lang="scss">
+.chat-currentMsg{
+  position: relative;
+  margin-top: auto;
+  overflow-y: auto;
+}
+.chat-history{
+  margin-top: auto;
+  overflow-y: auto;
+  height: 500px;
+  max-height: 500px;
+  min-width: 360px;
+}
+.chat-history::-webkit-scrollbar{
+  display: none;
+}
 .chat-container {
-  position: fixed;
-  max-width: 500px;
-  margin: 40px;
-  bottom: 0;
-  //width: 50%;
-  height: 50%;
-  background-color: #fff;
+  position: relative;
+  display: flex;
+  flex-direction: column;
   border: 1px solid #ccc;
+  padding: 5px;
+  background-color: rgba(123, 211, 211, 0.098);
+  box-shadow: 3.5px 3.5px 9px rgba(79, 200, 209, 0.94);
   border-radius: 10px;
-  padding: 10px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-  overflow-y: scroll;
+  overflow-y: auto;
+  height: 500px;
+  max-height: 500px;
+  min-width: 360px;
 }
-
-.chat-messages {
-    display: flex;
-    flex-direction: column;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    padding: 5px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    overflow: auto;
+.chat-container:hover {
+  opacity: 1;
 }
-.chat-myMsg{
-    width: auto;
-    max-width: 360px;
-    float: right;
-    background-color: brown;
-}
-.chat-hisMsg{
-    width: auto;
-    max-width: 360px;
-    float: left;
-    background-color: rgb(232, 160, 15);
-}
-#name{
-    text-decoration: underline;
-    font-size:smaller;
-    color: rgb(225, 117, 22);
-}
-#corp{
-    display: flex;
-    flex-direction: row;
-    margin-top: 0.3rem;
-}
-#msg{
-    width: auto;
-    max-width: 360px;
-    word-wrap: break-word;
-    overflow: hidden;
-    background-color: darkkhaki;
-}
-#date{
-    height: 0.7rem;
-    width: 2.5rem;
-    background-color: darkcyan;
-    font-size: x-small;
-    color: rgb(150, 147, 147);
-}
-
+/*.chat-container::-webkit-scrollbar{
+  display: none;
+}*/
 #prompt-container {
   position: absolute;
   bottom: 0;
-  left: 0;
-  //width: auto;
-  padding: 10px;
-  background-color: #fff;
-  border-top: 1px solid #ccc;
-  //display: flex;
-  //justify-content: center;
-  //align-items: center;
+  height: 40px;
+  //background-color: aqua;
+}
+.chat-messages {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 5px;
+  margin: 2px;
+  height: 3rem;
+}
+.chat-myMsg{
+  width: auto;
+  max-width: 360px;
+  float: right;
+}
+.chat-hisMsg{
+  width: auto;
+  max-width: 360px;
+  float: left;
+}
+#name{
+  text-decoration: underline;
+  font-size:smaller;
+  color: rgb(225, 117, 22);
+}
+#corp{
+  display: flex;
+  flex-direction: row;
+  margin-top: 0.3rem;
+}
+#msg{
+  width: auto;
+  max-width: 360px;
+  word-wrap: break-word;
+  overflow: hidden;
+
+}
+#date{
+  height: 0.7rem;
+  width: 2.5rem;
+  font-size: x-small;
+  color: rgb(150, 147, 147);
 }
 
+@media screen and (max-width: 500px) {
+  .title{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+}
+.title{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.tilte-tilte{
+  display: flex;
+  flex-direction: column;
+  width: auto;
+}
+.userButton{
+  display: flex;
+  flex-direction: column;
+  overflow: scroll;
+  max-width: 11rem;
+  height: 8rem;
+}
+h1{
+  font-size: xx-large;
+  min-height: 2rem;
+}
+.userButton::-webkit-scrollbar{
+  display: none;
+}
 
 </style>
