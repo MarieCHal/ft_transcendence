@@ -30,7 +30,7 @@
     display: flex;
     width: 60%;
     margin: 5px;
-    flex-direction: column;
+    flex-direction: column-reverse;
     //background-color: cyan;
     border: 1px solid #ccc;
     border-radius: 10px;
@@ -38,19 +38,12 @@
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     overflow: auto;
 }
-.chat-myMsg{
-   // background-color: rgb(117, 74, 218);
-}
-.chat-hisMsg{
-   // background-color: rgb(22, 232, 15);
-}
 #name{
     font-size:smaller;
     color: darkcyan;
 }
 #corp{
     display: flex;
-    flex-direction: row;
     margin-top: 0.3rem;
 }
 #msg{

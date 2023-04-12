@@ -139,7 +139,6 @@
 .SeaUsers::-webkit-scrollbar{
   display: none;
 }
-
 .chat{
   display: flex;
   flex-direction: column;
@@ -151,10 +150,14 @@
   align-items: center;
 }
 
+.chat-myMsg{
+  float: right;
+}
+.chat-hisMsg{
+  float: left;
+}
 .chat-container {
-  margin: 3% auto; 
-  align-items: center;
-  justify-content: center;
+  margin: 3% auto;
   background-color: rgba(123, 211, 211, 0.098);
   box-shadow: 3.5px 3.5px 9px rgba(79, 200, 209, 0.94);
   bottom: -65px;
@@ -178,11 +181,12 @@
 
 .chat-messages {
     display: flex;
+    width: auto;
+    max-width: 360px;
     flex-direction: column;
     border: 1px solid #ccc;
     border-radius: 10px;
     padding: 5px;
-    width: 60%;
     margin: 5px;
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     overflow: auto;
@@ -198,11 +202,15 @@
     margin-top: 0.3rem;
 }
 #msg{
+    width: auto;
+    margin: 6px;
+    max-width: 360px;
     word-wrap: break-word;
     overflow: hidden;
 }
 #date{
     height: 0.7rem;
+    
     width: 2.5rem;
     background-color: darkcyan;
     font-size: x-small;

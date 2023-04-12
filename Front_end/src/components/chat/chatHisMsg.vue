@@ -28,7 +28,6 @@
 }
 #corp{
     display: flex;
-    flex-direction: row;
     margin-top: 0.3rem;
 }
 #msg{
