@@ -86,7 +86,7 @@ const store = createStore({
     //chat
     isChatMessages: ref<string[]>([]),
     isNewMessage: ref(''),
-
+    
     //pong
     isGoPlay: "",
     isRoom: "",
@@ -110,11 +110,12 @@ const store = createStore({
     isPlayStart: false,
     //socket
     isWebSocket: null,
-
+    
     //notif
     isNameNotif: "",
     isInvite: false,
     isAcceptPlay: false,
+    isStatus: false,
   },
 
   mutations: {
@@ -171,6 +172,7 @@ const store = createStore({
     //setUsersInChan(state, isUsersInChan) {state.isUsersInChan = isUsersInChan},
     setChans(state,  isChans) {state.isChans =  isChans},
     setWebSocket(state, isWebSocket) {state.isWebSocket = isWebSocket;},
+    setStatus(state, isStatus) {state.isStatus = isStatus;},
     setArrayAvatar(state, payload){
       const {item, index} = payload;
       state.isArrayAvatar[index] = item;
@@ -234,6 +236,7 @@ const store = createStore({
     getChatHistory: state => state.isChatHistory,
     //getUsersInChan: state => state.isUsersInChan,
     getWebSocket: state => state.isWebSocket,
+    getStatus: state => state.isStatus,
     getArrayAvatar: (state) => (index: any) => {
       return state.isArrayAvatar[index]
     },
@@ -257,10 +260,11 @@ const store = createStore({
         commit('setWebSocket', null);
       });
 
-      webSocket.on('notif', (nickname: string, invite: boolean, accept: boolean) =>{
+      webSocket.on('notif', (nickname: string, invite: boolean, accept: boolean, status: Boolean) =>{
         commit('setNameNotif', nickname); // a qui on parle
         commit('setInvite', invite); //es une invite ou un reponse
         commit('setAcceptPlay', accept); //es accept ou refus
+        commit('setStatus', status); //si deco ou en jeu
       });
     },
   }

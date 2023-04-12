@@ -197,7 +197,6 @@ function collision(b: any, p: any){
 }
 
 function game(){
-    console.log(1);
         update();
         render();
 }

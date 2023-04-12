@@ -38,7 +38,12 @@
                 //leur option de customisation pour ce lancer
             }
             else{
-                alert('demande refus')
+                if (store.getters.getStatus == false){
+                    alert('the user is logout or in a game')
+                }
+                else{
+                    alert('demande refus')
+                }
                 store.commit('setNameNotif', "");
             }
         }    
@@ -47,7 +52,7 @@
 
 <template>
     <button @click="confirmNotif()">
-        <p v-if="!store.getters.getAcceptPlay">
+        <p v-if="!store.getters.getAcceptPlay && store.getters.getStatus">
             Le joueur {{ store.getters.getNameNotif }} vous invite a une partie
         </p>
         <p v-else>
@@ -59,5 +64,9 @@
 <style scoped lang="scss">
 p{
     color: red;
+}
+button{
+    background: none;
+    border: none;
 }
 </style>
