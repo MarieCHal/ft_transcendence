@@ -22,6 +22,9 @@ export class Message {
     })
     createdAtTime: string;
 
+    /*@CreateDateColumn({ type: "time" }) // Use "time" data type for storing hour and minutes
+    createdAtTime: Date;*/
+
     @CreateDateColumn({
         type: 'date'
     })

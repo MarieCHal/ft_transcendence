@@ -1,4 +1,4 @@
-import { Controller, Post, UseGuards, Response, Request, Get, Put, Param, Delete, Body } from '@nestjs/common';
+import { Controller, Post, Response, Request, Get, Param, Delete} from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { RolesService } from './roles.service';
 
@@ -9,9 +9,6 @@ export class ChatController {
 
     @Post('create')
     async createChannel (@Request() req: any) {
-        console.log("create");
-       console.log("body: ", req.body);
-       console.log("req.user: ", req.user);
        return await this.chatService.createChanel(req.user, req.body);
     }
 
@@ -22,16 +19,13 @@ export class ChatController {
 
     @Get('join/:id')
     async getChan(@Param('id') id: any, @Request() req: any, @Response() res: any) {
-        //console.log('req.body: ')
         if (id === undefined) {
             return res.status(400).json({ message: `id in ${req.baseUrl} is undefined` });
         }
-        console.log("join id: ", id);
-        //return await this.chatService.userContext(req.user, id);
         return res.status(200).json(await this.chatService.userContext(req.user, id));  
-        
     }
 
+    /** @summary */
     @Get('update/:id')
     async updateChat(@Param('id') id: number, @Request() req: any) {
         let isKicked = await this.rolesService.isInChanel(req.user, id)
@@ -46,37 +40,34 @@ export class ChatController {
         }
     }
 
+    /** @summary check if the code is correct to enter on a protected chan */
     @Post('code')
     async checkCodeChan(@Request() req: any)
     {
-        console.log("chat/code: ", req.body);
         return await this.chatService.checkChanPwd(req.user, req.body.chanId, req.body.checkCode);
     }
 
+    /** @summary changes the pwd of the channel (owner privilege) */
     @Post('pwd')
     async pwdChan(@Request() req: any)
     {
-        console.log("ped: ", req.body.chanelId)
-        console.log("pwd: ", req.body.pwd)
         return await this.chatService.changePwd(req.user, req.body.chanelId, req.body.pwd)
     }
 
+    /** @summary deletes the channel (owner privilege) */
     @Delete('del/:id')
-    async gdelChan(@Param('id') id: any, @Request() req: any, @Response() res: any) {
-        //console.log('req.body: ')
+    async delChan(@Param('id') id: any, @Request() req: any, @Response() res: any) {
         if (id === undefined) {
             return res.status(400).json({ message: `id in ${req.baseUrl} is undefined` });
         }
         console.log("join id: ", id);
-        return res.status(200).json(await this.chatService.deleteChan(req.user, id));  
-        //return await this.chatService.deleteChan(req.user, id);
+        return res.status(200).json(await this.chatService.deleteChan(req.user, id)); 
     }
 
+    /** @summary user is leaves the channel (removed from users list of the channel) */
     @Post('quit')
     async quitChan(@Request() req: any) {
-        console.log("quit chan: ", req.body.chanelId);
         await this.chatService.leaveChanel(req.user, req.body.chanelId)
-        console.log("ok leaving");
         return await this.chatService.getMyChans(req.user);
     }
 
@@ -87,7 +78,6 @@ export class ChatController {
             return res.status(400).json({ message: `id in ${req.baseUrl} is undefined` });
         }
         return res.status(200).json(await this.chatService.getChanHistory(req.user, id));  
-        //return await this.chatService.getChanHistory(req.user, id);
     }
 
     // to remove

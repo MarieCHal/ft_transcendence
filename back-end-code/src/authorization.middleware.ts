@@ -13,25 +13,21 @@ export class AuthorizationMiddleware implements NestMiddleware{
    ){}  
    async use(req: Request, res: Response, next: NextFunction){
       
-      // check the token 
-      let token = req.headers.authorization;
-      console.log("token in middleware: ", token);
-      console.log("url: ", req.url)
-      let cleanToken = token.replace('Bearer','').trim();
-      if (!token)
+      let token = req.headers.authorization;                         // extract the token from request header
+      let cleanToken = token.replace('Bearer','').trim();            // get only the token (without Bearer)
+      if (!token || token == undefined)                              
       {
-         console.log("no token")
-         throw new UnauthorizedException;
+         throw new UnauthorizedException("No token or undefined token");
       }
-      let userToken = this.jwtService.verify(
+      let userToken = this.jwtService.verify(                        // verify the validity of the token
          cleanToken, {
            secret: this.configService.get('APP_SECRET')
          }
        );
-      console.log("token in middleware: ", userToken)
-      let user = await this.usersService.findOne(userToken.sub)
+      //console.log("token in middleware: ", userToken)
+      let user = await this.usersService.findOne(userToken.sub)      // get corresponding user
       if (!user)
-         throw new UnauthorizedException;
+         throw new UnauthorizedException;                            
       req.user = user;
 
       // check the content of the req.body to check if undefined variables are present
@@ -40,17 +36,11 @@ export class AuthorizationMiddleware implements NestMiddleware{
       {
          if (req.body.hasOwnProperty(field) && req.body[field] === undefined) {
             bodyFields.push(field);
+         }
       }
-     }
-     if (bodyFields.length > 0) { // if there are undefined files in the body the request will not be proceeded
-       return res.status(400).json({ message: `Missing fields: ${bodyFields.join(', ')}` });
-     }
-
-     // check the id in the param
-     /*const id = req.params.id
-     if (id === undefined) {
-      return res.status(400).json({ message: `id in ${req.baseUrl} is undefined` });
-     }*/
+      if (bodyFields.length > 0) { // if there are undefined files in the body the request will not be proceeded
+         return res.status(400).json({ message: `Missing fields: ${bodyFields.join(', ')}` });
+      }
       next(); 
    }
 }

@@ -36,13 +36,12 @@ export class Users {
     nickname: string;
 
     // true user is logeed in - false user isn't
-    @Column()
+    @Column({default: 0})
     isActive: number;
 
-
     // true send mail when login for double auth
-    @Column('boolean')
-    doubleAuth: boolean
+    @Column('boolean', {default: false})
+    doubleAuth: boolean = false;
 
     @Column({ nullable: true})
     twoFactorAuthenticationSecret: string;

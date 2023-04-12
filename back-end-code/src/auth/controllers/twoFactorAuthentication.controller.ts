@@ -28,15 +28,16 @@ export class TwoFactorAuthenticationController {
         @InjectRepository(Users) private readonly userRepository: Repository<Users>,
     ) {}
     
+    /** @summary used to authenticate if 2fa is enabled */
     @Post('authenticate')
     async authenticate(@Req() req: any) {
-        console.log("req nickname: ", req.body.nickname, "req code: ", req.body.code);
+        //console.log("req nickname: ", req.body.nickname, "req code: ", req.body.code);
         const user = await this.userRepository.findOne({
             where: {
                 nickname: req.body.nickname
             }
         })
-        console.log("user: ", user);
+        //console.log("user: ", user);
         const isValid = this.twoFactorAuthenticationService.isTwoFactorAuthenticationCodeValid(req.body.code, user);
         if (!isValid) {
             throw new UnauthorizedException("Wrong authentication code");
@@ -44,23 +45,37 @@ export class TwoFactorAuthenticationController {
         return this.authservice.generateAccessToken(user);
     }
 
+    /** @summary generate the QRcode (used by the user to enable doubleAuth in Google authenticator) */
     @Post('generate')
     async register(@Res() response: Response, @Req() request: any)
     {
-        console.log("IAM IN GENERATE");
-        console.log("request ============================ : ", request.user)
         const { otpauthUrl } = await this.twoFactorAuthenticationService.generateTwoFactSecret(request.user);
         return await this.twoFactorAuthenticationService.pipeQrCodeStream(response, otpauthUrl);
     }
 
+    /** @summary changes the state of the double Auth in the database (only if the code is valid) */
     @Post('change')
     async turnOnTwoFactorAuth( @Req() req: any) {
         console.log("req user: ", req.user, "req code: ", req.body.code, "req double auth value: ", req.body.doubleAuth);
-        const isValid = this.twoFactorAuthenticationService.isTwoFactorAuthenticationCodeValid(req.body.code, req.user);
-        if (!isValid) {
-            throw new UnauthorizedException("Wrong authentication code");
+        if (req.body.doubleAuth == false)
+        {
+            await this.usersService.doubleAuth(req.user, req.body.doubleAuth);
+            return {
+                message: "Double authentication successfully deactivated",
+                doubleAuth: req.body.doubleAuth
+            }
         }
+        const isValid = this.twoFactorAuthenticationService.isTwoFactorAuthenticationCodeValid(req.body.code, req.user);
+        if (!isValid) 
+            return {
+                message: "Wrong authentication code",
+                doubleAuth: req.user.doubleAuth
+            }
         await this.usersService.doubleAuth(req.user, req.body.doubleAuth);
+        return {
+            message: "Double authentication successfully activated",
+            doubleAuth: req.body.doubleAuth
+        }
     }
 
 }

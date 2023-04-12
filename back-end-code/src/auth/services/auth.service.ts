@@ -1,51 +1,42 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
-import { CodeInterface } from '../interfaces/code.interface';
-import { LoginUserDto } from '../dto/login.dto';
-import { MailService } from 'src/mail/mail.service';
 import { Repository } from 'typeorm';
 import { Users } from 'src/typeorm';
 import { ProfileService } from 'src/profile/profile.service';
 import { HttpService } from '@nestjs/axios';
-import { catchError, firstValueFrom } from 'rxjs';
-import { StateInterface } from '../interfaces/state.interface';
+import {firstValueFrom } from 'rxjs';
 
 
 @Injectable()
 export class AuthService {
     constructor(
-        //private usersService: UsersService, 
         @InjectRepository(Users) private readonly userRepository: Repository<Users>,
         private profileService: ProfileService,
         private jwtService: JwtService, 
-        private mailService: MailService,
         private readonly httpService: HttpService
         ) {}
-        
-    private verifCode: CodeInterface [] = []
 
-    /** @description ask the api for infos about the user using its token
+    /** @description */
+     /* ask the api for infos about the user using its token
      * check if the returned login exists in our database
      * -> if it doesn't it will create a new user using the infos returned by the api
      * -> it will then link the user (new or old) to the state
      */
     async registerUser(apiToken: any) {
         try {
-            const {data} = await firstValueFrom(this.httpService.get(`https://api.intra.42.fr/v2/me`,
+            const {data} = await firstValueFrom(this.httpService.get(`https://api.intra.42.fr/v2/me`,   // request to the 42 API infos of the user
             {
-              headers: { Authorization: `Bearer ${apiToken}`},
+              headers: { Authorization: `Bearer ${apiToken}`},          // token given by the API in the previous step
             },
           ))
-          //console.log(data.nickname)
-          console.log(data.email)
           const user = await this.userRepository.findOne({ // cherche le user dans la base de donnee
             where: {
                 email: data.email,
                 }
             })
             console.log("user: ", user);
-            if (!user) // if the user never went on the website
+            if (!user)                                                  // if the user never went on the website create a new one
             {
                 const newUser = await this.profileService.createProfile(data);
                 console.log("this is the new user:", newUser);
@@ -55,7 +46,6 @@ export class AuthService {
             {
                 console.log("this is the user:", user);
                 if (user.doubleAuth == true) {
-                    //this.sendMail(user);
                     return {
                         doubleAuth: true,
                         nickname: user.nickname
@@ -71,8 +61,7 @@ export class AuthService {
         }
     }
     
-    /** @description */
-    /** returns a Token, the user and the doubleAuth */
+    /** @summary generate and access token for a user to enter website */
     async generateAccessToken(user: any) {
         const payload = {username: user.mail, sub: user.user_id};
         let access_token = this.jwtService.sign(payload)
@@ -83,48 +72,4 @@ export class AuthService {
             user
         };
     }
-    
-    /*async checkDoubleAuthCode(nickname: string, code: number): Promise<any> {
-
-        const user = await this.userRepository.findOne({
-            where: {
-                nickname: nickname,
-            }
-        })
-        console.log("nickname: ", nickname)
-        console.log("pwd: ", code)
-        for (let i = 0; i < this.verifCode.length; i++)
-        {
-            const tmp = this.verifCode[i];
-            console.log("tmp: ", tmp);
-            if (tmp.nickname == nickname && tmp.Code == code)
-            {
-                this.verifCode.splice(i, 1)
-                const user = await this.userRepository.findOne({
-                    where: {
-                        nickname: nickname
-                    }
-                });
-                return this.generateAccessToken(user);
-            }
-        }
-        throw new BadRequestException("Invalid Code")
-    }
-
-    async sendMail(user: Users) {
-
-        for (let i = 0; i < this.verifCode.length; i++)
-        {
-            const tmp = this.verifCode[i];
-            if (this.verifCode[i].nickname == user.nickname)
-            this.verifCode.splice(i, 1)
-        }
-        const rdmNumber = Math.floor(4000 + (Math.random() * 5000))
-        console.log(rdmNumber)
-        this.verifCode.push({
-            nickname: user.nickname,
-            Code: rdmNumber,
-        });
-        await this.mailService.sendUserConfirmation(user.nickname, user.email, rdmNumber);
-    }*/
 }

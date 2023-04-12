@@ -37,18 +37,10 @@ export class AuthController {
         return await this.authService.generateAccessToken(newUSer)
     }
 
-    //@Public()
-    //@UseGuards(LocalAuthGuard)
-    /*@Post('code')
-    async DoubleAuthentification(@Request() req: any) {
-        console.log("this is the req.body:", req.body);
-        return this.authService.checkDoubleAuthCode(req.body.nickname, req.body.codeMail);
-    }*/
-
+    /** @summary the code given by the 42 API is retrieved by the front in the redirect URL, combined with the secret the API gives an acces_token */
     @Post('wellcome')
     async helloFriend( @Body() body: any) {
     console.log(body.code)
-    //console.log("body state:", body.state)
     const {data} = await firstValueFrom(this.httpService.post(`https://api.intra.42.fr/oauth/token`, {
             grant_type: 'authorization_code',
             client_id: process.env.CLIENT_ID,

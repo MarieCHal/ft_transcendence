@@ -2,12 +2,10 @@ import { Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
 import { UsersModule } from 'src/users/users.module';
 import { AuthService } from './services/auth.service';
-import { LocalStrategy } from './strategy/local.strategy';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { AuthController } from './controllers/auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConfig } from 'src/config/jwt.config';
-import { MailModule } from 'src/mail/mail.module';
 import { ProfileModule } from 'src/profile/profile.module';
 import { Stats, Users } from 'src/typeorm';
 import { TypeOrmModule } from '@nestjs/typeorm'; 
@@ -21,11 +19,10 @@ import { TwoFactorAuthenticationService } from './services/twoFactorAuthenticati
   imports: [UsersModule, 
             ProfileModule,
             PassportModule,
-            MailModule,
             HttpModule,
             JwtModule.registerAsync(jwtConfig),
             TypeOrmModule.forFeature([Users, Stats])],
-  providers: [AuthService, LocalStrategy, JwtStrategy, ProfileService, TwoFactorAuthenticationService],
+  providers: [AuthService, JwtStrategy, ProfileService, TwoFactorAuthenticationService],
   controllers: [AuthController, TwoFactorAuthenticationController],
   exports: [AuthService]
 })

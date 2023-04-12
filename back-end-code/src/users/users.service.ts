@@ -25,7 +25,7 @@ export class UsersService {
         console.log(users);
         const friends = await this.getFriends(user);
         //const blocked = await this.getBlocked(user.user_id);
-        console.log(friends);
+        //console.log(friends);
         return {
             allUsers: users,
             myFriends: friends,
@@ -44,7 +44,7 @@ export class UsersService {
                             .where("friends.friend_two = :id", {id: user.user_id})
                             .andWhere("friends.status = :status", {status: true})
                             .getRawMany()
-        console.log(friends);
+        console.log("friends: ", friends);
         return friends        
     }
 
@@ -229,6 +229,6 @@ export class UsersService {
     /** @summary change status state */
     async isActive(user: Users, status: number) {
         user.isActive = status;
-        await this.usersRepository.save(user);
+        return await this.usersRepository.save(user);
     }
 }
