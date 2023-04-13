@@ -10,19 +10,15 @@
     import { useRouter } from 'vue-router'
     import { useStore } from "vuex"
     import { onMounted, onUnmounted } from 'vue';
-
     const store = useStore();
     const router = useRouter();
-
     onMounted(async () => {
         game();
     });
-
 /// FONCTION POUR LE PONG !!!!!!!!!
 function game(){
     const cvs = document.getElementById("pong") as HTMLCanvasElement;
     const ctx = cvs.getContext("2d") as CanvasRenderingContext2D;
-
 const user = {
     x: 10,
     y: cvs.height/2 - 100/2,
@@ -31,7 +27,6 @@ const user = {
     color: "WHITE",
     score: 0,
 }
-
 const com = {
     x: cvs.width - 20,
     y: cvs.height/2 - 100/2,
@@ -40,7 +35,6 @@ const com = {
     color: "WHITE",
     score: 0,
 }
-
 const ball = {
     x: cvs.width/2,
     y: cvs.height/2,
@@ -50,7 +44,6 @@ const ball = {
     velocityY: 5,
     color: "WHITE"
 }
-
 const net = {
     x: cvs.width/2 - 1,
     y: 0,
@@ -58,20 +51,17 @@ const net = {
     height: 10,
     color: "WHITE",
 }
-
 function drawNet(){
     for(let i = 0; i <= cvs.height; i+=15){
         drawRect(net.x, net.y + i, net.width, net.height, net.color);
     }
     console.log("taille =", cvs.width, cvs.height)
 }
-
 function drawRect(x: number, y: number, w: number, h: number, color: any){
     ctx.fillStyle = color;
     ctx.fillRect(x, y, w, h);
 }
 drawRect(0, 0, cvs.width, cvs.height, "black")
-
 function drawCircle(x: number, y: number, r: number, color: string){
     ctx.fillStyle = color;
     ctx.beginPath();
@@ -79,31 +69,25 @@ function drawCircle(x: number, y: number, r: number, color: string){
     ctx.closePath();
     ctx.fill();
 }
-
 function drawText(text: any, x: number, y: number, color: string){
     ctx.fillStyle = color;
     ctx.font = "45px fantasy";
     ctx.fillText(text, x, y);
 }
-
 function resetBallright(){
     ball.x = cvs.width/2;
     ball.y = cvs.height/2;
-
     ball.speed = 6;
     ball.velocityX = -5;
     ball.velocityY = 0;
 }
-
 function resetBallleft(){
     ball.x = cvs.width/2;
     ball.y = cvs.height/2;
-
     ball.speed = 6;
     ball.velocityX = 5;
     ball.velocityY = 5;
 }
-
 function render(){
     drawRect(0, 0, cvs.width, cvs.height, "BLACK");
     drawNet();
@@ -115,14 +99,11 @@ function render(){
 }
 // pos, mov, score, ...
 function update(){
-
     if (ball.x - ball.radius < 0){
         resetBallright();
     }else if(ball.x + ball.radius > cvs.width){
-
         resetBallleft();
     }
-
     ball.x += ball.velocityX;
     ball.y += ball.velocityY;
     
@@ -137,7 +118,6 @@ function update(){
         
         if (collision(ball, player)){
             let collidePoint = (ball.y - (player.y + player.height/2));
-
             // normalization
             collidePoint = collidePoint/(player.height/2);
             
@@ -154,10 +134,8 @@ function update(){
             // everytime the ball hit the paddle, we encrese its speed
             
             //update the scrore
-
     }
 }
-
 // control the user paddle;
 document.addEventListener("keydown", function(event) 
     {
@@ -185,32 +163,25 @@ function collision(b: any, p: any){
     b.bottom = b.y + b.radius;
     b.left = b.x - b.radius;
     b.right = b.x + b.radius;
-
     p.top = p.y;
     p.bottom = p.y + p.height;
     p.left = p.x;
     p.right = p.x + p.width;
-
     return b.right > p.left && b.bottom > p.top && b.left < p.right &&
     b.top < p.bottom;
-
 }
-
 function game(){
         update();
         render();
 }
-
 const framePerSeconde = 30;
 let interval = setInterval(game, 1000/framePerSeconde)
 store.commit("setInterval", interval)   
 }
-
 onUnmounted (async () => {
     clearInterval(store.getters.getInterval);
     store.commit("setInterval", 0);
 });
-
 </script>
 
 <style scoped lang="scss">

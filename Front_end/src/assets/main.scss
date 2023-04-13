@@ -70,10 +70,7 @@ table {
 }
 
 .navButton{
-	max-width: 100px;
-	height: 30px;
-	border-radius: 12px;
-	width: 50px;
+	width: 4rem;
 	color: rgb(122, 122, 122);
 	border: none;
 	background: none;
@@ -81,7 +78,6 @@ table {
 	font-family: 'emoji';
 	cursor: pointer;
 }
-
-.navButton:hover {
-	color: #e6e6e6;
-  }
+.navButton:hover{
+	color: rgb(189, 187, 187);
+}

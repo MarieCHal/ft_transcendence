@@ -6,14 +6,14 @@
 
   const router = useRouter();
   const store = useStore();
-  let codeMail = '';
+  let code = '';
 
-  const checkCodeMail = async () => {
-    if (codeMail.length == 4)
+  const checkCode = async () => {
+    if (code.length == 6)
     {
       try {
         let nickname = store.getters.getNickname;
-        const response = await axios.post("/auth/code", {codeMail: codeMail, nickname: nickname});
+        const response = await axios.post("/2fa/authenticate", {code: code, nickname: nickname});
         if (response.status == 201){
           store.commit('setId', response.data.user.user_id);
           store.commit('setNickname', response.data.user.nickname);
@@ -41,9 +41,9 @@
 
 <template>
     <form class="navButton">
-        <input class="navButton" type="text" name="codeMail" autocomplete="off"
-        minlength="4" placeholder="code"
-        v-model="codeMail" @keyup="checkCodeMail">
+        <input class="navButton" type="text" name="code" autocomplete="off"
+        minlength="6" placeholder="code"
+        v-model="code" @keyup="checkCode">
     </form>
 </template>
 

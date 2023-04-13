@@ -5,7 +5,7 @@ import store from './store'
 import axios from 'axios'
 import './assets/main.scss'
 
-axios.defaults.baseURL = 'http://c1r2s3:3000';
+axios.defaults.baseURL = 'http://c1r2s3:4000';
 
 const app = createApp(App);
 

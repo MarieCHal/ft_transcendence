@@ -6,26 +6,25 @@
     import { onMounted, ref, onUnmounted } from 'vue';
     import { useStore } from "vuex"
     import axios from 'axios';
-    import router from "@/router";
+import router from "@/router";
 
     const store = useStore();
     const chatMessages = ref<any[]>([]);
     const socket = store.getters.getWebSocket;
     const componentKey = ref(0);
-    let bool = ref(false);
     const userBlocked = store.getters.getUserBlocked;
     store.commit("setBool", false)
-    const chatContainerRef = ref<HTMLElement | null>(null);
 
     onMounted(async () => {
         const headers = { Authorization: `Bearer ${store.getters.getToken}`};
         const response = await axios.get(`/chat/users/${store.getters.getChanContext.chanel_chat_id}`, {headers});
         store.commit('setWhat', 'UsersInChan');
         store.commit("setUsers", response.data.users);
-        console.log("componentKey Muted =",  componentKey.value)
-
+        
         const chatHistory = await axios.get(`/chat/history/${store.getters.getChanContext.chanel_chat_id}`,  {headers});
         store.commit("setChatHistory", chatHistory.data.history);
+        
+        console.log("owner",  store.getters.getUserContext.owner)
 
         socket.on('join', (message: any) => {
             chatMessages.value.push(message);
@@ -40,44 +39,23 @@
               else
                 break;
             }
-            if (i == userBlocked.length){
-              chatMessages.value.push(message);
-            }
+            if (i == userBlocked.length)
+                chatMessages.value.push(message);
         });
-
         socket.on('notifChat', async (msg: string)  => {
-          console.log("msg =", msg);
           if (msg == 'users'){
             const response = await axios.get(`/chat/users/${store.getters.getChanContext.chanel_chat_id}`, {headers});
             store.commit('setWhat', 'UsersInChan');
             store.commit("setUsers", response.data.users);
-            
             forceRender();
           }
           else if (msg == 'userContext'){
             const response1 = await axios.get(`/chat/update/${store.getters.getChanContext.chanel_chat_id}`, {headers});
             store.commit('setUserContext', response1.data.userContext);
             store.commit('setWhat', 'UsersInChan');
-            //store.commit("setUsers", response1.data.users);
-            console.log("data =", response1.data)
-            if (response1.data.userContext.muted == true){
-              alert("YOU ARE MUTED")
-              return;
-            }
+            store.commit("setUsers", response1.data.users);
             if (response1.data.isKicked == true || response1.data.userContext.banned == true){
               alert("YOU ARE A NOOB");
-            /*try {            
-            const headers = {"Authorization": `Bearer ${store.getters.getToken}`};
-            const data = {
-                chanelId: store.getters.getChanContext.chanel_chat_id,
-            }
-            const response = await axios.post(`/chat/quit`, data, {headers});
-            //store.commit('setUserContext', response.data.owner)
-            store.commit('setChans', response.data);
-            } 
-            catch (error) {
-                console.log(error);
-            }*/
               router.push('dashBoardChat')
               return ;
             }
@@ -92,161 +70,169 @@
       socket.off('join');
       socket.off('chat');
       socket.off('notifChat')
-      store.commit('setUserContext', []);
+      //store.commit('setUserContext', []);
     });
 
     const forceRender = () => {
       componentKey.value += 1;
     }
-
-//v-if="store.getters.getWhat === 'UsersInChan'"
-/*<button class="boubou" @click="ShowUsers()">
-  <div v-if="store.getters.getBool">
-      <oneUserButton :key="componentKey" v-if="store.getters.getWhat === 'UsersInChan'"/>
-  </div>
-  </button>*/
+//v-if="store.getters.getUserContext.owner"
 </script>
 
 <template>
-  <div class="chat">
-    <div class="button">
-      <div class="SeaUsers">
-        <h1> users </h1>
+  <div class="chatView">
+    <div class="title">
+      <div class="tilte-tilte">
+        <h1> {{ store.getters.getChanContext.chanel_name}} </h1>
+        <formChangePwdChat v-if="store.getters.getUserContext.owner"/>
+      </div>
+      <div class="userButton">
         <oneUserButton :key="componentKey" v-if="store.getters.getWhat === 'UsersInChan'"/>
       </div>
-      <h1> channel {{ store.getters.getChanContext.chanel_name}} </h1>
-      <div v-if="store.getters.getUserContext.owner">
-        <formChangePwdChat />
-      </div>
-      </div>
-      <div>
-        <div class="chat-container">
-          <div class="chat-history">
-            <chatHistory />
-          </div>
-          <div class="chat-currentMsg" v-for="(msg, index) in chatMessages" :key="index">
-            <div v-if="typeof msg === 'object' && msg.messages_text" class="chat-messages" :class="{ 'chat-myMsg': msg.sender_user_id === store.getters.getId, 'chat-hisMsg': msg.sender_user_id != store.getters.getId}">
-              <div id="name">
-                {{ msg.sender_nickname }}
+    </div>
+  
+    <div class="chat-container">
+      <div class="chat-history">
+        <chatHistory />
+        <div class="msg" v-for="(msg, index) in chatMessages" :key="index">
+          <div v-if="typeof msg === 'object' && msg.messages_text" class="chat-messages" :class="{ 'chat-myMsg': msg.sender_user_id === store.getters.getId, 'chat-hisMsg': msg.sender_user_id != store.getters.getId}">
+            <div id="name">
+              {{ msg.sender_nickname }}
+            </div>
+            <div id="corp">
+              <div id="msg">
+                {{ msg.messages_text }}
               </div>
-              <div id="corp">
-                <div id="msg">
-                  {{ msg.messages_text }}
-                </div>
-                <div id="date">
-                  {{ msg.messages_createdAtTime }}
-                </div>
+              <div id="date">
+                {{ msg.messages_createdAtTime }}
               </div>
             </div>
           </div>
         </div>
-        <div id="prompt-container">
-          <chatPrompt />
-        </div>
       </div>
+      <div id="prompt-container">
+        <chatPrompt />
+      </div>
+    </div>
   </div>
 </template>
 
 <style scoped lang="scss">
-.SeaUsers{
-  overflow: auto;
-  max-height: 100px;
-}
-.SeaUsers::-webkit-scrollbar{
-  display: none;
-}
-.chat{
+.chatView{
   display: flex;
   flex-direction: column;
-}
-.button{
-  display: flex;
-  text-align: center;
-  justify-content: center;
   align-items: center;
 }
-
-.chat-myMsg{
-  float: right;
+.chat-history{
+  margin-top: auto;
+  overflow: auto;
+  scroll-behavior: reverse;
+  max-height: 500px;
 }
-.chat-hisMsg{
-  float: left;
+.chat-history::-webkit-scrollbar{
+  display: none;
 }
 .chat-container {
-  margin: 3% auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ccc;
+  padding: 5px;
   background-color: rgba(123, 211, 211, 0.098);
   box-shadow: 3.5px 3.5px 9px rgba(79, 200, 209, 0.94);
-  bottom: -65px;
-  padding: 2%;
-  height: 400px;
   border-radius: 10px;
-  transition: opacity 0.2s ease-in-out;
-  opacity: 0.8;
-  width: 30%;
-  max-width: 450px;
-  min-width: 350px;
-  max-height: 400px;
-  overflow: auto;
+  overflow-y: auto;
+  height: 500px;
+  max-height: 500px;
+  min-width: 360px;
+  max-width: 400px;
 }
 .chat-container:hover {
-    opacity: 1;
-}
-.chat-container::-webkit-scrollbar{
-  display: none;
-  bottom: 0;
-}
-
-.chat-messages {
-    display: flex;
-    width: auto;
-    max-width: 360px;
-    flex-direction: column;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    padding: 5px;
-    margin: 5px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    overflow: auto;
-}
-
-#name{
-    font-size:smaller;
-    color: darkcyan;
-}
-#corp{
-    display: flex;
-    flex-direction: row;
-    margin-top: 0.3rem;
-}
-#msg{
-    width: auto;
-    margin: 6px;
-    max-width: 360px;
-    word-wrap: break-word;
-    overflow: hidden;
-}
-#date{
-    height: 0.7rem;
-    
-    width: 2.5rem;
-    background-color: darkcyan;
-    font-size: x-small;
-    color: rgb(150, 147, 147);
+  opacity: 1;
 }
 
 #prompt-container {
-  position: relative;
-  left: 50%; /* Déplace le bloc de 50% vers la droite */
-  transform: translateX(-50%) translateY(-1%); /* Déplace le bloc de moitié de sa largeur vers la gauche et de 40 pixels vers le haut pour le centrer et le remonter */
-  width: 300px;
-  background-color: none;
-  border-top: 1px solid #ccc;
+  border-top: 1px solid rgba(79, 200, 209, 0.94);
+  padding-top: 5px;
+  min-height: 3rem;
 }
+.chat-messages {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 5px;
+  margin: 2px;
+  height: 3rem;
+}
+.chat-myMsg{
+  width: auto;
+  max-width: 360px;
+  float: right;
+}
+.chat-hisMsg{
+  width: auto;
+  max-width: 360px;
+  float: left;
+}
+#name{
+  text-decoration: underline;
+  font-size:smaller;
+  color: rgb(225, 117, 22);
+}
+#corp{
+  display: flex;
+  flex-direction: row;
+  margin-top: 0.3rem;
+}
+#msg{
+  width: auto;
+  max-width: 360px;
+  word-wrap: break-word;
+  overflow: hidden;
+
+}
+#date{
+  height: 0.7rem;
+  width: 2.5rem;
+  font-size: x-small;
+  color: rgb(150, 147, 147);
+}
+
 @media screen and (max-width: 500px) {
-    .chat-container {
-      height: 300px;
-      margin-top: 10px;
+  .chat-container {
+    height: 350px;
+    max-height: 500px;
+    min-width: 350px;
+    max-width: 350px;
   }
+}
+.title{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+}
+.tilte-tilte{
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+  width: auto;
+}
+.userButton{
+  display: flex;
+  flex-direction: column;
+  overflow: scroll;
+  max-width: 11rem;
+  height: 8rem;
+}
+h1{
+  font-size: xx-large;
+  min-height: 2rem;
+}
+.userButton::-webkit-scrollbar{
+  display: none;
 }
 
 </style>

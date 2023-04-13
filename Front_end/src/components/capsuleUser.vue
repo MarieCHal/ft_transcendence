@@ -24,32 +24,42 @@
 </script>
 
 <template>
-    <div>
-        <div class="capsule" v-if="user.user_user_id != store.getters.getId" >
-            <div class="dispo">
-                <img :src="store.getters.getUserAvatar" />
-            </div>
+    <div class="capsule">
+        <div class="avatar" v-if="user.user_user_id != store.getters.getId" >
+            <img :src="store.getters.getUserAvatar" />
             <div class="status-indicator" :class="{ 'status-online': user.user_isActive == 1, 'status-offline': user.user_isActive == 0, 'status-playing': user.user_isActive == 2}"></div>
         </div>
-        <div class="dispo">
-            user_nickname = {{ user.user_nickname }}
-        </div>
-        <div class="dispo">
-            nb parties = {{ user.stats_games }}
-        </div>
-        <div class="dispo">
-            nb victoires = {{ user.stats_victories }}
-        </div>
-        <div class="dispo">
-            nb defaites = {{ user.stats_defeats }}
+        <div class="info">
+            <span>
+                nickname = {{ user.user_nickname }}
+            </span>
+            <span>
+                nb parties = {{ user.stats_games }}
+            </span>
+            <span>
+                nb victoires = {{ user.stats_victories }}
+            </span>
+            <span>
+                nb defaites = {{ user.stats_defeats }}
+            </span>
         </div>
     </div>    
 </template>
 
-<style scoped lang="scss">  
+<style scoped lang="scss"> 
+.info{
+    display: flex;
+    flex-direction: column;
+    margin-top: 1rem;
 
+}
+.avatar{
+    display: flex;
+    justify-content: space-between;
+}
 .capsule{
     display: flex;
+    flex-direction: column;
 }
 
 img{
@@ -63,10 +73,6 @@ img{
     width: 30px;
     height: 30px;
     border-radius: 50%;
-}
-
-.dispo{
-    margin: 5px;
 }
 .status-online {
     background-color: rgb(0, 255, 0);

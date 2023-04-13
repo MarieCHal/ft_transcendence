@@ -20,7 +20,7 @@
     }
 
     const play = async (userId: number) =>{
-        socket.emit('notif', userId, true);
+        socket.emit('notif', userId, "invite");
     }
 </script>
 
@@ -52,7 +52,6 @@
     justify-content: center;
     height: 40vh; /* Assure que le conteneur occupe la hauteur de la fenêtre */
 }
-
 .playButton {
     width: auto;
     margin: 10px;
@@ -65,7 +64,6 @@
     letter-spacing: 1.5px;
     cursor: pointer;
 }
-
 .playButton:hover {
     color: #e6e6e6;
 }

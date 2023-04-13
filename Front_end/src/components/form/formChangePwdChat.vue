@@ -3,13 +3,11 @@
     import { useRouter } from 'vue-router'
     import axios from 'axios';
     import {  onUnmounted } from 'vue'
-
     const store = useStore();
     const router = useRouter();
     const userContext = store.getters.getUserContext;
     const chanContext = store.getters.getChanContext;
     let Pwd = '';
-
     const deleteChan = async () => {
         try {
             const headers = { Authorization: `Bearer ${store.getters.getToken}` };
@@ -21,7 +19,6 @@
             }
             }
     }
-
     const submmit = async () => {
     if (!userContext.owner){
         alert("YOU ARE NOT A OWNER")
@@ -40,12 +37,10 @@
           }
         }
   }
-
   function getBool(){
       store.commit("setBool", true)
       return store.getters.getBool;
   }
-
   function deletePWD(){
     
   }
@@ -53,11 +48,9 @@
 </script>
 
 <template>
-  <div class="display">
     <form @submit.prevent="submmit">
       <button class="navButton" @click.prevent="getBool">
-        ADD/CHANGE
-        REMOVE/PWD
+        ADD/CHANGE/REMOVE PWD
       </button>
       <div v-if="store.getters.getBool">
         <input class="text" type="text" name="code" autocomplete="off"
@@ -70,24 +63,19 @@
     <button class="navButton" @click="deleteChan()">
       deleteChan
     </button>
-  </div>
 </template>
 
 <style scoped lang="scss">
-.display{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  flex-direction: column;
-  margin: 10px;
+button{
+  width: auto;
+  margin: 3px;
 }
 .text{
   text-align: center;
   background: none;
   border: none;
-  width: 80px;
   color:aqua;
+  width: 80px;
 }
 ::placeholder{
   color:aqua;

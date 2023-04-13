@@ -1,6 +1,4 @@
 <script setup lang="ts">
-    import pong from "@/components/pong/pong.vue";
-    import axios from "axios";
     import { useRouter } from 'vue-router'
     import { useStore } from 'vuex';
     import PongPlayGame from "../pongPlayGame.vue";
@@ -68,9 +66,6 @@
             </button>
         </div>
         <div>
-            visualisation pong static
-        </div>
-        <div>
             <PongPlayGame/>
         </div>
     </div>
@@ -83,7 +78,6 @@
     text-align: center;
     align-items: center;
     justify-content: center;
-
 }
 .gameButton{
     display: flex;

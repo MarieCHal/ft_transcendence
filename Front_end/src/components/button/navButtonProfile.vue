@@ -24,9 +24,7 @@
         <button class="img" @click="clickCheckWhat('me')" :style="{ backgroundImage: 'url(' + store.getters.getAvatar + ')' }">
             <img :src="store.getters.getAvatar" />
         </button>
-        <div id="nickname">
-            {{ store.getters.getNickname }}
-        </div>
+        {{ store.getters.getNickname }}
     </div>
 </template>
 
@@ -41,7 +39,6 @@
     inset: 0;
     animation: pulse 2s infinite;
     box-shadow: 0 0 20px rgba(0, 233, 177, 1);
-    cursor: pointer;
 }
 
 @keyframes pulse {
@@ -56,17 +53,11 @@
 img{
   display: none;
 }
-#nickname{
-    display: flex;
-    font-size: small;
-    justify-content: end;
-    align-content: end;
-}
 .avatarButton{
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
-    max-height: 100%;
+    align-items: center;
+    max-width: 5rem;
     padding: 6.5px;
 }
 </style>

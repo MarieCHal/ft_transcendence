@@ -21,6 +21,7 @@
         
     onMounted(async () => {
         try {
+            store.commit('setUserContext', []);
             const headers = { Authorization: `Bearer ${store.getters.getToken}` };
             const response = await axios.get("/users/all", {headers});
             store.commit('setAllUsers', response.data);
@@ -42,8 +43,10 @@
             <userButtonAll @click="clickCheckWhat('all')"/>
             <userButtonFriends @click="clickCheckWhat('friends')"/>
         </div>
+        <div class="userDisplay">
             <oneUserButton v-if="store.getters.getWhat == 'all'"/>
             <oneUserButton v-if="store.getters.getWhat == 'friends'"/>
+        </div>
     </div>
   </template>
 
@@ -52,12 +55,21 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: -10%;
 }
 .navUser{
     display: flex;
-    max-height: 50%;
-    flex-direction:row;
     justify-content: center;
+    margin-bottom: 2rem;
+}
+.userDisplay{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    max-width: 500px;
+    max-height: 500px;
+    overflow: auto;
+}
+.userDisplay::-webkit-scrollbar{
+  display: none;
 }
 </style>

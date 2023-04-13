@@ -7,7 +7,7 @@
     const socket = store.getters.getWebSocket;
 
     const play = async () =>{
-        socket.emit('notif', store.getters.getOneUser.user_user_id, true);
+        socket.emit('notif', store.getters.getOneUser.user_user_id, "invite");
     }
 </script>
 
