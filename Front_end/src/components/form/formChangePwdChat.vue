@@ -45,27 +45,51 @@
       store.commit("setBool", true)
       return store.getters.getBool;
   }
+
+  function deletePWD(){
+    
+  }
   
 </script>
 
 <template>
-    <form @submit.prevent="submmit" v-if="userContext.isProtected === true">
+  <div class="display">
+    <form @submit.prevent="submmit">
       <button class="navButton" @click.prevent="getBool">
-        changePWD
+        ADD/CHANGE
+        REMOVE/PWD
       </button>
-        <div v-if="store.getters.getBool">
-          <input type="text" name="code" autocomplete="off"
-          placeholder="PWD" minlength="4" maxlength="4" v-model="Pwd">
-          <button class="navButton" type="submit">
-            submit
-          </button>
-        </div>
+      <div v-if="store.getters.getBool">
+        <input class="text" type="text" name="code" autocomplete="off"
+        placeholder="PWD" minlength="4" maxlength="4" v-model="Pwd">
+        <button class="navButton" type="submit">
+          submit
+        </button>
+      </div>
     </form>
     <button class="navButton" @click="deleteChan()">
       deleteChan
     </button>
+  </div>
 </template>
 
 <style scoped lang="scss">
-
+.display{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  flex-direction: column;
+  margin: 10px;
+}
+.text{
+  text-align: center;
+  background: none;
+  border: none;
+  width: 80px;
+  color:aqua;
+}
+::placeholder{
+  color:aqua;
+}
 </style>
