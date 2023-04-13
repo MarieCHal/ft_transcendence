@@ -46,8 +46,8 @@
         });
 
         socket.on('notifChat', async (msg: string)  => {
+          console.log("msg =", msg);
           if (msg == 'users'){
-            console.log("je suis la dans users")
             const response = await axios.get(`/chat/users/${store.getters.getChanContext.chanel_chat_id}`, {headers});
             store.commit('setWhat', 'UsersInChan');
             store.commit("setUsers", response.data.users);
@@ -55,13 +55,29 @@
             forceRender();
           }
           else if (msg == 'userContext'){
-            console.log("je suis la dans userContext")
             const response1 = await axios.get(`/chat/update/${store.getters.getChanContext.chanel_chat_id}`, {headers});
             store.commit('setUserContext', response1.data.userContext);
             store.commit('setWhat', 'UsersInChan');
-            store.commit("setUsers", response1.data.users);
+            //store.commit("setUsers", response1.data.users);
+            console.log("data =", response1.data)
+            if (response1.data.userContext.muted == true){
+              alert("YOU ARE MUTED")
+              return;
+            }
             if (response1.data.isKicked == true || response1.data.userContext.banned == true){
               alert("YOU ARE A NOOB");
+            /*try {            
+            const headers = {"Authorization": `Bearer ${store.getters.getToken}`};
+            const data = {
+                chanelId: store.getters.getChanContext.chanel_chat_id,
+            }
+            const response = await axios.post(`/chat/quit`, data, {headers});
+            //store.commit('setUserContext', response.data.owner)
+            store.commit('setChans', response.data);
+            } 
+            catch (error) {
+                console.log(error);
+            }*/
               router.push('dashBoardChat')
               return ;
             }
