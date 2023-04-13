@@ -41,6 +41,7 @@ export class AuthorizationMiddleware implements NestMiddleware{
       if (bodyFields.length > 0) { // if there are undefined files in the body the request will not be proceeded
          return res.status(400).json({ message: `Missing fields: ${bodyFields.join(', ')}` });
       }
+      console.log("NEXXXTT");
       next(); 
    }
 }

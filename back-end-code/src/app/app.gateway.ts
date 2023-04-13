@@ -100,10 +100,6 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
 
       const user = await this.socketService.getUser(client.id);
       console.log("user in chat: ", user);
-      /*console.log("this is the message: ", payload, "from id: ", client.handshake.auth.myId);
-      console.log(payload[0])
-      console.log(payload[1])
-      console.log("rooms: ", this.server.sockets.adapter.rooms)*/
       let channelId = +payload[1];
       const newMess = await this.chatService.newMessage(user, channelId, payload[0])
       if ( newMess != null)     // if the user is not muted 
@@ -146,7 +142,7 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
     async startGame(client: Socket, payload: any) { 
       const user = await this.socketService.getUser(client.id);
       let room: string
-
+      console.log("payload in startgame: ", payload);
       if (payload[0] === false) // if it is a game from an invite 
       {
         const other = await this.usersService.findNickname(payload[1])
@@ -218,21 +214,43 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
     @SubscribeMessage('game')
     async gameInfo(client: Socket, payload: any) {
       const user = await this.socketService.getUser(client.id);
-      console.log('payload: ', payload);
+      console.log('payload in game: ', payload);
       if (payload[1] == 'quit') // when quitting payload[0] = the room and payload[1] = key word 'quit'
       {
         if (!payload[0]) // meaning the match did not start yet 
         {
-          this.gameService.deleteMatch(user.user_id);
-          this.server.to(client.id).emit('startgame', -1, false, true, 'You left the game');
-          let room = 'room' + user.user_id;
-          for (let i = 0; this.rooms[i]; i++)
-          {
-            console.log('room in quit game: ', this.rooms[i]);
-            if (this.rooms[i] == room)
-              this.rooms.splice(i, 1);
+          if (payload[2]) {     // it from an invite
+            console.log("payload 2:", payload[2])
+            const other = await this.usersService.findNickname(payload[2])
+            console.log("other: ", other);
+            let otherSockID = this.socketService.getSocketID(other.user_id);
+            this.server.to(otherSockID).emit('notif', user.nickname, 'quit');
+            this.server.to(client.id).emit('startgame', -1, false, true, 'You left the game');
+            for (let i = 0; this.invite[i]; i++) // find the corresponding room in the list of invites
+            {
+              if ((this.invite[i].user1 == user.user_id || this.invite[i].user2 == user.user_id) // user1 or user2 correspond to user
+                  && (this.invite[i].user1 == other.user_id || this.invite[i].user2 == other.user_id)) // user1 or user2 correspond to the user passed in payload
+              {
+                //let otherSockID = this.socketService.getSocketID(other.user_id);
+                //this.server.to(otherSockID).emit('notif', user.nickname, 'quit');
+                console.log("ok invite: ", this.invite[i]);
+                this.invite.splice(i, 1);
+                break;
+              }
+            }
           }
-          await this.usersService.isActive(user, 1);
+          else {
+            this.gameService.deleteMatch(user.user_id);
+            this.server.to(client.id).emit('startgame', -1, false, true, 'You left the game');
+            let room = 'room' + user.user_id;
+            for (let i = 0; this.rooms[i]; i++)
+            {
+              console.log('room in quit game: ', this.rooms[i]);
+              if (this.rooms[i] == room)
+                this.rooms.splice(i, 1);
+            }
+            await this.usersService.isActive(user, 1);
+          }
         }
         else { // the game already started
           const message = user.nickname + 'left the game'; 
@@ -263,7 +281,7 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
       const user = await this.socketService.getUser(client.id);
       let mess: string
       mess = user.nickname;
-      if (payload[1] == true) // if payload 1 is true it is an invite to play to user_id payload[0]
+      if (payload[1] == 'invite') // if payload 1 is true it is an invite to play to user_id payload[0]
       {
         const other = await this.usersService.findOne(payload[0]);
         console.log("other in notif: ", other);
@@ -271,21 +289,21 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
         {
           mess = other.nickname;
           console.log("isACTIVEEE")
-          this.server.to(client.id).emit('notif', mess, false, false, false)
+          //this.server.to(client.id).emit('notif', mess, false, false, false, false)
+          this.server.to(client.id).emit('notif', mess, 'offLine');
         }
         else
         {
           console.log("else");
           let roomID = this.socketService.getSocketID(other.user_id);
-          this.server.to(roomID).emit('notif', mess, true, false, true)
+          this.server.to(roomID).emit('notif', mess, 'invite')
         }
       }
-      else if (payload[1] == false) // else it is the response to an invite
+      else if (payload[1] == 'reponse') // else it is the response to an invite
       {
         const other = await this.usersService.findNickname(payload[0]);
-        let roomID = this.socketService.getSocketID(other.user_id);
-        this.server.to(roomID).emit('notif', mess, true, false, true);
-        if (payload[2] == true) // if the response is positive
+        let otherSocketId = this.socketService.getSocketID(other.user_id);
+        if (payload[2] == 'positif') // if the response is positive
         {
           const other = await this.usersService.findNickname(payload[0])
           console.log("other in TREUUEEUEUUE: ", other);
@@ -296,6 +314,11 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
             user2: other.user_id,
             room: name
           })
+          this.server.to(otherSocketId).emit('notif', user.nickname, 'accepted');
+        }
+        else if (payload[2] == 'negatif')
+        {
+          this.server.to(otherSocketId).emit('notif', user.nickname, 'refused');
         }
       }
     }

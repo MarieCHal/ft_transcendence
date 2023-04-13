@@ -104,7 +104,7 @@ export class ChatService {
                                 .andWhere('chanel.isPrivate = :status', {status: false})
                                 .andWhere('chanel.isDirect = :direct', {direct: false})
                                 .getRawOne()
-        console.log( "toreturn: ", toReturn)
+        //console.log( "toreturn: ", toReturn)
         return toReturn;
     }
 
@@ -130,7 +130,7 @@ export class ChatService {
                                 .andWhere('chanel.isPrivate = :status', {status: false})
                                 .andWhere('chanel.isDirect = :direct', {direct: true})
                                 .getRawOne()
-            console.log( "toreturn: ", toReturn)
+            //console.log( "toreturn: ", toReturn)
             return toReturn;
             }
             const newChan = new Chat();
@@ -190,7 +190,7 @@ export class ChatService {
                                 .andWhere('users.user_id = :user_id', {user_id: user.user_id})
                                 .andWhere('chanel.isPrivate = :status', {status: true})
                                 .getRawOne()
-        console.log('to return : ', toReturn)
+       // console.log('to return : ', toReturn)
         return toReturn;
     }
 
@@ -222,7 +222,7 @@ export class ChatService {
                                     .andWhere('user.user_id = :user_id', {user_id: user.user_id})
                                     .getRawMany()
         
-        console.log("privmsg: ", privMsg);
+        //console.log("privmsg: ", privMsg);
         const Mychanels = await this.chatRepository         // get all user's chans that are not direct messages
                                     .createQueryBuilder('chanel')
                                     .leftJoinAndSelect('chanel.users', 'users')
@@ -308,8 +308,8 @@ export class ChatService {
                 console.log("No server instance")
             else
                 server.to(room).emit('notifChat', 'users')      // emit to people in the room that they should refresh users
-            console.log(user)
-            console.log(result)
+            console.log("user: ", user)
+            console.log("result:", result)
         }
         return {
             isProtected,
@@ -326,7 +326,7 @@ export class ChatService {
 
         const isInChan = await this.rolesService.isInChanel(user, chanelId)
         if (!isInChan)
-            return `You are not aprt of this channel`;
+            return `${user.nickname} is not part of this channel`;
 
         const chan = await this.chatRepository.createQueryBuilder('chat')
                                     .leftJoinAndSelect('chat.users', 'users')
@@ -382,11 +382,14 @@ export class ChatService {
             }
         }*/
         const result = await this.getChannelInfo(chanelId)
-        console.log("chan infos after user leaving: ", result)
+        //console.log("chan infos after user leaving: ", result);
+        const newUserChan = await this.getMyChans(user);
+        console.log("USER'S CHANNELLLLLLSLSLSLSL: ", newUserChan);
     }
 
     
     async toKick(user: Users, toBeKicked: number, chanelId: number) {
+        console.log("tokickkkkkkkk");
         const toKick = await this.userService.findOne(toBeKicked);
         const checkKick = await this.rolesService.isInChanel(toKick, chanelId);
         if (!checkKick)
@@ -411,7 +414,7 @@ export class ChatService {
         await this.leaveChanel(toKick, chanelId);
         let server: Server = this.socketService.getServer()
         let socket = this.socketService.getSocketID(toKick.user_id);
-        server.to(socket).emit('notifChat', 'userContext')
+        server.to(socket).emit('notifChat', 'userContext');
         return {
             message: `You successfully kicked ${toKick.nickname}`,
             kick: true
@@ -459,7 +462,6 @@ export class ChatService {
             ban: false
         }
     }
-
 
     async checkChanPwd(user: Users, chanelId: number, pwd: string) {
         const chanel = await this.findOne(chanelId);
@@ -549,7 +551,7 @@ export class ChatService {
         return returnMess;
     }
 
-    /** @summary changes a channel's pwd */
+    /** @summary changes a channel's pwd, if pwd.length is 0 then the channel becomes public*/
     async changePwd(user: Users, ChanelId: number, pwd: string)
     {
         const chan = await this.findOne(ChanelId);

@@ -174,6 +174,10 @@ export class RolesService {
         const toMute = await this.userService.findOne(toBemute);
         
         const isAllowed = await this.isAdmin(user, chanelId);
+        if (isAllowed == false)
+            return {
+                message: `You are not admin or owner of channel`
+            }
 
         const chat = await this.chatRepository.findOne({
             where: {
@@ -185,10 +189,6 @@ export class RolesService {
         toMuteChat.chat = chat;
         const newChat = await this.muteRepository.save(toMuteChat);
 
-        if (isAllowed == false)
-            return {
-                message: `You are not admin or owner of channel ${chat.name}`
-            }
         await this.chatRepository
                         .createQueryBuilder()
                         .relation(Chat, "muted")
@@ -198,7 +198,7 @@ export class RolesService {
         let socket = this.socketService.getSocketID(toMute.user_id);
         server.to(socket).emit('notifChat', 'userContext')
         return {
-            message: `You successfully made ${toMute.nickname} admin of channel ${chat.name}`
+            message: `You successfully muted ${toMute.nickname} on channel ${chat.name}`
         }
     }
 

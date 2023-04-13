@@ -1,4 +1,4 @@
-import { Controller, Post, Response, Request, Get, Param, Delete} from '@nestjs/common';
+import { Controller, Post, Response, Request, Get, Param, Delete, Put} from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { RolesService } from './roles.service';
 
@@ -28,16 +28,20 @@ export class ChatController {
     /** @summary */
     @Get('update/:id')
     async updateChat(@Param('id') id: number, @Request() req: any) {
+        console.log('UPDATTTTEEEEEE');
         let isKicked = await this.rolesService.isInChanel(req.user, id)
-        if (isKicked == true)
-            isKicked = false;
-        else
+        if (isKicked == false)
+        {
             isKicked = true;
+            return {
+                isKicked, 
+                userContext: null
+             }
+        }
         const userContext = await this.chatService.userContext(req.user, id);
         return {
-            isKicked,
-            userContext
-        }
+            isKicked: false,
+            userContext }
     }
 
     /** @summary check if the code is correct to enter on a protected chan */
@@ -47,6 +51,7 @@ export class ChatController {
         return await this.chatService.checkChanPwd(req.user, req.body.chanId, req.body.checkCode);
     }
 
+    
     /** @summary changes the pwd of the channel (owner privilege) */
     @Post('pwd')
     async pwdChan(@Request() req: any)

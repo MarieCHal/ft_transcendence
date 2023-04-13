@@ -305,11 +305,18 @@ export class GameService {
         let score = game.score1.toString() + '-' + game.score2.toString();
         ////console.log("score in string: ", score);
         
-        const match = new MatchHistory();
-        match.player1 = user1.nickname;
-        match.player2 = user2.nickname;
-        match.score = score;
-        const newMatch = await this.matchHistory.save(match)
+        const match1 = new MatchHistory();
+        match1.player1 = user1;
+        match1.player2 = user2;
+        match1.score = score;
+
+        /*const match2 = new MatchHistory();
+        match2.player1 = user2;
+        match2.player2 = user1.nickname;
+        match2.score = score;*/
+
+        await this.matchHistory.save(match1)
+        //await this.matchHistory.save(match2)
         //console.log('match: ', newMatch)              
 
         //console.log("user1: ", user1)

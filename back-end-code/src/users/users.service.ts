@@ -108,9 +108,12 @@ export class UsersService {
     async returnMatch(id: number) {
         const user = await this.findOne(id);
         const history = await this.matchHistory.createQueryBuilder('match')
-                                    .where('match.player1 = :player1_id', {player1_id: user.nickname})
-                                    .orWhere('match.player2 = :player2_id', {player2_id: user.nickname})
-                                    .getMany()
+                                    .leftJoinAndSelect('match.player1', 'player1')
+                                    .leftJoinAndSelect('match.player2', 'player2')
+                                    .where('player1.user_id = :user_id1', {user_id1: user.user_id})
+                                    .orWhere('player1.user_id2 = :user_id', {user_id2: user.user_id})
+                                    .select(['player1.nickname', 'player2.nickname', 'match.score'])
+                                    .getRawMany()
 
         console.log("history return: ", history)
         return history
