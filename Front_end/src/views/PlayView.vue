@@ -17,7 +17,6 @@
         const headers = { Authorization: `Bearer ${store.getters.getToken}`};
         const response = await axios.get("http://c1r2s3:3000/users/all", {headers});
         store.commit('setUsers', response.data.allUsers)
-        console.log('user store', store.getters.getUsers)
     }
 
     const play = async (userId: number) =>{
@@ -26,23 +25,65 @@
 </script>
 
 <template>
-    <div>
-        <button class="navButton" id="InviteFriends" @click="goMatchmaking()">
-            Matchmaking
-        </button>
-    </div>
-    <div>
-        <button class="navButton" @click="submit">
+    <div class="playButtonContainer">
+        <div class="playButton">
+            <button class="playButton" id="InviteFriends" @click="goMatchmaking()">
+                Matchmaking
+            </button>
+        </div>
+        <button class="playButton" @click="submit">
             InviteFriends
         </button>
-        <div  v-for="(user, index) in store.getters.getUsers">
-            <button class="navButton" v-if="user.user_isActive == 1" @click="play(user.user_user_id)"> 
+        <div class="playUsers">
+            <div  v-for="(user, index) in store.getters.getUsers">
+                <button class="playUsers" v-if="user.user_isActive == 1" @click="play(user.user_user_id)">
                     {{ user.user_nickname }}
-            </button>
+                </button>
+            </div>
         </div>
     </div>
 </template>
 
 <style scoped lang="scss">
-
+.playButtonContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 40vh; /* Assure que le conteneur occupe la hauteur de la fenêtre */
+}
+.playButton {
+    width: auto;
+    margin: 10px;
+    align-items: center;
+    justify-content: center;
+    color: darkcyan;
+    background: none;
+    border: none;
+    font-size: large;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+}
+.playButton:hover {
+    color: #e6e6e6;
+}
+.playUsers{
+    width: auto;
+    margin: 3px;
+    max-height: 200px;
+    text-align: center;
+    color: darkcyan;
+    background: none;
+    border: none;
+    font-size: large;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    overflow: auto;
+}
+.playUsers::-webkit-scrollbar{
+    display: none;
+}
+.playUsers:hover {
+    color: #e6e6e6;
+}
 </style>

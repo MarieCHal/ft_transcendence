@@ -13,7 +13,6 @@
     
     onMounted(async () => {
         await fetchData();
-        console.log('repalle');
         console.log("userContext IN UserButtron =", userContext);
     });
 
@@ -148,7 +147,9 @@
                 :style="{ 'background-image': 'url(' + store.getters.getArrayAvatar(data.user_user_id) + ')'}">
                 <img :src="store.getters.getArrayAvatar(data.user_user_id)" />
             </button>
-            {{ data.user_nickname }}
+            <div class="name">
+                {{ data.user_nickname }}
+            </div>
         </div>
         <div class="ownerButton" v-if="userContext.owner || userContext.admin">
             <button class="navButton" @click="kick(data.user_user_id)">
@@ -178,7 +179,7 @@
   margin: 5px;
 }
 img{
-  display: none;
+    display: none;
 }
 .card{
     background-color: rgba(123, 211, 211, 0.098);
@@ -196,6 +197,7 @@ img{
     display: flex;
     align-items: center;
     justify-content:space-evenly;
+    word-wrap: break-word;
 }
 .ownerButton{
     display: flex;

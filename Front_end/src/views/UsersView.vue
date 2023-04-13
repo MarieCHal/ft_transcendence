@@ -21,6 +21,7 @@
         
     onMounted(async () => {
         try {
+            store.commit('setUserContext', []);
             const headers = { Authorization: `Bearer ${store.getters.getToken}` };
             const response = await axios.get("/users/all", {headers});
             store.commit('setAllUsers', response.data);
@@ -53,6 +54,7 @@
 #mainUsers{
     display: flex;
     flex-direction: column;
+    align-items: center;
 }
 .navUser{
     display: flex;
@@ -63,5 +65,11 @@
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
+    max-width: 500px;
+    max-height: 500px;
+    overflow: auto;
+}
+.userDisplay::-webkit-scrollbar{
+  display: none;
 }
 </style>

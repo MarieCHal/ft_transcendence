@@ -3,13 +3,11 @@
     import { useRouter } from 'vue-router'
     import axios from 'axios';
     import {  onUnmounted } from 'vue'
-
     const store = useStore();
     const router = useRouter();
     const userContext = store.getters.getUserContext;
     const chanContext = store.getters.getChanContext;
     let Pwd = '';
-
     const deleteChan = async () => {
         try {
             const headers = { Authorization: `Bearer ${store.getters.getToken}` };
@@ -21,7 +19,6 @@
             }
             }
     }
-
     const submmit = async () => {
     if (!userContext.owner){
         alert("YOU ARE NOT A OWNER")
@@ -40,26 +37,28 @@
           }
         }
   }
-
   function getBool(){
       store.commit("setBool", true)
       return store.getters.getBool;
+  }
+  function deletePWD(){
+    
   }
   
 </script>
 
 <template>
-    <form @submit.prevent="submmit" v-if="userContext.isProtected === true">
+    <form @submit.prevent="submmit">
       <button class="navButton" @click.prevent="getBool">
-        changePWD
+        ADD/CHANGE/REMOVE PWD
       </button>
-        <div v-if="store.getters.getBool">
-          <input type="text" name="code" autocomplete="off"
-          placeholder="PWD" minlength="4" maxlength="4" v-model="Pwd">
-          <button class="navButton" type="submit">
-            submit
-          </button>
-        </div>
+      <div v-if="store.getters.getBool">
+        <input class="text" type="text" name="code" autocomplete="off"
+        placeholder="PWD" minlength="4" maxlength="4" v-model="Pwd">
+        <button class="navButton" type="submit">
+          submit
+        </button>
+      </div>
     </form>
     <button class="navButton" @click="deleteChan()">
       deleteChan
@@ -69,5 +68,16 @@
 <style scoped lang="scss">
 button{
   width: auto;
+  margin: 3px;
+}
+.text{
+  text-align: center;
+  background: none;
+  border: none;
+  color:aqua;
+  width: 80px;
+}
+::placeholder{
+  color:aqua;
 }
 </style>

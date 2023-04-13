@@ -117,9 +117,11 @@ const store = createStore({
     isNameNotif: "",
     isInvite: false,
     isAcceptPlay: false,
+    isStatus: false,
   },
 
   mutations: {
+    setStatus(state, isStatus) {state.isStatus = isStatus;},
     setQrCode(state, payload) {state.isQrCode = payload;},
     setMatchHistory(state, isMatchHistory) {state.isMatchHistory = isMatchHistory;},
 
@@ -185,6 +187,7 @@ const store = createStore({
   },
 
   getters: {
+    getStatus: state => state.isStatus,
     getQrCode: state => state.isQrCode,
     getMatchHistory: state => state.isMatchHistory,
 
@@ -245,7 +248,7 @@ const store = createStore({
   },
   actions: {
     initWebSocket({ commit }) {
-      const webSocket = io('http://c1r2s3:4000/', {
+      const webSocket = io('http://c1r2s3:3000/', {
         auth: {
           token: store.getters.getToken,
         }
@@ -261,10 +264,11 @@ const store = createStore({
         commit('setWebSocket', null);
       });
 
-      webSocket.on('notif', (nickname: string, invite: boolean, accept: boolean) =>{
+      webSocket.on('notif', (nickname: string, invite: boolean, accept: boolean, status: Boolean) =>{
         commit('setNameNotif', nickname); // a qui on parle
         commit('setInvite', invite); //es une invite ou un reponse
         commit('setAcceptPlay', accept); //es accept ou refus
+        commit('setStatus', status);
       });
     },
   }

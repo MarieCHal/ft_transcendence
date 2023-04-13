@@ -31,7 +31,6 @@
 <style scoped lang="scss">
 #prompt{
   display: flex;
-  padding-right: 11px;
   height: 37px;
 }
 #prompt input{

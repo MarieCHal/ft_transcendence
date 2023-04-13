@@ -12,7 +12,6 @@
         console.log('tabUserID', TabUserId);
         try {
             let tab = Object.values(TabUserId);
-            console.log('tab', tab);
             const headers = { Authorization: `Bearer ${store.getters.getToken}` };
             const data = {protected: false, private: true, name: newChanel, tabUsersId: tab};
             const response = await axios.post('/chat/create', data,  {headers});
@@ -29,6 +28,13 @@
     function selectUser(userId: number, index: number){
         TabUserId[index] = userId;
     }
+
+    const removeCapsule = (index: any) => {
+        const capsule = document.getElementById(`capsule-${index}`);
+        if (capsule) {
+            capsule.remove();
+        }
+    }
 </script>
 
 <template>
@@ -37,8 +43,8 @@
                 <input class="navButton" type="text" name="codeChat" autocomplete="off"
                     placeholder="Name channel" v-model="newChanel" required>
                 <h1>Select users for invite on this room</h1>
-                <div class="user" v-for="(user, index) in store.getters.getAllUsers.allUsers" :key="index">
-                    <div class="navButton" @click="selectUser(user.user_user_id, index)">
+                <div class="user" v-for="(user, index) in store.getters.getAllUsers.allUsers" :key="index" :id="`capsule-${index}`">
+                    <div class="navButton" @click="selectUser(user.user_user_id, index); removeCapsule(index)">
                         {{ user.user_nickname }}
                     </div>
                 </div>
@@ -49,10 +55,14 @@
 </template>
 
 <style scoped lang="scss">
+.navButton{
+    width: auto;
+}
 .disp{
     display: flex;
     flex-direction: column;
     align-items: center;
+    text-align: center;
     padding: 1rem;
 }
 .user{

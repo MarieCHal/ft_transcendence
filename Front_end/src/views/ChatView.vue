@@ -70,7 +70,7 @@ import router from "@/router";
       socket.off('join');
       socket.off('chat');
       socket.off('notifChat')
-      store.commit('setUserContext', []);
+      //store.commit('setUserContext', []);
     });
 
     const forceRender = () => {
@@ -80,55 +80,54 @@ import router from "@/router";
 </script>
 
 <template>
-  <div class="title">
-    <div class="tilte-tilte">
-      <h1> {{ store.getters.getChanContext.chanel_name}} </h1>
-      <formChangePwdChat v-if="store.getters.getUserContext.owner"/>
+  <div class="chatView">
+    <div class="title">
+      <div class="tilte-tilte">
+        <h1> {{ store.getters.getChanContext.chanel_name}} </h1>
+        <formChangePwdChat v-if="store.getters.getUserContext.owner"/>
+      </div>
+      <div class="userButton">
+        <oneUserButton :key="componentKey" v-if="store.getters.getWhat === 'UsersInChan'"/>
+      </div>
     </div>
-    <div class="userButton">
-      <oneUserButton :key="componentKey" v-if="store.getters.getWhat === 'UsersInChan'"/>
-    </div>
-  </div>
-
-  <div class="chat-container">
-    <div class="chat-history">
-      <chatHistory />
-    </div>
-    <div class="chat-currentMsg">
-      <div  v-for="(msg, index) in chatMessages" :key="index">
-        <div v-if="typeof msg === 'object' && msg.messages_text" class="chat-messages" :class="{ 'chat-myMsg': msg.sender_user_id === store.getters.getId, 'chat-hisMsg': msg.sender_user_id != store.getters.getId}">
-          <div id="name">
-            {{ msg.sender_nickname }}
-          </div>
-          <div id="corp">
-            <div id="msg">
-              {{ msg.messages_text }}
+  
+    <div class="chat-container">
+      <div class="chat-history">
+        <chatHistory />
+        <div class="msg" v-for="(msg, index) in chatMessages" :key="index">
+          <div v-if="typeof msg === 'object' && msg.messages_text" class="chat-messages" :class="{ 'chat-myMsg': msg.sender_user_id === store.getters.getId, 'chat-hisMsg': msg.sender_user_id != store.getters.getId}">
+            <div id="name">
+              {{ msg.sender_nickname }}
             </div>
-            <div id="date">
-              {{ msg.messages_createdAtTime }}
+            <div id="corp">
+              <div id="msg">
+                {{ msg.messages_text }}
+              </div>
+              <div id="date">
+                {{ msg.messages_createdAtTime }}
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <div id="prompt-container">
-      <chatPrompt />
+      <div id="prompt-container">
+        <chatPrompt />
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
-.chat-currentMsg{
-  position: relative;
-  margin-top: auto;
-  overflow-y: auto;
+.chatView{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .chat-history{
   margin-top: auto;
-  overflow-y: auto;
-  height: 500px;
+  overflow: auto;
+  scroll-behavior: reverse;
   max-height: 500px;
-  min-width: 360px;
 }
 .chat-history::-webkit-scrollbar{
   display: none;
@@ -146,18 +145,16 @@ import router from "@/router";
   height: 500px;
   max-height: 500px;
   min-width: 360px;
+  max-width: 400px;
 }
 .chat-container:hover {
   opacity: 1;
 }
-/*.chat-container::-webkit-scrollbar{
-  display: none;
-}*/
+
 #prompt-container {
-  position: absolute;
-  bottom: 0;
-  height: 40px;
-  //background-color: aqua;
+  border-top: 1px solid rgba(79, 200, 209, 0.94);
+  padding-top: 5px;
+  min-height: 3rem;
 }
 .chat-messages {
   display: flex;
@@ -203,20 +200,24 @@ import router from "@/router";
 }
 
 @media screen and (max-width: 500px) {
-  .title{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
+  .chat-container {
+    height: 350px;
+    max-height: 500px;
+    min-width: 350px;
+    max-width: 350px;
   }
 }
 .title{
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 10px;
 }
 .tilte-tilte{
   display: flex;
   flex-direction: column;
+  text-align: center;
+  align-items: center;
   width: auto;
 }
 .userButton{

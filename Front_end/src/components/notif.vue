@@ -1,19 +1,16 @@
 <script setup lang="ts">
     import { useRouter } from 'vue-router'
     import { useStore } from 'vuex';
-
     const store = useStore();
     const router = useRouter();
     const socket = store.getters.getWebSocket;
     
-
-
     function confirmNotif(){
         if(store.getters.getInvite == true){
             const userConfirmed = confirm("Voulez-vous jouer avec cette personne?")
             if(userConfirmed){
                 socket.emit('notif', store.getters.getNameNotif, false, true);
-                //store.commit('setNameNotif', "");
+                store.commit('setNameNotif', "");
                 store.commit('setAcceptPlay', true);
                 store.commit('setMatchmaking', false);
                 router.push('/Play/start');
@@ -30,7 +27,7 @@
         else{
             if(store.getters.getAcceptPlay == true){
                 alert('demande accept')
-                //store.commit('setNameNotif', "");
+                store.commit('setNameNotif', "");
                 store.commit('setMatchmaking', false);
                 router.push('/Play/start')
                 //verifier nameNotif du store une fois dans la vue playStart
@@ -38,7 +35,12 @@
                 //leur option de customisation pour ce lancer
             }
             else{
-                alert('demande refus')
+                if (store.getters.getStatus == false){
+                    alert('the user is logout or in a game')
+                }
+                else{
+                    alert('demande refus')
+                }
                 store.commit('setNameNotif', "");
             }
         }    
@@ -47,7 +49,7 @@
 
 <template>
     <button @click="confirmNotif()">
-        <p v-if="!store.getters.getAcceptPlay">
+        <p v-if="!store.getters.getAcceptPlay && store.getters.getStatus">
             Le joueur {{ store.getters.getNameNotif }} vous invite a une partie
         </p>
         <p v-else>
@@ -59,5 +61,9 @@
 <style scoped lang="scss">
 p{
     color: red;
+}
+button{
+    background: none;
+    border: none;
 }
 </style>

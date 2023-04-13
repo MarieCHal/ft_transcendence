@@ -23,15 +23,17 @@
 </script>
 
 <template>
-    <h1>match history</h1>
-    <div v-for="(match, index) in store.getters.getMatchHistory" :key="index">
-        <div>
-            Partie numero: {{ index + 1}}, jouee le {{ match.date }} , joueur 1: {{ match.player1 }}, joueur 2: {{ match.player2 }}, score: {{ match.score }}
-        </div>
-        
+    <h1>Match history</h1>
+    <div class="info" v-for="(match, index) in store.getters.getMatchHistory" :key="index">
+        Partie: {{ index + 1}} du {{ match.date }}<br/> {{ match.player1 }} vs {{ match.player2 }} <br/>score: {{ match.score }}      
     </div>
 </template>
 
 <style scoped lang="scss">
-
+.info{
+    border: 1px solid rgba(79, 200, 209, 0.94);
+    border-radius: 3px;
+    padding: 5px;
+    width: 11rem;
+}
 </style>

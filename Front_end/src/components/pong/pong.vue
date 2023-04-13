@@ -1,5 +1,5 @@
 <template>
-    <div >
+    <div class="centered-container">
         <button class="navButton" @click="Quit()">
             X
         </button>
@@ -11,11 +11,9 @@
     import { useRouter } from 'vue-router'
     import { useStore } from "vuex"
     import { onMounted, onUnmounted } from 'vue';
-
     const store = useStore();
     const router = useRouter();
     const socket = store.getters.getWebSocket;
-
     function Quit(){
         console.log("store.getters.getRoom === ", store.getters.getRoom)
         socket.emit("game", store.getters.getRoom, "quit");
@@ -88,7 +86,6 @@
     function game(){
         const cvs = document.getElementById("pong") as HTMLCanvasElement;
         const ctx = cvs.getContext("2d") as CanvasRenderingContext2D;
-
     function end(){
         if (store.getters.getId == store.getters.getStatusCode){
             drawText("YOU WIN", cvs.width/3, cvs.height/2, store.getters.getColorText)
@@ -155,7 +152,6 @@
         ball.y = store.getters.getBallY;
         user1.score = store.getters.getScoreUser1;
         user2.score = store.getters.getScoreUser2;
-
         drawRect(0, 0, cvs.width, cvs.height, store.getters.getColorBackGround);
         drawNet();
         drawText(user1.score, cvs.width/4, cvs.height/5, store.getters.getColorText);
@@ -213,8 +209,20 @@ onUnmounted (async () => {
 
 
 <style scoped lang="scss">
+.centered-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 #pong{
     width: 60%;
     height: auto;
+    border: 1px solid aqua;
+    border-radius: 4px;
 }
 </style>
