@@ -115,4 +115,8 @@ button{
     width: auto;
     background-color:aquamarine ;
 }
+input{
+    border: 1px solid #06FFFF;
+    border-radius: 3px;
+}
 </style>

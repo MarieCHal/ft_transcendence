@@ -39,7 +39,7 @@
 <template>
        <form class="disp"  @submit.prevent="submmit">
             <input class="navButton" type="text" name="codeChat" autocomplete="off"
-            placeholder="Name channel" v-model="newChanel" required>
+            placeholder="Name channel" v-model="newChanel" minlength="3" maxlength="10" required>
             <input class="navButton" type="text" name="code" autocomplete="off"
             placeholder="PWD" minlength="4" maxlength="4" v-model="Pwd">
             <button class="navButton">
@@ -65,6 +65,8 @@ input{
     margin: 1rem;
     width: auto;
     text-align: center;
+    border: 1px solid #06FFFF;
+    border-radius: 3px;
 }
 
 </style>

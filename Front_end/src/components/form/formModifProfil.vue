@@ -68,7 +68,7 @@
                 </label>
             </div>
             <div class="submit">
-                <input class="navButton" type="text" name="Nickname" placeholder="Nickname" autocomplete="off" required v-model="nickname">
+                <input class="navButton" type="text" name="Nickname" placeholder="Nickname" autocomplete="off" minlength="3" maxlength="10" required v-model="nickname">
                 <button class="navButton">
                     submit
                 </button>
@@ -89,9 +89,6 @@ button{
     border-radius: 1px;
     background-color:aquamarine ;
 }
-.submit{
-
-}
 img{
     max-width: 100px;
     height: 100px;
@@ -102,5 +99,10 @@ img{
 }
 .file-select > input {
     display: none;
+}
+input{
+    border: 1px solid #06FFFF;
+    border-radius: 3px;
+    color:aqua;
 }
 </style>

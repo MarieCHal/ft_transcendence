@@ -38,23 +38,35 @@
 </script>
 
 <template>
-       <form class="disp" @submit.prevent="submmit">
-                <label for="nameChat"></label>
-                <input class="navButton" type="text" name="codeChat" autocomplete="off"
-                    placeholder="Name channel" v-model="newChanel" required>
-                <h1>Select users for invite on this room</h1>
-                <div class="user" v-for="(user, index) in store.getters.getAllUsers.allUsers" :key="index" :id="`capsule-${index}`">
-                    <div class="navButton" @click="selectUser(user.user_user_id, index); removeCapsule(index)">
-                        {{ user.user_nickname }}
-                    </div>
+    <form class="disp" @submit.prevent="submmit">
+        <label for="nameChat"></label>
+        <input class="navButton" type="text" name="codeChat" autocomplete="off"
+            placeholder="Name channel" v-model="newChanel" minlength="3" maxlength="10" required>
+        <h1>Select users for invite on this room</h1>
+        <div class="users">
+            <div class="user" v-for="(user, index) in store.getters.getAllUsers.allUsers" :key="index" :id="`capsule-${index}`">
+                <div class="navButton" @click="selectUser(user.user_user_id, index); removeCapsule(index)">
+                    {{ user.user_nickname }}
                 </div>
-            <button class="navButton">
-                submit
-            </button>
-       </form>
+            </div>
+        </div>
+        <button class="navButton">
+            submit
+        </button>
+    </form>
 </template>
 
 <style scoped lang="scss">
+.users{
+    border: 1px solid #06FFFF;
+    border-radius: 3px;
+    max-width: 15rem;
+    max-height: 20rem;
+    overflow: auto;
+}
+.users::-webkit-scrollbar{
+  display: none;
+}
 .navButton{
     width: auto;
 }
@@ -79,6 +91,8 @@ button{
 input{
     width: auto;
     text-align: center;
+    border: 1px solid #06FFFF;
+    border-radius: 3px;
 }
 h1{
     margin: 1rem;

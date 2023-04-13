@@ -94,7 +94,7 @@
         </div>
         <div class="dashboard__section">
             <div class="display">
-                <h1 style="height: 100%;">My channel</h1>
+                <h1>My channel</h1>
                 <div class="liste-chan" v-for="(chanPublicJoined, index) in store.getters.getChans.Mychanels" :key="index">
                     <button class="navButton" @click="clickChan(chanPublicJoined)">
                         {{ chanPublicJoined.chanel_name }}

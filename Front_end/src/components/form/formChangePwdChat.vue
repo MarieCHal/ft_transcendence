@@ -73,9 +73,11 @@ button{
 .text{
   text-align: center;
   background: none;
-  border: none;
-  color:aqua;
   width: 80px;
+}
+input{
+    border: 1px solid #06FFFF;
+    border-radius: 3px;
 }
 ::placeholder{
   color:aqua;

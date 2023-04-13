@@ -46,8 +46,9 @@
     opacity: 0.8;
     max-width: 450px;
     min-width: 340px;
-    height: auto;
+    max-height: 300px;
     margin: 5px;
+    overflow: auto;
 }
 .userButton {
     display: flex;
@@ -71,5 +72,14 @@
 
 .card:hover {
     opacity: 1;
+}
+@media screen and (max-width: 500px) {
+  .matchHistory{
+    max-height: 200px;
+    overflow: auto;
+  }
+}
+.matchHistory::-webkit-scrollbar{
+  display: none;
 }
 </style>
