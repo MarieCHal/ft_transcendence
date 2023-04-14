@@ -7,14 +7,11 @@
     const router = useRouter();
     const store = useStore();
     const user = store.getters.getOneUser;
-    
     let blocked = store.getters.getUserBlocked;
 
     onMounted(async () => {
         for(let i = 0; i < blocked.length; i++){
             if(blocked[i].blocked_user_id == user.user_user_id){
-                //console.log('blocked_user_id',blocked[i].blocked_user_id);
-                //console.log('user_id',user.user_user_id);
                 store.commit('setBlockBool', true);
                 break;
             }
@@ -26,7 +23,6 @@
     
     const bloquer = async () =>{
         try {
-            //console.log('bool', store.getters.getBool);
             const headers = { Authorization: `Bearer ${store.getters.getToken}` };
             const data = {otherId: user.user_user_id,};
             const response = await axios.post(`/chat/block`, data, {headers});
@@ -39,7 +35,8 @@
             }
             alert(response.data.message);
         } catch (error) {
-            console.log(error);
+            store.commit('setError', error);
+            router.push('/error');
         }
     }
 </script>

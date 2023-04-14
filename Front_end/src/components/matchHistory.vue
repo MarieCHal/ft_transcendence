@@ -2,22 +2,19 @@
     import axios from 'axios'
     import { useStore } from "vuex"
     import { onMounted } from 'vue'
+    import { useRouter } from 'vue-router'
 
+    const router = useRouter();
     const store = useStore();
-    console.log('user', store.getters.getOneUser.user_user_id);
 
     onMounted(async () => {
         try {
             const headers = { Authorization: `Bearer ${store.getters.getToken}` };
             const response = await axios.get(`/users/match-history/${store.getters.getOneUser.user_user_id}`, {headers});
             store.commit('setMatchHistory', response.data);
-            console.log('matchhistory', store.getters.getMatchHistory);
         } catch (error: any) {
-            console.log(error);
-            //alert(error);
-            /*setTimeout(() => {
-                window.location.reload();
-            }, 1000);*/
+            store.commit('setError', error);
+            router.push('/error');
         }
     });
 </script>
@@ -25,7 +22,7 @@
 <template>
     <h1>Match history</h1>
     <div class="info" v-for="(match, index) in store.getters.getMatchHistory" :key="index">
-        Partie: {{ index + 1}} du {{ match.date }}<br/> {{ match.player1 }} vs {{ match.player2 }} <br/>score: {{ match.score }}      
+        Partie: {{ index + 1}} du {{ match.match_date }}<br/> {{ match.player1_nickname }} vs {{ match.player2_nickname }} <br/>score: {{ match.match_score }}      
     </div>
 </template>
 
@@ -35,5 +32,6 @@
     border-radius: 3px;
     padding: 5px;
     width: 11rem;
+    margin: 2px;
 }
 </style>

@@ -1,4 +1,6 @@
 import axios from 'axios';
+import router from './router';
+
 
 export async function getAvatar(store: any, id: any) {//params token pas obligatoire, il se trouve dans le store
     try {
@@ -11,7 +13,8 @@ export async function getAvatar(store: any, id: any) {//params token pas obligat
         const url = URL.createObjectURL(blob);
         return url;    
     } catch (error) {
-        alert(error)
+        store.commit('setError', error);
+        router.push('/error');
     }
 }
 

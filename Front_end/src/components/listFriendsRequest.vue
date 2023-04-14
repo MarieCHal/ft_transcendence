@@ -1,7 +1,9 @@
 <script setup lang="ts">
     import { useStore } from "vuex"
     import axios from 'axios'
+    import { useRouter } from 'vue-router'
 
+    const router = useRouter();
     const store = useStore();
     
     const removeCapsule = (pending: any) => {
@@ -11,18 +13,17 @@
         }
     }
     const friendsValidate = async (userId: number, decision: boolean) => {
-        const headers = { Authorization: `Bearer ${store.getters.getToken}` };
-        const data = {
-            id: userId,
-            decision: decision
-        };
-        const response = await axios.post('/users/friend-accept', data, {headers})
-        .then(response => {
-            console.log('Demande d\'amis acceptee avec succès');
-        })
-        .catch(error => {
-            console.error('Erreur lors de l\'envoi de la acceptation d\'amis', error);
-        });
+        try {
+            const headers = { Authorization: `Bearer ${store.getters.getToken}` };
+            const data = {
+                id: userId,
+                decision: decision
+            };
+            const response = await axios.post('/users/friend-accept', data, {headers})
+        } catch (error) {
+            store.commit('setError', error);
+            router.push('/error');
+        }
     }
 
     function getMyFriends(){

@@ -7,7 +7,12 @@
     const socket = store.getters.getWebSocket;
 
     const play = async () =>{
-        socket.emit('notif', store.getters.getOneUser.user_user_id, true);
+        try {            
+            socket.emit('notif', store.getters.getOneUser.user_user_id, "invite");
+        } catch (error: any) {
+            store.commit('setError', error);
+            router.push('/error');
+        }
     }
 </script>
 

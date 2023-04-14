@@ -1,6 +1,4 @@
 <script setup lang="ts">
-    import chatMyMsg from "./chatMyMsg.vue";
-    import chatHisMsg from "./chatHisMsg.vue";
     import { useStore } from "vuex"
 
     const store = useStore();
@@ -26,8 +24,7 @@
 </template>
 
 <style scoped lang="scss">
-.chat{
-}
+
 .chat-messages {
     display: flex;
     flex-direction: column;

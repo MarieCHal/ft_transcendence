@@ -28,11 +28,8 @@
           router.push("/");
         }
       } catch (error: any) {
-        if (error.response.status != 201)
-        {
-            console.log(error);
-            //alert(error);
-        }
+        store.commit('setError', error);
+        router.push('/error');
       }
     }
   }

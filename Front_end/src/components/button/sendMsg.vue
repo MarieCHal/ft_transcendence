@@ -15,8 +15,9 @@
             const response1 = await axios.get(`/chat/join/${response.data.chanel_chat_id}`, {headers});
             store.commit('setUserContext', response1.data);
             router.push('/chat');
-        }catch{
-            console.log("Erreur chatUsers")
+        }catch (error: any) {
+            store.commit('setError', error);
+            router.push('/error');
         }
     }
 </script>

@@ -5,15 +5,21 @@
     import listFriendsRequest from "@/components/listFriendsRequest.vue";
     import matchHistory from '@/components/matchHistory.vue';
     import { useStore } from "vuex"
-    import { onMounted, onUnmounted } from 'vue';
+    import { onMounted} from 'vue';
     import axios from "axios";
+    import { useRouter } from 'vue-router'
 
-
+    const router = useRouter();
     const store = useStore();
     onMounted(async () => {
-        const headers = { Authorization: `Bearer ${store.getters.getToken}` };
-        const response = await axios.get("/users/me", {headers});
-        store.commit('setMe', response.data);
+        try {
+            const headers = { Authorization: `Bearer ${store.getters.getToken}` };
+            const response = await axios.get("/users/me", {headers});
+            store.commit('setMe', response.data);
+        } catch (error) {
+            store.commit('setError', error);
+            router.push('/error');
+        }
     });
 
 </script>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
     import axios from 'axios'
-    import { useRouter } from 'vue-router'
     import { useStore } from "vuex"
+    import { useRouter } from 'vue-router'
 
     const router = useRouter();
     const store = useStore();
@@ -13,7 +13,6 @@
     const fileUpload = async (event: any) => {
         const file = event.target.files[0];
         const avatar = URL.createObjectURL(file);
-        console.log('avatar', avatar)
         if (store.getters.getAvatar != avatar)
         {
             try {
@@ -32,7 +31,8 @@
                     store.commit('setAvatar', avatar);
                 }
             } catch (error: any) {
-                console.log(error);
+                store.commit('setError', error);
+                router.push('/error');
             }
         }
     }
@@ -48,7 +48,8 @@
                     router.push('/Profile/me')
                 }
             } catch (error: any) {
-                console.log(error);
+                store.commit('setError', error);
+                router.push('/error');
             }
         }
     }

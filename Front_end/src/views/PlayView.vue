@@ -14,13 +14,23 @@
     }
 
     const submit = async () => {
-        const headers = { Authorization: `Bearer ${store.getters.getToken}`};
-        const response = await axios.get("http://c1r2s3:3000/users/all", {headers});
-        store.commit('setUsers', response.data.allUsers)
+        try {            
+            const headers = { Authorization: `Bearer ${store.getters.getToken}`};
+            const response = await axios.get("/users/all", {headers});
+            store.commit('setUsers', response.data.allUsers)
+        } catch (error) {
+            store.commit('setError', error);
+            router.push('/error');
+        }
     }
 
     const play = async (userId: number) =>{
-        socket.emit('notif', userId, true);
+        try {
+            socket.emit('notif', userId, "invite");
+        } catch (error) {
+            store.commit('setError', error);
+            router.push('/error');
+        }
     }
 </script>
 

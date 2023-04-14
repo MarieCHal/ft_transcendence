@@ -55,7 +55,6 @@ function drawNet(){
     for(let i = 0; i <= cvs.height; i+=15){
         drawRect(net.x, net.y + i, net.width, net.height, net.color);
     }
-    console.log("taille =", cvs.width, cvs.height)
 }
 function drawRect(x: number, y: number, w: number, h: number, color: any){
     ctx.fillStyle = color;

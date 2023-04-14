@@ -27,11 +27,8 @@
             store.commit('setAllUsers', response.data);
 
         } catch (error: any) {
-            console.log(error);
-            //alert(error);
-            /*setTimeout(() => {
-                window.location.reload();
-            }, 1000);*/
+            store.commit('setError', error);
+            router.push('/error');
         }
     });
 

@@ -13,7 +13,8 @@
             store.commit('setOneUser', response.data);
             router.push('/Profile/me');
         } catch (error: any) {
-            console.log(error);
+            store.commit('setError', error);
+            router.push('/error');
         }
     }
 

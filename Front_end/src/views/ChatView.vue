@@ -16,16 +16,13 @@ import router from "@/router";
     store.commit("setBool", false)
 
     onMounted(async () => {
+      try {
         const headers = { Authorization: `Bearer ${store.getters.getToken}`};
         const response = await axios.get(`/chat/users/${store.getters.getChanContext.chanel_chat_id}`, {headers});
         store.commit('setWhat', 'UsersInChan');
         store.commit("setUsers", response.data.users);
-        
         const chatHistory = await axios.get(`/chat/history/${store.getters.getChanContext.chanel_chat_id}`,  {headers});
         store.commit("setChatHistory", chatHistory.data.history);
-        
-        console.log("owner",  store.getters.getUserContext.owner)
-
         socket.on('join', (message: any) => {
             chatMessages.value.push(message);
         });
@@ -42,7 +39,7 @@ import router from "@/router";
             if (i == userBlocked.length)
                 chatMessages.value.push(message);
         });
-        socket.on('notifChat', async (msg: string)  => {
+        socket.on('notifChat', async (msg: string, message: string)  => {
           if (msg == 'users'){
             const response = await axios.get(`/chat/users/${store.getters.getChanContext.chanel_chat_id}`, {headers});
             store.commit('setWhat', 'UsersInChan');
@@ -53,7 +50,6 @@ import router from "@/router";
             const response1 = await axios.get(`/chat/update/${store.getters.getChanContext.chanel_chat_id}`, {headers});
             store.commit('setUserContext', response1.data.userContext);
             store.commit('setWhat', 'UsersInChan');
-            store.commit("setUsers", response1.data.users);
             if (response1.data.isKicked == true || response1.data.userContext.banned == true){
               alert("YOU ARE A NOOB");
               router.push('dashBoardChat')
@@ -61,30 +57,68 @@ import router from "@/router";
             }
             forceRender();
           }
+          else if(msg == 'privContext'){
+            alert(message);
+            router.push('dashBoardChat')
+            return ;
+          }
           
         })
+      } catch (error) {
+        store.commit('setError', error);
+        router.push('/error');
+      }
     });
 
     onUnmounted(async () => {
-      socket.emit('join', `${store.getters.getChanContext.chanel_chat_id}`, false);
-      socket.off('join');
-      socket.off('chat');
-      socket.off('notifChat')
-      //store.commit('setUserContext', []);
+      try {        
+        socket.emit('join', `${getChanelId()}`, false);
+        socket.off('join');
+        socket.off('chat');
+        socket.off('notifChat')
+      } catch (error) {
+        store.commit('setError', error);
+        router.push('/error');
+      }
     });
 
     const forceRender = () => {
       componentKey.value += 1;
     }
-//v-if="store.getters.getUserContext.owner"
+
+    const getChanelId = () => {
+      if(store.getters.getChanContext){
+        return store.getters.getChanContext.chanel_chat_id;
+      }
+      else{
+        return [];
+      }
+    }
+
+    const getChanelName = () => {
+      if(store.getters.getChanContext){
+        return store.getters.getChanContext.chanel_name;
+      }
+      else{
+        return [];
+      }
+    }
+    const getOwner = () => {
+      if(store.getters.getUserContext){
+        return store.getters.getUserContext.owner;
+      }
+      else{
+        return [];
+      }
+    }
 </script>
 
 <template>
   <div class="chatView">
     <div class="title">
       <div class="tilte-tilte">
-        <h1> {{ store.getters.getChanContext.chanel_name}} </h1>
-        <formChangePwdChat v-if="store.getters.getUserContext.owner"/>
+        <h1> {{ getChanelName() }} </h1>
+        <formChangePwdChat v-if="getOwner()"/>
       </div>
       <div class="userButton">
         <oneUserButton :key="componentKey" v-if="store.getters.getWhat === 'UsersInChan'"/>

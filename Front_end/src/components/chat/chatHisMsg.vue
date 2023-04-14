@@ -2,7 +2,6 @@
     import { useStore } from "vuex"
 
     const store = useStore();
-    console.log('hisMsg ', store.getters.getMsg);
     let msg = store.getters.getMsg
 </script>
 

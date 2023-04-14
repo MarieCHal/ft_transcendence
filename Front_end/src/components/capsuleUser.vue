@@ -1,23 +1,26 @@
 <script  setup lang="ts">
-//faire requete pour recuperer l'user sur le quel on a clicker
+
     import { useStore } from "vuex"
     import { onMounted, ref } from 'vue';
     import getAvatar from '../getAvatar'
+    import { useRouter } from 'vue-router'
 
+    const router = useRouter();
     const store = useStore();
     const user = store.getters.getOneUser;
 
     onMounted(async () => {
         getuserAvatar(user.user_user_id)
     });
-    console.log('me', user);
+
     async function getuserAvatar(userId: number) {
         try {
             const url = await getAvatar(store, userId);
             store.commit('setUserAvatar', url);
         } 
         catch (error) {
-            console.error(error);
+            store.commit('setError', error);
+            router.push('/error');
         }
     }
 

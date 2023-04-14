@@ -9,19 +9,24 @@
     let newChanel = '';
     let TabUserId: {[Key: number]: number} = {};
     const submmit = async () => {
-        console.log('tabUserID', TabUserId);
         try {
             let tab = Object.values(TabUserId);
             const headers = { Authorization: `Bearer ${store.getters.getToken}` };
             const data = {protected: false, private: true, name: newChanel, tabUsersId: tab};
             const response = await axios.post('/chat/create', data,  {headers});
-            store.commit("setChanContext", response.data);
-            const response1 = await axios.get(`/chat/join/${response.data.chanel_chat_id}`, {headers});
+            if(response.data.isCreated == false){
+                alert(response.data.msg);
+                router.push('dashBoardChat')
+                return;
+            }
+            store.commit("setChanContext", response.data.chanContext);
+            const response1 = await axios.get(`/chat/join/${response.data.chanContext.chanel_chat_id}`, {headers});
             store.commit('setUserContext', response1.data);
             router.push('/chat');
             }
         catch (error: any) {
-                 console.log(error);
+            store.commit('setError', error);
+            router.push('/error');
         }
     }
 
@@ -35,6 +40,15 @@
             capsule.remove();
         }
     }
+
+    const getAllUsers = () => {
+      if(store.getters.getAllUsers){
+        return store.getters.getAllUsers.allUsers;
+      }
+      else{
+        return [];
+      }
+    }
 </script>
 
 <template>
@@ -44,7 +58,7 @@
             placeholder="Name channel" v-model="newChanel" minlength="3" maxlength="10" required>
         <h1>Select users for invite on this room</h1>
         <div class="users">
-            <div class="user" v-for="(user, index) in store.getters.getAllUsers.allUsers" :key="index" :id="`capsule-${index}`">
+            <div class="user" v-for="(user, index) in getAllUsers()" :key="index" :id="`capsule-${index}`">
                 <div class="navButton" @click="selectUser(user.user_user_id, index); removeCapsule(index)">
                     {{ user.user_nickname }}
                 </div>

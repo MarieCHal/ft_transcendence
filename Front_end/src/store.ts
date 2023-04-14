@@ -2,6 +2,7 @@ import { createStore } from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 import { io } from 'socket.io-client';
 import { ref } from 'vue';
+import router from './router';
 
 const persistedState = createPersistedState({
   paths: [
@@ -66,7 +67,8 @@ const store = createStore({
     isStatusCode: false,
     isTrigger: false,//a verifier si exist
     isWhat: "",
-    
+    isError: [],
+
     //user
     isUserId: 0,
     isMatchHistory: [],
@@ -115,13 +117,18 @@ const store = createStore({
 
     //notif
     isNameNotif: "",
+    isName: "",
+    isMsg: "",
     isInvite: false,
     isAcceptPlay: false,
     isStatus: false,
+    isTheyQuit: false,
   },
 
   mutations: {
+    setError(state, isError) {state.isError = isError;},
     setStatus(state, isStatus) {state.isStatus = isStatus;},
+    setMsg(state, isMsg) {state.isMsg = isMsg;},
     setQrCode(state, payload) {state.isQrCode = payload;},
     setMatchHistory(state, isMatchHistory) {state.isMatchHistory = isMatchHistory;},
 
@@ -176,6 +183,7 @@ const store = createStore({
     //setUsersInChan(state, isUsersInChan) {state.isUsersInChan = isUsersInChan},
     setChans(state,  isChans) {state.isChans =  isChans},
     setWebSocket(state, isWebSocket) {state.isWebSocket = isWebSocket;},
+    setName(state, isName) {state.isName = isName;},
     setArrayAvatar(state, payload){
       const {item, index} = payload;
       state.isArrayAvatar[index] = item;
@@ -187,7 +195,9 @@ const store = createStore({
   },
 
   getters: {
+    getError: state => state.isError,
     getStatus: state => state.isStatus,
+    getMsg: state => state.isMsg,
     getQrCode: state => state.isQrCode,
     getMatchHistory: state => state.isMatchHistory,
 
@@ -241,6 +251,7 @@ const store = createStore({
     getChatHistory: state => state.isChatHistory,
     //getUsersInChan: state => state.isUsersInChan,
     getWebSocket: state => state.isWebSocket,
+    getName: state => state.isName,
     getArrayAvatar: (state) => (index: any) => {
       return state.isArrayAvatar[index]
     },
@@ -263,12 +274,20 @@ const store = createStore({
         console.log('Socket disconnected');
         commit('setWebSocket', null);
       });
-
-      webSocket.on('notif', (nickname: string, invite: boolean, accept: boolean, status: Boolean) =>{
+      //invite: boolean, accept: boolean, status: boolean, theyQuit: boolean
+      webSocket.on('notif', (nickname: string, msg: string) =>{
         commit('setNameNotif', nickname); // a qui on parle
-        commit('setInvite', invite); //es une invite ou un reponse
+        commit('setMsg', msg);
+        if (store.getters.getMsg == "quit"){
+          alert('the user quit the game')
+          store.commit('setNameNotif', "");
+          router.push('/Play');
+          return ;
+        }
+       /* commit('setInvite', invite); //es une invite ou un reponse
         commit('setAcceptPlay', accept); //es accept ou refus
         commit('setStatus', status);
+        commit('setTheyQuit', theyQuit); // si le joueur quit le jeu avant de jouer*/
       });
     },
   }

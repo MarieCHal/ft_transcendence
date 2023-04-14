@@ -22,7 +22,8 @@
                 const UrlQRcode =  URL.createObjectURL(blob);
                 store.commit('setQrCode', UrlQRcode);
             } catch (error) {
-                console.error(error);
+                store.commit('setError', error);
+                router.push('/error');
             }
         }
     });
@@ -47,7 +48,8 @@
             }
             forceRender();
         } catch (error) {
-            console.error('Erreur lors de l\'envoi de la demande de doubleAuth ', error);
+            store.commit('setError', error);
+            router.push('/error');
         }
     }
 
@@ -64,7 +66,8 @@
                 store.commit('setDoubleAuth', response.data.doubleAuth);
                 alert(response.data.message);
             } catch (error: any) {
-                console.log(error);
+                store.commit('setError', error);
+                router.push('/error');
             }
         }
     }
@@ -72,11 +75,6 @@
     const forceRender = () => {
       componentKey.value += 1;
     }
-
-    onUnmounted(async () =>{
-        //URL.revokeObjectURL(UrlQRcode);
-        //store.commit('setQrCode', "");
-    })
 </script>
 
 <template>

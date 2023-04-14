@@ -8,23 +8,23 @@
     const userContext = store.getters.getUserContext;
     const chanContext = store.getters.getChanContext;
     let Pwd = '';
+    
     const deleteChan = async () => {
         try {
             const headers = { Authorization: `Bearer ${store.getters.getToken}` };
             const response = await axios.delete(`/chat/del/${chanContext.chanel_chat_id}`,  {headers})
             router.push('/dashBoardChat')
             }catch (error: any) {
-            if (error.response.status != 201){
-                console.log("Error serveur");
-            }
+              store.commit('setError', error);
+              router.push('/error');
             }
     }
     const submmit = async () => {
-    if (!userContext.owner){
-        alert("YOU ARE NOT A OWNER")
-        return ;
-    }
-    try {
+      if (!userContext.owner){
+          alert("YOU ARE NOT A OWNER")
+          return ;
+      }
+      try {
         const headers = { Authorization: `Bearer ${store.getters.getToken}` };
         const data = { chanelId: chanContext.chanel_chat_id, pwd: Pwd};
         const response = await axios.post('/chat/pwd', data,  {headers})
@@ -32,19 +32,15 @@
           store.commit("setBool", false)
         }
         }catch (error: any) {
-          if (error.response.status != 201){
-            console.log("Error serveur");
-          }
+          store.commit('setError', error);
+          router.push('/error');
         }
   }
   function getBool(){
       store.commit("setBool", true)
       return store.getters.getBool;
   }
-  function deletePWD(){
-    
-  }
-  
+
 </script>
 
 <template>

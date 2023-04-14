@@ -11,74 +11,78 @@
     import { useRouter } from 'vue-router'
     import { useStore } from "vuex"
     import { onMounted, onUnmounted } from 'vue';
+
     const store = useStore();
     const router = useRouter();
     const socket = store.getters.getWebSocket;
+
     function Quit(){
-        console.log("store.getters.getRoom === ", store.getters.getRoom)
-        socket.emit("game", store.getters.getRoom, "quit");
+        try {
+            socket.emit("game", store.getters.getRoom, "quit", store.getters.getName);
+        } catch (error) {
+            store.commit('setError', error);
+            router.push('/error');
+        }
     }
     
-    
     onMounted(async () => {
-        console.log("room =", store.getters.getRoom)
-        socket.on("init" ,(ballx: number, bally: number, user1: number, user2: number) => {
-            store.commit("setBallX", ballx)
-            store.commit("setBallY", bally)
-            store.commit("setUser1", user1)
-            store.commit("setUser2", user2)
-            
-        }); 
-        socket.emit("init")
-        store.commit("setStatusCode", -1)
-        socket.on('startgame', (player: number, status: any, trigger: boolean, msg: string) => {
-        if(trigger == true){
-            store.commit("setStatusCode", status)
-            socket.off("startgame");
-            socket.off("player");
-            socket.off("game");
-            socket.off("init");
-            store.commit("setRoom", "")
-            alert(msg);
-            
-            setTimeout(() =>{
-                router.push("/")
-            }, 1500);       
-        }
-            if (status == false){
-                store.commit("setPlayer", player)
-                store.commit("setGoPlay", status)
-            }
-            else{
-                game();
-                store.commit("setGoPlay", status)
-                store.commit("setRoom", player)
-            }
-        });
-        //console.log('isMatchmaking', store.getters.getMatchmaking)
-        //console.log('isNameNotif', store.getters.getNameNotif)
-        socket.emit('startgame', store.getters.getMatchmaking, store.getters.getNameNotif)
-        store.commit('setNameNotif', "")
-        socket.on("game", (ballx: number, bally: number, user1: number, user2: number, score1: number, score2: number ) => {      
-               
-            if (store.getters.getPlayer == 1){
+        try {    
+            socket.on("init" ,(ballx: number, bally: number, user1: number, user2: number) => {
                 store.commit("setBallX", ballx)
                 store.commit("setBallY", bally)
-                //store.commit("setUser1", user1)
-                store.commit("setUser2", user2)
-                store.commit("setScoreUser1", score1)
-                store.commit("setScoreUser2", score2)
+                store.commit("setUser1", user1)
+                store.commit("setUser2", user2)          
+            }); 
+            socket.emit("init")
+            store.commit("setStatusCode", -1)
+            socket.on('startgame', (player: number, status: any, trigger: boolean, msg: string) => {
+            if(trigger == true){
+                store.commit("setStatusCode", status)
+                socket.off("startgame");
+                socket.off("player");
+                socket.off("game");
+                socket.off("init");
+                store.commit("setRoom", "")
+                alert(msg);
+                
+                setTimeout(() =>{
+                    router.push("/")
+                }, 1500);       
             }
-            else{
-                store.commit("setBallX", 600 - ballx)
-                store.commit("setBallY", bally)
-                store.commit("setUser2", user1)
-                //store.commit("setUser1", user2)
-                store.commit("setScoreUser2", score1)
-                store.commit("setScoreUser1", score2)
-            }
-        });
-        socket.emit('game', "départ")
+                if (status == false){
+                    store.commit("setPlayer", player)
+                    store.commit("setGoPlay", status)
+                }
+                else{
+                    game();
+                    store.commit("setGoPlay", status)
+                    store.commit("setRoom", player)
+                }
+            });
+            socket.emit('startgame', store.getters.getMatchmaking, store.getters.getName)
+            store.commit('setNameNotif', "")
+            socket.on("game", (ballx: number, bally: number, user1: number, user2: number, score1: number, score2: number ) => {      
+                   
+                if (store.getters.getPlayer == 1){
+                    store.commit("setBallX", ballx)
+                    store.commit("setBallY", bally)
+                    store.commit("setUser2", user2)
+                    store.commit("setScoreUser1", score1)
+                    store.commit("setScoreUser2", score2)
+                }
+                else{
+                    store.commit("setBallX", 600 - ballx)
+                    store.commit("setBallY", bally)
+                    store.commit("setUser2", user1)
+                    store.commit("setScoreUser2", score1)
+                    store.commit("setScoreUser1", score2)
+                }
+            });
+            socket.emit('game', "départ")
+        } catch (error) {
+            store.commit('setError', error);
+            router.push('/error');
+        }
     });
     
     
@@ -146,7 +150,6 @@
         ctx.fillText(text, x, y);
     }
     function render(){
-       // user1.y = store.getters.getUser1;
         user2.y = store.getters.getUser2;
         ball.x = store.getters.getBallX;
         ball.y = store.getters.getBallY;
@@ -163,7 +166,6 @@
     document.addEventListener("keydown", function(event) 
     {
         let rect = cvs.getBoundingClientRect();
-        //let prop = rect.height/40;
         const speed = cvs.height/20;
         if (event.code == 'KeyW') // Touche "haut"
         { 
@@ -186,7 +188,6 @@
     });
  
     function playgame(){
-        //console.log('1')
         if (store.getters.getStatusCode < 0){
             render();
         }

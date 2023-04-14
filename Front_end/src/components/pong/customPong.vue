@@ -1,20 +1,8 @@
 <script setup lang="ts">
-    import { useRouter } from 'vue-router'
     import { useStore } from 'vuex';
     import PongPlayGame from "../pongPlayGame.vue";
 
     const store = useStore();
-    const router = useRouter();
-    const socket = store.getters.getWebSocket;
-
-    //store.getters.getColorRect1//
-    //store.getters.getColorRect2//
-    //store.getters.getColorBall//
-    //store.getters.getColorBackGround
-    //store.getters.getColorNet//
-    //store.getters.getColorText//
-    //faire un booleen dans le store "isStartPlay" pour afficher le pong dans la vue playStart
-    //pas oublier de remettre a false une fois le pong fini (onUnmounted de pong componsant)
 
     function selectColor(optionColor: string){
         switch (optionColor) {

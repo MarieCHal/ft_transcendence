@@ -25,7 +25,8 @@
                     alert('PWD invalid');
                 }
             } catch (error: any) {
-                console.log(error);
+                store.commit('setError', error);
+                router.push('/error');
             }
         }
     }

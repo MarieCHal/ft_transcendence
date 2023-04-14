@@ -10,7 +10,6 @@
     
     onMounted(() => {
         getDashboard();
-        console.log("token =", store.getters.getToken);
     });
     
     const getDashboard = async () => {
@@ -19,11 +18,11 @@
             const response1 = await axios.get("/users/all", {headers});
             store.commit('setAllUsers', response1.data);
             const response = await axios.get('/chat/all', {headers});
-            console.log('chan', response.data)
             store.commit('setChans', response.data);
             store.commit('setChanId', 0);
         } catch (error: any) {
-            console.log(error)
+            store.commit('setError', error);
+            router.push('/error');
         }
     }
 
@@ -33,7 +32,6 @@
             const response = await axios.get(`/chat/join/${chan.chanel_chat_id}`, {headers});
             store.commit('setChanContext', chan);
             store.commit('setUserContext', response.data);
-            console.log("usercontext =", store.getters.getUserContext);
             const UserContext = store.getters.getUserContext;
             if (UserContext.banned){
                 alert("YOU ARE BANNED");
@@ -46,8 +44,8 @@
                 router.push("/chat");
             }
         } catch (error: any) {
-            console.log(error)
-            
+            store.commit('setError', error);
+            router.push('/error'); 
         }
     }
     
@@ -58,11 +56,11 @@
                 chanelId: chan.chanel_chat_id,
             }
             const response = await axios.post(`/chat/quit`, data, {headers});
-            //store.commit('setUserContext', response.data.owner)
             store.commit('setChans', response.data);
         } 
         catch (error) {
-            console.log(error);
+            store.commit('setError', error);
+            router.push('/error');
         }
     }
     
@@ -76,6 +74,33 @@
     
     function createPrivMsg(){
         router.push('/users');
+    }
+
+    const getMyChan = () => {
+      if(store.getters.getChans){
+        return store.getters.getChans.Mychanels;
+      }
+      else{
+        return [];
+      }
+    }
+
+    const getChan = () => {
+      if(store.getters.getChans){
+        return store.getters.getChans.chanels;
+      }
+      else{
+        return [];
+      }
+    }
+
+    const getPrivChan = () => {
+      if(store.getters.getChans){
+        return store.getters.getChans.privMsg;
+      }
+      else{
+        return [];
+      }
     }
 </script>
 
@@ -95,7 +120,7 @@
         <div class="dashboard__section">
             <div class="display">
                 <h1>My channel</h1>
-                <div class="liste-chan" v-for="(chanPublicJoined, index) in store.getters.getChans.Mychanels" :key="index">
+                <div class="liste-chan" v-for="(chanPublicJoined, index) in getMyChan()" :key="index">
                     <button class="navButton" @click="clickChan(chanPublicJoined)">
                         {{ chanPublicJoined.chanel_name }}
                     </button>
@@ -106,7 +131,7 @@
             </div>
             <div class="display">
                 <h1>Other channel</h1>
-                <div class="liste-chan" v-for="(chanPublicNotJoined, index) in store.getters.getChans.chanels" :key="index">
+                <div class="liste-chan" v-for="(chanPublicNotJoined, index) in getChan()" :key="index">
                     <button class="navButton" @click="clickChan(chanPublicNotJoined)">
                         {{ chanPublicNotJoined.chanel_name }}
                     </button>
@@ -115,9 +140,12 @@
             </div>
             <div class="display">
                 <h1>PrivMsg</h1>
-                <div class="liste-chan" v-for="(chanPrivate, index) in store.getters.getChans.privMsg" :key="index">
+                <div class="liste-chan" v-for="(chanPrivate, index) in getPrivChan()" :key="index">
                     <button class="navButton" @click="clickChan(chanPrivate)">
                         {{ chanPrivate.users_nickname }}
+                    </button>
+                    <button class="navButton" @click="quitChan(chanPrivate)">
+                        quit room
                     </button>
                 </div>
             </div>

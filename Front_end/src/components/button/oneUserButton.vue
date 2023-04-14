@@ -13,7 +13,6 @@
     
     onMounted(async () => {
         await fetchData();
-        console.log("userContext IN UserButtron =", userContext);
     });
 
     function click(data: any){
@@ -42,11 +41,10 @@
         }
         else if (store.getters.getWhat === 'UsersInChan'){
             const user = store.getters.getUsers;
-            if (user.length){
-                length = user.length;
-            }
-            for (let index = 0; index < length; index++) {
-                await pushAvatarUrl(user[index].user_user_id)
+            if(user){
+                for (let index = 0; index < user.length; index++) {
+                    await pushAvatarUrl(user[index].user_user_id)
+                }
             }
         }
     }
@@ -56,75 +54,21 @@
             const url = await getAvatar(store, userId);
             store.commit('setArrayAvatar', { item: url, index: userId});
         } 
-        catch (error) {
-            console.error(error);
+        catch (error: any) {
+            store.commit('setError', error);
+            router.push('/error');
         }
     }
 
     const muted = async (userId: number) =>{
-        const headers = { Authorization: `Bearer ${store.getters.getToken}` };
-        const data = {
-            otherId: userId,
-            chanelId: chanContext.chanel_chat_id,
-        }
-        const response = await axios.post(`/chat/mute`, data,  {headers})
-        if (response.data.muted == false){
-            router.push('/chat')
-            alert(response.data.message);
-        }
-        else{
-            router.push('/chat')
-            alert(response.data.message);
-        }
-    }
-
-    const banned = async (userId: number) =>{
-        const headers = { Authorization: `Bearer ${store.getters.getToken}` };
-        const data = {
-            otherId: userId,
-            chanelId: chanContext.chanel_chat_id,
-        }
-        const response = await axios.post(`/chat/bann`, data,  {headers})
-        if (response.data.ban == false){
-            router.push('/chat')
-            alert(response.data.message);
-        }
-        else{
-            router.push('/chat')
-            alert(response.data.message);
-        }
-    }
-        
-    const kick = async (userId: number) =>{
-        const headers = { Authorization: `Bearer ${store.getters.getToken}` };
-        const data = {
-            otherId: userId,
-            chanelId: chanContext.chanel_chat_id,
-        }
-        const response = await axios.post(`/chat/kick`, data,  {headers})
-        if (response.data.kick == false){
-            router.push('/chat')
-            alert(response.data.message);
-        }
-        else{
-            router.push('/chat')
-            alert(response.data.message);
-        }
-    } 
-
-    const admin = async (userId: number) =>{
-        if (!userContext.owner || !userContext.admin){
-            alert("YOU ARE NOT OWNER OR ADMIN")
-            return ;
-        }
-        else{
+        try {            
             const headers = { Authorization: `Bearer ${store.getters.getToken}` };
             const data = {
                 otherId: userId,
                 chanelId: chanContext.chanel_chat_id,
             }
-           const response = await axios.post(`/chat/admin`, data,  {headers})
-            if (response.data.admin == false){
+            const response = await axios.post(`/chat/mute`, data,  {headers})
+            if (response.data.muted == false){
                 router.push('/chat')
                 alert(response.data.message);
             }
@@ -132,6 +76,81 @@
                 router.push('/chat')
                 alert(response.data.message);
             }
+        } catch (error: any) {
+            store.commit('setError', error);
+            router.push('/error');
+        }
+    }
+
+    const banned = async (userId: number) =>{
+        try {            
+            const headers = { Authorization: `Bearer ${store.getters.getToken}` };
+            const data = {
+                otherId: userId,
+                chanelId: chanContext.chanel_chat_id,
+            }
+            const response = await axios.post(`/chat/bann`, data,  {headers})
+            if (response.data.ban == false){
+                router.push('/chat')
+                alert(response.data.message);
+            }
+            else{
+                router.push('/chat')
+                alert(response.data.message);
+            }
+        } catch (error: any) {
+            store.commit('setError', error);
+            router.push('/error');
+        }
+    }
+        
+    const kick = async (userId: number) =>{
+        try {            
+            const headers = { Authorization: `Bearer ${store.getters.getToken}` };
+            const data = {
+                otherId: userId,
+                chanelId: chanContext.chanel_chat_id,
+            }
+            const response = await axios.post(`/chat/kick`, data,  {headers})
+            if (response.data.kick == false){
+                router.push('/chat')
+                alert(response.data.message);
+            }
+            else{
+                router.push('/chat')
+                alert(response.data.message);
+            }
+        } catch (error: any) {
+            store.commit('setError', error);
+            router.push('/error');
+        }
+    } 
+
+    const admin = async (userId: number) =>{
+        try {            
+            if (!userContext.owner || !userContext.admin){
+                alert("YOU ARE NOT OWNER OR ADMIN")
+                return ;
+            }
+            else{
+                const headers = { Authorization: `Bearer ${store.getters.getToken}` };
+                const data = {
+                    otherId: userId,
+                    chanelId: chanContext.chanel_chat_id,
+                }
+               const response = await axios.post(`/chat/admin`, data,  {headers})
+                if (response.data.admin == false){
+                    router.push('/chat')
+                    alert(response.data.message);
+                }
+                else{
+                    router.push('/chat')
+                    alert(response.data.message);
+                }
+            }
+        } catch (error:any) {
+            store.commit('setError', error);
+            router.push('/error');
         }
     }
 
