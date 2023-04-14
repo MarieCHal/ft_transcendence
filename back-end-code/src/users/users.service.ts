@@ -111,10 +111,15 @@ export class UsersService {
                                     .leftJoinAndSelect('match.player1', 'player1')
                                     .leftJoinAndSelect('match.player2', 'player2')
                                     .where('player1.user_id = :user_id1', {user_id1: user.user_id})
-                                    .orWhere('player1.user_id2 = :user_id', {user_id2: user.user_id})
-                                    .select(['player1.nickname', 'player2.nickname', 'match.score'])
+                                    .orWhere('player2.user_id = :user_id2', {user_id2: user.user_id})
+                                    .select(['player1.nickname', 'player2.nickname', 'match.score', 'match.date'])
                                     .getRawMany()
-
+        
+        for (let i = 0; history[i]; i++)
+        {
+            let newDate = history[i].match_date;
+            history[i].match_date = newDate.toLocaleDateString();
+        }
         console.log("history return: ", history)
         return history
     }

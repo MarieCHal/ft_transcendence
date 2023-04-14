@@ -15,7 +15,7 @@ export class Mute {
     @JoinColumn()
     users: Users
 
-    @ManyToOne(() => Chat, (chat) => chat.muted)
+    @ManyToOne(() => Chat, (chat) => chat.muted, {onDelete: 'CASCADE'})
     chat: Chat
 
     @CreateDateColumn({

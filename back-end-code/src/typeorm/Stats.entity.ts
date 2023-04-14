@@ -9,7 +9,7 @@ export class Stats {
     })
     stats_it: number;
 
-    @OneToOne(() => Users, (user) => user.stats)
+    @OneToOne(() => Users, (user) => user.stats, {onDelete: 'CASCADE'})
     user: Users;
 
     @Column({default: 0})

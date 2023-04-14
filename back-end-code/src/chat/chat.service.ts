@@ -487,40 +487,47 @@ export class ChatService {
     async getChanHistory(user: Users, chanelId: number) {
         const isChan = this.rolesService.isInChanel(user, chanelId);
         if (!isChan)
-            return "Please join the channel to see its hitory";
+            return "Please join the channel to see its history";
         const chan = await this.rolesService.getBlocked(user)
         let blocked = [];
         for (let i = 0; chan[i] &&  chan[i].blocked_user_id != null; i++) {
             blocked[i] = chan[i].blocked_user_id;
         }
 
+        let history: any[];
         if (blocked.length > 0) // if the users blocked other users
         {
-            const history = await this.chatRepository
+            history = await this.chatRepository
                                 .createQueryBuilder('chanel')
                                 .leftJoinAndSelect('chanel.messages', 'messages')
                                 .leftJoinAndSelect('messages.sender', 'sender')
                                 .where('chanel.chat_id = :id', {id: chanelId})
                                 .andWhere('sender.user_id NOT IN (:...blocked)', {blocked})
-                                .select(['messages.text', 'messages.createdAtTime', 'messages.createdAtDate','sender.user_id', 'sender.nickname'])
+                                .select(['messages.text', 'messages.createdAtTime','sender.user_id', 'sender.nickname'])
                                 .getRawMany()
-            return {
-                history
-            }
+
         }
         else {
-            const history = await this.chatRepository
+            history = await this.chatRepository
                                     .createQueryBuilder('chanel')
                                     .leftJoinAndSelect('chanel.messages', 'messages')
                                     .leftJoinAndSelect('messages.sender', 'sender')
                                     .where('chanel.chat_id = :id', {id: chanelId})
-                                    .select(['messages.text', 'messages.createdAtTime', 'messages.createdAtDate','sender.user_id', 'sender.nickname'])
+                                    .select(['messages.text', 'messages.createdAtTime','sender.user_id', 'sender.nickname'])
                                     .getRawMany()
-        
-        console.log("hisotry of chan: ", history);
+        }
+        console.log("history length: ", history.length, "hitory: ", history);
+        if (history.length > 1)
+        {
+            for (let i = 0; history[i]; i++)
+            {
+                let time = history[i].messages_createdAtTime;
+                history[i].messages_createdAtTime = time.getHours() + ':' + time.getMinutes();
+            }
+        }
+        console.log("history: ", history);
         return {
             history
-            }
         }
     }
 
@@ -539,15 +546,17 @@ export class ChatService {
         Mess.sender = user;
         Mess.text = text;
         const newMess = await this.messRepository.save(Mess);
-        console.log(newMess);
         const returnMess = await this.chatRepository
                                         .createQueryBuilder('chanel')
                                         .leftJoinAndSelect('chanel.messages', 'messages')
                                         .leftJoinAndSelect('messages.sender', 'sender')
                                         .where('chanel.chat_id = :id', {id: chanelId})
                                         .andWhere('messages.mess_id = :mess_id', {mess_id: newMess.mess_id})
-                                        .select(['messages.text', 'messages.createdAtTime', 'messages.createdAtDate','sender.user_id', 'sender.nickname'])
+                                        .select(['messages.text', 'messages.createdAtTime','sender.user_id', 'sender.nickname'])
                                         .getRawOne() 
+
+        let time = returnMess.messages_createdAtTime;
+        returnMess.messages_createdAtTime = time.getHours() + ':' + time.getMinutes();
         return returnMess;
     }
 

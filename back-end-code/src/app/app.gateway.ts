@@ -16,6 +16,7 @@ import { Users } from 'src/typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { SocketService } from 'src/socket/socket.service';
 import { ConfigService } from '@nestjs/config';
+import { ConsoleLogger } from '@nestjs/common';
 
 @WebSocketGateway({       // allow us to make use of the socket.io functionality
   cors: {
@@ -255,12 +256,16 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
         else { // the game already started
           const message = user.nickname + 'left the game'; 
           const game = this.gameService.findGame(payload[0]);
-          let winner: number;
+          this.gameService.stopGame(payload[0]);
+          const winner = await this.gameService.gameStats(game);
+          //const game = this.gameService.findGame(room.room)
+          //const winner = await this.gameService.gameStats(game);
+          /*let winner: number;
           if (user.user_id == game.player1)
             winner = game.player2;
           else
-            winner = game.player1;
-          this.gameService.stopGame(payload[0])
+            winner = game.player1;*/
+          //this.gameService.stopGame(payload[0])
           this.server.to(client.id).emit('startgame', -1, winner, true, 'You left the game'); // mess to the one that quit
           client.broadcast.to(payload[0]).emit('startgame', -1, winner, true, message); // message to the other user
           for (let i = 0; this.rooms[i]; i++)
@@ -278,6 +283,7 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
     /** emit 1: mess is the user's nickname, 2: an invite or response, 3: */
     @SubscribeMessage('notif') 
     async invitePlay(client: Socket, payload: any) {
+      console.log("notif: ", payload);
       const user = await this.socketService.getUser(client.id);
       let mess: string
       mess = user.nickname;
