@@ -1,25 +1,6 @@
-# Base image
-FROM node:18-alpine
+FROM node:18-alpine3.16
 
-# Install dependencies
-RUN apk add --no-cache --update npm shadow
+COPY start.sh /
 
-
-# Set working directory
-WORKDIR /app
-
-# Copy all files needed for installing dependencies
-COPY  ./package.json ./package-lock.json ./
-
-# Run npm install
-RUN npm install
-
-# Copy the rest of the source
-COPY . .
-
-
-EXPOSE 8000
-
-# Start app
-CMD ["npm", "run", "build"]
+CMD ["sh", "/start.sh"]
 
