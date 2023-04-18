@@ -4,6 +4,40 @@ networks:
   trantran: {}
 
 services:
+  nginx:
+    container_name: nginx
+    image: nginx:stable
+    build:
+      context: ./nginx
+    restart: always
+    depends_on:
+      - frontend
+    volumes:
+      - './nginx/conf.d/nginx.conf:/etc/nginx/conf.d/default.conf'
+      - './frontend/dist:/var/www/html'
+    env_file:
+      - .env
+    ports:
+      - '4443:443'
+      - '8080:80'
+    networks:
+      - trantran
+
+  frontend:
+    container_name: frontend
+    build:
+      context: ./frontend
+    volumes:
+      - './frontend/dist:/app/dist'
+      - 'frontend_modules:/app/node_modules'
+    env_file:
+      - .env    
+    depends_on:
+      - backend
+    expose:
+      - '8000'
+    networks:
+      - trantran
   # Nestjs backend
   backend:
     container_name: backend
@@ -32,41 +66,6 @@ services:
       - trantran
 
 
-  frontend:
-    container_name: frontend
-    restart: "no"
-    build:
-      context: ./frontend
-    volumes:
-      - './frontend/dist:/app/dist'
-      - 'frontend_modules:/app/node_modules'
-    depends_on:
-      - backend
-    env_file:
-      - .env
-    expose:
-      - '8000'
-    networks:
-      - trantran
-
-  nginx:
-    container_name: nginx
-    image: nginx:stable
-    build:
-      context: ./nginx
-    restart: always
-    depends_on:
-      - frontend
-    volumes:
-      - './nginx/conf.d/nginx.conf:/etc/nginx/conf.d/default.conf'
-      - './frontend/dist:/var/www/html'
-    env_file:
-      - .env
-    ports:
-      - '4443:443'
-      - '8880:80'
-    networks:
-      - trantran
 
 volumes:
   database:

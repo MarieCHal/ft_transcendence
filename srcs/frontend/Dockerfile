@@ -9,13 +9,13 @@ RUN apk add --no-cache --update npm shadow
 WORKDIR /app
 
 # Copy all files needed for installing dependencies
-COPY --chown=node:node package*.json ./
+COPY  ./package.json ./package-lock.json ./
 
 # Run npm install
 RUN npm install
 
 # Copy the rest of the source
-COPY --chown=node:node . .
+COPY . .
 
 
 EXPOSE 8000
