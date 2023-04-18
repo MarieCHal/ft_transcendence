@@ -1,0 +1,73 @@
+version: "3.8"
+
+networks:
+  trantran: {}
+
+services:
+  # Nestjs backend
+  backend:
+    container_name: backend
+    restart: always
+    build:
+        context: ./backend
+    depends_on:
+      - db
+    env_file: 
+      - ./backend/.env
+    expose: 
+      - '3000'
+    networks:
+      - trantran
+  
+  #Postgresql database
+  db:
+    image:  postgres:15.1-alpine
+    container_name: db
+    env_file: 
+      - ./backend/.env
+    restart: always
+    volumes:
+      - 'database:/var/lib/postgresql/data'
+    networks:
+      - trantran
+
+
+  frontend:
+    container_name: frontend
+    restart: "no"
+    build:
+      context: ./frontend
+    volumes:
+      - './frontend/dist:/app/dist'
+      - 'frontend_modules:/app/node_modules'
+    depends_on:
+      - backend
+    env_file:
+      - .env
+    expose:
+      - '8000'
+    networks:
+      - trantran
+
+  nginx:
+    container_name: nginx
+    image: nginx:stable
+    build:
+      context: ./nginx
+    restart: always
+    depends_on:
+      - frontend
+    volumes:
+      - './nginx/conf.d/nginx.conf:/etc/nginx/conf.d/default.conf'
+      - './frontend/dist:/var/www/html'
+    env_file:
+      - .env
+    ports:
+      - '4443:443'
+      - '8880:80'
+    networks:
+      - trantran
+
+volumes:
+  database:
+  frontend_modules:
