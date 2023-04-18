@@ -1,0 +1,43 @@
+version: '3.8'
+
+networks:
+  trantran: {}
+
+services:
+  
+  # Nestjs backend
+  backend:
+    #image: 
+    container_name: backend
+    restart: always
+    build:
+        context: ./backend
+        #dockerfile: Dockerfile
+    depends_on:
+      - db
+    env_file: 
+      - ./backend/.env
+    #tty: true
+    expose: 
+      - '3000'
+    networks:
+      - trantran
+  
+  #Postgresql database
+  db:
+      image:  postgres:15.1-alpine
+      container_name: db
+      env_file: 
+        - ./backend/.env
+      restart: always
+      #tty: true
+      volumes:
+        - 'database:/var/lib/postgresql/data'
+        - ./backend:/app
+      networks:
+        - trantran
+  
+volumes:
+  database:
+  backend_modules:
+

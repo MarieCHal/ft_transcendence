@@ -14,9 +14,8 @@ export default class TypeOrmConfig {
           database: configService.get('POSTGRES_DB'),
           entities: entities, //entities are used to create table in you database
           synchronize: true,  // update table in realtime
-          /*migrations: [
-            'dist/src/trans/migrations/*.js'
-          ],*/
+          migrations: [/*...*/],
+          migrationsTableName: "custom_migration_table"
         }
     }
 

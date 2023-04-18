@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import {Friends, Users } from 'src/typeorm';
 import { Not, Repository } from 'typeorm';
 import { MatchHistory } from 'src/typeorm';
-import { MailService } from 'src/mail/mail.service';
 
 
 @Injectable()

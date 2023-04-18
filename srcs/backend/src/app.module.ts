@@ -13,7 +13,6 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { typeOrmConfigAsync } from './config/typeorm.config';
 import { ProfileModule } from './profile/profile.module';
-import { MailModule } from './mail/mail.module';
 import { AppGateway } from './app/app.gateway';
 import { ChatModule } from './chat/chat.module';
 import { ScheduleModule } from '@nestjs/schedule'
@@ -22,6 +21,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { SocketModule } from './socket/socket.module';
 import { RequestMethod } from '@nestjs/common';
 import { Server } from 'socket.io';
+import DataSourceOptions from 'db/data-source';
 
 
 @Module({
@@ -30,9 +30,21 @@ import { Server } from 'socket.io';
       rootPath: join(__dirname, '..', '../Front_end/dist'), 
     }),*/
     ConfigModule.forRoot({isGlobal: true}), // load and parse .env and imports it (true)
-    TypeOrmModule.forRootAsync (typeOrmConfigAsync),
+    TypeOrmModule.forRoot({
+            type: 'postgres', //type of database
+            url: 'postgresql://mchalard:mchalard@db:5432/postgres',
+            host: process.env.POSGRES_HOST,
+            port: 5432,
+            username: process.env.POSTGRES_USER,
+            password: process.env.POSTGRES_PASSWORD,
+            database: 'postgres',
+            //entities: entities, //entities are used to create table in you database
+			      entities: ['dist/src/typeorm/*.entity.js'],
+            synchronize: false,  // update table in realtime
+            migrations: ['dist/db/migrations/*.js'],
+    }),
     ScheduleModule.forRoot(),
-    MailModule,
+
     AuthModule,
     UsersModule,
     ProfileModule,

@@ -45,9 +45,13 @@ export class SocketService {
 
 
     getSocketID(userId: number) : string {       // return the socket id
-        let socketID = SocketService.usersSockets[userId].id;
-        console.log("socket id: ", socketID)
-        return socketID;
+        if (SocketService.usersSockets[userId])
+        {
+            let socketID = SocketService.usersSockets[userId].id;
+            console.log("socket id: ", socketID)
+            return socketID;
+        }
+        return null;
     }
 
     getSocket(userId: number) : Socket{
