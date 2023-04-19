@@ -3,7 +3,6 @@ import createPersistedState from 'vuex-persistedstate'
 import { io } from 'socket.io-client';
 import { ref } from 'vue';
 import router from './router';
-import config from '@/config.js';
 
 const persistedState = createPersistedState({
   paths: [
@@ -260,7 +259,7 @@ const store = createStore({
   },
   actions: {
     initWebSocket({ commit }) {
-      const webSocket = io(config.BASE_URL, {
+      const webSocket = io(import.meta.env.VITE_APP_BASE_URL, {
         auth: {
           token: store.getters.getToken,
         }

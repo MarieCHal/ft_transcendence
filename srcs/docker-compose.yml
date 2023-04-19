@@ -9,7 +9,7 @@ services:
             context: ./nginx
             dockerfile: Dockerfile
         restart: always
-        env_file: .env
+        #env_file: .env
         ports:
             - '8080:80'
         depends_on:
@@ -27,7 +27,8 @@ services:
             context: ./frontend
             dockerfile: Dockerfile
         container_name: frontend
-        env_file: .env
+        env_file: 
+        - ./frontend/src/.env
         depends_on:
             - backend
         ports:

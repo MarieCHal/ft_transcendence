@@ -10,11 +10,9 @@ SRCS_DIR	= ./srcs/
 DOCKER_DIR	= ${SRCS_DIR}docker-compose.yml
 NAME		= ft_jgmtrans
 
-# VARIABLES
-ENV_FILE	= ${SRCS_DIR}.env
 
 # COMMANDS
-DOCKER		=  docker compose -f ${DOCKER_DIR} --env-file ${ENV_FILE} -p ${NAME}
+DOCKER		=  docker compose -f ${DOCKER_DIR}  -p ${NAME}
 
 %:
 	@:
