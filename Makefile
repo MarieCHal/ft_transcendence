@@ -1,31 +1,61 @@
-NAME		= ft_transcendance
+# COLORS
+GREEN		= \033[1;32m
+RED 		= \033[1;31m
+ORANGE		= \033[1;33m
+CYAN		= \033[1;36m
+RESET		= \033[0m
 
-PATH_R		:= requirements
-PATH_D		:= data
+# FOLDER
+SRCS_DIR	= ./srcs/
+DOCKER_DIR	= ${SRCS_DIR}docker-compose.yml
+NAME		= ft_jgmtrans
 
-DATABASE	= ${addprefix ${PATH_R}/, ${PATH_D}}
+# VARIABLES
+ENV_FILE	= ${SRCS_DIR}.env
 
-COMPOSE		:= docker-compose -p ${NAME}
-COMP		:= ${COMPOSE}
+# COMMANDS
+DOCKER		=  docker compose -f ${DOCKER_DIR} --env-file ${ENV_FILE} -p ${NAME}
+
+%:
+	@:
 
 all: up
 
-folder:		
-		${shell mkdir -p ${DATABASE}}
+up:
+	@echo "${GREEN}Building containers...${RESET}"
+	@${DOCKER} up -d
 
-up: folder
-	${COMP} up -d --build
+build:
+	@echo "${GREEN}Building containers...${RESET}"
+	@${DOCKER} up -d --build
 
-clean:
-	${COMP} stop
-	docker network prune -f
+down:
+	@echo "${GREEN}Stopping containers...${RESET}"
+	@${DOCKER} down
 
-fclean:
-	${COMP} down -v
+stop:
+	@echo "${GREEN}Stopping containers...${RESET}"
+	@${DOCKER} stop
 
-prune:	fclean
+start:
+	@echo "${GREEN}Starting containers...${RESET}"
+	@${DOCKER} start
+
+restart:
+	@echo "${GREEN}Restarting containers...${RESET}"
+	@${DOCKER} restart
+
+logs:
+	@echo "${GREEN}Displaying logs...${RESET}"
+	@${DOCKER} logs -f
+
+rebuild: down delete
+	@echo "${GREEN}Rebuilding containers...${RESET}"
+	@${DOCKER} up -d --build --force-recreate
+
+delete:
+	@echo "${GREEN}Deleting containers...${RESET}"
+	@${DOCKER} down --volumes --remove-orphans
 	docker system prune --volumes --force --all
-	rm -rf ${DATABASE}
 
-image:	prune
-	docker rmi -f ${shell docker images -a -q}
+.PHONY: all up build down stop start restart logs rebuild delete
