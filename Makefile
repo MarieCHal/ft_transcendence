@@ -10,11 +10,9 @@ SRCS_DIR	= ./srcs/
 DOCKER_DIR	= ${SRCS_DIR}docker-compose.yml
 NAME		= ft_jgmtrans
 
-# VARIABLES
-ENV_FILE	= ${SRCS_DIR}backend/.env
 
 # COMMANDS
-DOCKER		=  docker compose -f ${DOCKER_DIR} --env-file ${ENV_FILE} -p ${NAME}
+DOCKER		=  docker compose -f ${DOCKER_DIR} -p ${NAME}
 
 %:
 	@:
@@ -57,6 +55,5 @@ delete:
 	@echo "${GREEN}Deleting containers...${RESET}"
 	@${DOCKER} down --volumes --remove-orphans
 	docker system prune --volumes --force --all
-
 
 .PHONY: all up build down stop start restart logs rebuild delete

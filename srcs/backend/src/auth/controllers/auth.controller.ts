@@ -46,7 +46,7 @@ export class AuthController {
             client_id: process.env.CLIENT_ID,
             client_secret: process.env.CLIENT_SECRET,
             code: body.code,
-            redirect_uri: 'http://localhost:5173/register',
+            redirect_uri: 'http://c1r2s3:8080/register',
         }).pipe(
           catchError((error: AxiosError) => {
             console.error(error.response.data);

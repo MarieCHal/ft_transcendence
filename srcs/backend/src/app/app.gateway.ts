@@ -19,12 +19,12 @@ import { ConfigService } from '@nestjs/config';
 import { ConsoleLogger } from '@nestjs/common';
 
 @WebSocketGateway({       // allow us to make use of the socket.io functionality
+  path: "/api/socket.io",
   cors: {
       origin: '*',
   },
 }) 
 
-@WebSocketGateway()
 export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   constructor(private usersService: UsersService,
               private chatService: ChatService, 
@@ -32,6 +32,7 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
               private jwtService: JwtService,
               private socketService: SocketService,
               private configService: ConfigService) {}
+              
   @WebSocketServer() server: Server;   
   
   /** @summary function called right after initialization */
