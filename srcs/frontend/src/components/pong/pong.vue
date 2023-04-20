@@ -274,5 +274,12 @@ onUnmounted (async () => {
 .navButton{
     color: aquamarine;
     width: auto;
+    margin: 3px;
+    height: 1.25rem;
+}
+
+.navButton:hover{
+	border: 1px solid aqua;
+	border-radius: 3px;   
 }
 </style>

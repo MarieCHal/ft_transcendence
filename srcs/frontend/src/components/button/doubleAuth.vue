@@ -86,7 +86,7 @@
             <img :src="store.getters.getQrCode" alt="qrcode">
             <form class="navButton">
                 <input class="navButton" type="text" name="codeChat" autocomplete="off"
-                minlength="6" placeholder="code"
+                minlength="6" placeholder="code" maxlength="6"
                 v-model="checkCode" @keyup="checkCodeChan">
             </form>
         </div>

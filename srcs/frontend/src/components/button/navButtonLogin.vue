@@ -21,6 +21,10 @@ div{
     flex-direction: column;
     align-items:center ;
 }
+.navButton:hover{
+	border: 1px solid aqua;
+	border-radius: 3px;   
+}
 
 #login{
     cursor: pointer;

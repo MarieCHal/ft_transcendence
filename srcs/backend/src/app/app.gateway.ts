@@ -338,6 +338,6 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
       console.log("dash: ", payload);
       const user = await this.socketService.getUser(client.id);
       console.log("this is the user: ", user);
-      this.server.emit('dash', 'coucou Jerem');
+      this.server.emit('dash', `${user.nickname} has emitted on dash`);
     }
 }

@@ -67,6 +67,11 @@ import router from "@/router";
             router.push('/dashBoardChat')
             return ;
           }
+          else if (msg == 'deleteChan'){
+            alert(message);
+            router.push('/dashBoardChat')
+            return ;
+          }
           
         })
       } catch (error) {

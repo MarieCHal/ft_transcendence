@@ -179,6 +179,12 @@ export class RolesService {
                 message: `You are not admin or owner of channel`
             }
 
+        const checkMute = await this.isOwner(toMute, chanelId);
+        if (checkMute == true)
+            return {
+                message: `you cannot mute ${toMute.nickname} they are owner of the channel `,
+            }
+            
         const chat = await this.chatRepository.findOne({
             where: {
                 chat_id: chanelId

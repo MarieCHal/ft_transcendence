@@ -17,6 +17,7 @@
             try{
                 const headers = {"Authorization": `Bearer ${store.getters.getToken}`};
                 console.log("msg =", message);
+                console.log("I am in dash");
                 const response = await axios.get('/chat/all', {headers});
                 store.commit('setChans', response.data);
                 store.commit('setChanId', 0);

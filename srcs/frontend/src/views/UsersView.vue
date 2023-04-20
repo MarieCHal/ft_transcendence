@@ -57,6 +57,7 @@
     display: flex;
     justify-content: center;
     margin-bottom: 2rem;
+    height: 1.25rem;
 }
 .userDisplay{
     display: flex;
