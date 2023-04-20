@@ -5,6 +5,8 @@
   import  { useStore} from 'vuex'
     
   const store = useStore();
+  //localStorage.clear();
+  //store.replaceState({});
   
   function getToken() {
     const token = store.getters.getToken;

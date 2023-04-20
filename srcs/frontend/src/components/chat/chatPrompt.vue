@@ -30,7 +30,7 @@
 
 <template>
     <form id="prompt" @submit.prevent="sendMessage">
-        <input v-model="newMessage" maxlength="200" placeholder="Votre message">
+        <input v-model="newMessage" placeholder="Votre message">
         <button type="submit">Envoyer</button>
     </form>
 </template>

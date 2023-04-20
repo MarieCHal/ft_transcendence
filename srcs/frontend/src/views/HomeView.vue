@@ -53,7 +53,7 @@
     }
 
     async function clicklogin(){
-        window.location.href = ('https://api.intra.42.fr/oauth/authorize?client_id=u-s4t2ud-1efc18e2af44e4362df56b7995925e5e7f0a1407f1a30048e6a4516faff25622&redirect_uri=http%3A%2F%2Flocalhost%3A8080%2Fregister&response_type=code')
+        window.location.href = (import.meta.env.VITE_APP_API_42);
     }
 
     function getToken() {

@@ -45,11 +45,14 @@
 
 <template>
     <button @click="confirmNotif()">
-        <p v-if="store.getters.getMsg != 'accepted' && store.getters.getMsg != null">
-            {{ store.getters.getNameNotif }} vous invite a une partie
+        <p v-if="store.getters.getMsg == 'refused' && store.getters.getMsg != null">
+            {{ store.getters.getNameNotif }} refused your invite
+        </p>
+        <p v-else="store.getters.getMsg != 'accepted' && store.getters.getMsg != null">
+            {{ store.getters.getNameNotif }} invites you to a party
         </p>
         <p v-else="store.getters.getMsg == 'accepted' && store.getters.getMsg != null">
-            {{ store.getters.getNameNotif }} a accepter votre demande
+            {{ store.getters.getNameNotif }} accepted your invite
         </p>
     </button>
 </template>

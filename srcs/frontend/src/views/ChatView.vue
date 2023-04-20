@@ -50,16 +50,21 @@ import router from "@/router";
             const response1 = await axios.get(`/chat/update/${store.getters.getChanContext.chanel_chat_id}`, {headers});
             store.commit('setUserContext', response1.data.userContext);
             store.commit('setWhat', 'UsersInChan');
-            if (response1.data.isKicked == true || response1.data.userContext.banned == true){
-              alert("YOU ARE A NOOB");
-              router.push('dashBoardChat')
+            if (response1.data.isKicked == true){
+              alert("You got kicked from this channel");
+              router.push('/dashBoardChat')
+              return ;
+            }
+            else if (response1.data.userContext.banned == true){
+              alert("You got banned from this channel");
+              router.push('/dashBoardChat')
               return ;
             }
             forceRender();
           }
           else if(msg == 'privContext'){
             alert(message);
-            router.push('dashBoardChat')
+            router.push('/dashBoardChat')
             return ;
           }
           

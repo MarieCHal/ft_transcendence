@@ -28,19 +28,29 @@ export class ChatController {
     /** @summary */
     @Get('update/:id')
     async updateChat(@Param('id') id: number, @Request() req: any) {
-        console.log('UPDATTTTEEEEEE');
+        let isBanned = await this.rolesService.isBanned(req.user, id);
+        if (isBanned == true)
+        {
+            return {
+                isBanned,
+                isKicked: false, 
+                userContext: null
+             }
+        }
         let isKicked = await this.rolesService.isInChanel(req.user, id)
         if (isKicked == false)
         {
             isKicked = true;
             return {
                 isKicked, 
+                isBanned: false,
                 userContext: null
              }
         }
         const userContext = await this.chatService.userContext(req.user, id);
         return {
             isKicked: false,
+            isBanned: false,
             userContext }
     }
 

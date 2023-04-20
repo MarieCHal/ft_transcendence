@@ -94,6 +94,15 @@
       }
     }
 
+    const getPwd = () => {
+      if(store.getters.getUserContext){
+        return store.getters.getUserContext.pwd;
+      }
+      else{
+        return [];
+      }
+    }
+
     const getPrivChan = () => {
       if(store.getters.getChans){
         return store.getters.getChans.privMsg;
@@ -135,7 +144,7 @@
                     <button class="navButton" @click="clickChan(chanPublicNotJoined)">
                         {{ chanPublicNotJoined.chanel_name }}
                     </button>
-                    <formChanCode v-if="store.getters.getUserContext.pwd == true && store.getters.getChanId == chanPublicNotJoined.chanel_chat_id" />
+                    <formChanCode v-if="getPwd() == true && store.getters.getChanId == chanPublicNotJoined.chanel_chat_id" />
                 </div>
             </div>
             <div class="display">

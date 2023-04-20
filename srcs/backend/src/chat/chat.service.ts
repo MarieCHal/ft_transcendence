@@ -63,6 +63,8 @@ export class ChatService {
         console.log('params: ', params)
         if (params.direct == true) // if it is a privmsg
         {
+            //let server: Server = this.socketService.getServer();
+
             return this.createDirectMessage(user, params)
         }
         const checkChanExist = await this.checkChanExist(params.name); // check if the name is already taken 
@@ -115,6 +117,8 @@ export class ChatService {
                                 .andWhere('chanel.isDirect = :direct', {direct: false})
                                 .getRawOne()
         //console.log( "toreturn: ", toReturn)
+        //let server: Server = this.socketService.getServer();
+        //server.emit('dash', 'refreshdashboard')
         return {
             chanContext,
             isCreated: true,
@@ -135,7 +139,7 @@ export class ChatService {
             }
             if (checkExist)
             {
-                const toReturn = await this.chatRepository
+                const chanContext = await this.chatRepository
                                 .createQueryBuilder('chanel')
                                 .leftJoinAndSelect('chanel.users', 'users')
                                 .select(['chanel.name', 'chanel.chat_id', 'chanel.isProtected'])
@@ -145,7 +149,11 @@ export class ChatService {
                                 .andWhere('chanel.isDirect = :direct', {direct: true})
                                 .getRawOne()
             //console.log( "toreturn: ", toReturn)
-            return toReturn;
+                return {
+                    chanContext,
+                    isCreated: true,
+                    msg: `Channel ${name} successfuly joined!`
+                };
             }
             const newChan = new Chat();
             //newChan.owner = user;

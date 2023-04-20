@@ -3,7 +3,7 @@ import createPersistedState from 'vuex-persistedstate'
 import { io } from 'socket.io-client';
 import { ref } from 'vue';
 import router from './router';
-import config from '@/config.js'
+import config from '@/config.js';
 
 const persistedState = createPersistedState({
   paths: [
@@ -260,7 +260,8 @@ const store = createStore({
   },
   actions: {
     initWebSocket({ commit }) {
-      const webSocket = io(config.BASE_URL, {
+      const webSocket = io({
+        path: "/api/socket.io",
         auth: {
           token: store.getters.getToken,
         }
@@ -272,8 +273,12 @@ const store = createStore({
       });
 
       webSocket.on('disconnect', () => {
-        console.log('Socket disconnected');
-        commit('setWebSocket', null);
+       // console.log('Socket disconnected');
+       // commit('setWebSocket', null);
+        localStorage.clear();
+        store.replaceState({});
+        store.commit('setDoubleAuth', {isDoubleAuth: false});
+        router.push('/');
       });
       //invite: boolean, accept: boolean, status: boolean, theyQuit: boolean
       webSocket.on('notif', (nickname: string, msg: string) =>{
