@@ -32,6 +32,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-top: 3rem;
 }
 .matchHistory{
     background-color: rgba(123, 211, 211, 0.098);

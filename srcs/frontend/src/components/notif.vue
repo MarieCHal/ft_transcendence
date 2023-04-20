@@ -44,11 +44,11 @@
 </script>
 
 <template>
-    <button @click="confirmNotif()">
+    <button class="Button" @click="confirmNotif()">
         <p v-if="store.getters.getMsg == 'refused' && store.getters.getMsg != null">
             {{ store.getters.getNameNotif }} refused your invite
         </p>
-        <p v-else="store.getters.getMsg != 'accepted' && store.getters.getMsg != null">
+        <p v-else-if="store.getters.getMsg != 'accepted' && store.getters.getMsg != null">
             {{ store.getters.getNameNotif }} invites you to a party
         </p>
         <p v-else="store.getters.getMsg == 'accepted' && store.getters.getMsg != null">
@@ -59,7 +59,33 @@
 
 <style scoped lang="scss">
 p{
-    color: red;
+    color: rgb(0, 255, 247);
 }
+
+.Button{
+    width: auto;
+    height: auto;
+    background: none;
+    background-color: none;
+    border-radius: 3px;
+    margin: 3px;
+    border: none;
+    float: right;
+    animation: pulse 1s infinite;
+    box-shadow: 0 0 30px rgba(0, 233, 177, 1);
+}
+.Button:hover{
+	border: 1px solid aqua;
+	border-radius: 3px;   
+}
+
+@keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(9, 176, 181, 0.7);
+    }
+    100% {
+      box-shadow: 0 0 0 10px rgba(0, 233, 177, 0);
+    }
+  }
 
 </style>

@@ -201,6 +201,7 @@
     flex-direction: column;
     align-items: center;
     padding: 1rem;
+    margin-top: 3rem;
 }
 .dashboard__section__createChan{
     display: flex;
