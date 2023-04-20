@@ -6,7 +6,7 @@
     import { onMounted, ref, onUnmounted } from 'vue';
     import { useStore } from "vuex"
     import axios from 'axios';
-import router from "@/router";
+    import router from "@/router";
 
     const store = useStore();
     const chatMessages = ref<any[]>([]);
@@ -185,6 +185,7 @@ import router from "@/router";
   max-height: 500px;
   min-width: 360px;
   max-width: 400px;
+  margin: 1rem;
 }
 .chat-container:hover {
   opacity: 1;
@@ -202,7 +203,7 @@ import router from "@/router";
   border-radius: 10px;
   padding: 5px;
   margin: 2px;
-  height: 3rem;
+  height: auto;
 }
 .chat-myMsg{
   width: auto;
@@ -229,13 +230,13 @@ import router from "@/router";
   max-width: 360px;
   word-wrap: break-word;
   overflow: hidden;
-
+  color: white;
 }
 #date{
   height: 0.7rem;
   width: 2.5rem;
   font-size: x-small;
-  color: rgb(150, 147, 147);
+  color: rgba(79, 200, 209, 0.94);
 }
 
 @media screen and (max-width: 500px) {

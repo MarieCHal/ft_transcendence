@@ -42,10 +42,14 @@
                 const headers = {"Authorization": `Bearer ${store.getters.getToken}`};
                 const data = {nickname: nickname};
                 const response = await axios.post('profile/modify/nickname', data, {headers})
-                if (response.status == 201)
+                if (response.data == "Your nickname is changed")
                 {
+                    alert(response.data)
                     store.commit('setNickname', nickname);
                     router.push('/Profile/me')
+                }
+                else{
+                    alert(response.data.message)
                 }
             } catch (error: any) {
                 store.commit('setError', error);

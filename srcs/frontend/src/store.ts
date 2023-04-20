@@ -3,7 +3,6 @@ import createPersistedState from 'vuex-persistedstate'
 import { io } from 'socket.io-client';
 import { ref } from 'vue';
 import router from './router';
-import config from '@/config.js';
 
 const persistedState = createPersistedState({
   paths: [

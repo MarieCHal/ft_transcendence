@@ -26,7 +26,7 @@
     }
     
     onMounted(async () => {
-        try {    
+        try {   
             socket.on("init" ,(ballx: number, bally: number, user1: number, user2: number) => {
                 store.commit("setBallX", ballx)
                 store.commit("setBallY", bally)
