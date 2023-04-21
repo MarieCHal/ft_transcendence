@@ -6,11 +6,13 @@ import { UsersService } from 'src/users/users.service';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { Interval } from '@nestjs/schedule'
 import { Repository } from 'typeorm';
+import { SocketService } from 'src/socket/socket.service';
 
 @Injectable()
 export class GameService {
     constructor (
         private userService: UsersService,
+        private socketService: SocketService,
         @InjectRepository(Users) private usersRepository: Repository<Users>,
         @InjectRepository(Stats) private statsRepository: Repository<Stats>,
         @InjectRepository(MatchHistory) private matchHistory: Repository<MatchHistory>
@@ -56,7 +58,7 @@ export class GameService {
             ballX: 600/2,
             ballY: 400/2,
             velocityX: 5,
-            velocityY: 5,
+            velocityY: 0,
             bRadius: 8,
             speed: 8,
 
@@ -114,8 +116,8 @@ export class GameService {
         game.ballX = 600/2;
         game.ballY = 400/2;
         game.speed = 6;
-        game.velocityX = -5;
-        game.velocityY = -5;
+        game.velocityX = 5;
+        game.velocityY = 0;
     }
 
     async resetBallLeft(game: GameInterface) {
@@ -126,8 +128,8 @@ export class GameService {
         game.ballX = 600/2;
         game.ballY = 400/2;
         game.speed = 6;
-        game.velocityX = 5;
-        game.velocityY = 5;
+        game.velocityX = -5;
+        game.velocityY = 0;
     }
 
     collision(game: GameInterface, player: number) {
@@ -178,12 +180,16 @@ export class GameService {
                 game.score2++;
                 //console.log("score for user 1");
                 this.resetBallright(game);
+                let server = this.socketService.getServer();
+                server.to(game.room).emit('init', 300, 200, 150, 150)
             }
             else if (game.ballX + game.bRadius >= 600)
             {
                 game.score1++;
                 //console.log("score for user 2");
                 this.resetBallLeft(game);
+                let server = this.socketService.getServer();
+                server.to(game.room).emit('init', 300, 200, 150, 150)
             }
     
             // increases the position od the ball
@@ -227,9 +233,7 @@ export class GameService {
             {
                 ////console.log('else game')
                 coll = this.collision(game, 2);
-                //coll = false
                 if (coll) {
-                    //console.log("else game collision true ")
                     let collidePoint = (game.ballY - (game.posY2 + game.heigth2/2));
                     collidePoint = collidePoint/(game.heigth2/2);
     
@@ -297,13 +301,11 @@ export class GameService {
         else 
             winner = game.player2;
 
-        //console.log("game: ", game);
         
         const user1 = await this.userService.findOne(game.player1);
         const user2 = await this.userService.findOne(game.player2);
 
         let score = game.score1.toString() + '-' + game.score2.toString();
-        ////console.log("score in string: ", score);
         
         const match = new MatchHistory();
         match.player1 = user1;
@@ -311,16 +313,6 @@ export class GameService {
         match.score = score;
 
         await this.matchHistory.save(match);
-        /*const match2 = new MatchHistory();
-        match2.player1 = user2;
-        match2.player2 = user1.nickname;
-        match2.score = score;*/
-
-        //await this.matchHistory.save(match2)
-        //console.log('match: ', newMatch)              
-
-        //console.log("user1: ", user1)
-        //console.log("user2: ", user2)
 
         let stat1 = await this.statsRepository.createQueryBuilder('stats')
                                                 .leftJoinAndSelect('stats.user', 'user')
@@ -332,49 +324,16 @@ export class GameService {
                                                 .where('user.user_id = :user_id', {user_id: game.player2})
                                                 .getOne()
         
-        //console.log("stat1: ", stat1, " stat2: ", stat2);
-
-        /*if (!stat1)
-        {
-            stat1 = new Stats();
-            stat1.user = user1;
-            stat1.games = 1;
-            if (user1.user_id == winner) {
-                stat1.victories = 1;
-                stat1.defeats = 0;
-            }
-            else {
-                stat1.victories = 0;
-                stat1.defeats = 1;
-            }
-            //stat1 = await this.statsRepository.save(stat1)
+        stat1.games++;
+        stat2.games++;
+        if (user1.user_id == winner) {
+            stat1.victories++;
+            stat2.defeats++;
         }
-        if (!stat2)
-        {
-            stat2 = new Stats();
-            stat2.games = 1;
-            stat2.user = user2;
-            if (user2.user_id == winner) {
-                stat2.victories = 1;
-                stat2.defeats = 0;
-            }
-            else {
-                stat2.victories = 0;
-                stat2.defeats = 1;
-            }
-        }*/
-        //else {
-            stat1.games++;
-            stat2.games++;
-            if (user1.user_id == winner) {
-                stat1.victories++;
-                stat2.defeats++;
-            }
-            else if (user2.user_id == winner) {
-                stat2.victories++;
-                stat1.defeats++;
-            }
-        //}
+        else if (user2.user_id == winner) {
+            stat2.victories++;
+            stat1.defeats++;
+        }
 
         const newStat1 = await this.statsRepository.save(stat1);
         const newStat2 = await this.statsRepository.save(stat2);

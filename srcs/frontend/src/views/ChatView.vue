@@ -13,79 +13,95 @@ import router from "@/router";
     const socket = store.getters.getWebSocket;
     const componentKey = ref(0);
     const userBlocked = store.getters.getUserBlocked;
-    store.commit("setBool", false)
+    store.commit("setBool", false);
+
+    function addMessage(message: any) {
+      chatMessages.value.push(message);
+      const lastMessageAnchor = document.getElementById('to-last-message');
+      if(lastMessageAnchor){
+        lastMessageAnchor.scrollIntoView({ behavior: 'smooth' });
+
+        const url = new URL(window.location.href);
+        url.hash = lastMessageAnchor.id;
+        history.replaceState(null, '', url.toString());
+      }
+    }
 
     onMounted(async () => {
-      try {
-        const headers = { Authorization: `Bearer ${store.getters.getToken}`};
-        const response = await axios.get(`/chat/users/${store.getters.getChanContext.chanel_chat_id}`, {headers});
-        store.commit('setWhat', 'UsersInChan');
-        store.commit("setUsers", response.data.users);
-        const chatHistory = await axios.get(`/chat/history/${store.getters.getChanContext.chanel_chat_id}`,  {headers});
-        store.commit("setChatHistory", chatHistory.data.history);
-        socket.on('join', (message: any) => {
-            chatMessages.value.push(message);
-        });
-        socket.emit('join', `${store.getters.getChanContext.chanel_chat_id}`, true);
-        socket.on('chat', (message: any) => {
-          let i = 0
-            for (i ; i < userBlocked.length;)
-            {
-              if (userBlocked[i].blocked_user_id != message.sender_user_id)
-                i++;
-              else
-                break;
+      if (store.getters.getWebSocket){
+        try {
+          const headers = { Authorization: `Bearer ${store.getters.getToken}`};
+          const response = await axios.get(`/chat/users/${store.getters.getChanContext.chanel_chat_id}`, {headers});
+          store.commit('setWhat', 'UsersInChan');
+          store.commit("setUsers", response.data.users);
+          const chatHistory = await axios.get(`/chat/history/${store.getters.getChanContext.chanel_chat_id}`,  {headers});
+          store.commit("setChatHistory", chatHistory.data.history);
+          store.getters.getWebSocket.on('join', (message: any) => {
+            addMessage(message);
+          });
+          store.getters.getWebSocket.emit('join', `${store.getters.getChanContext.chanel_chat_id}`, true);
+          store.getters.getWebSocket.on('chat', (message: any) => {
+            let i = 0
+              for (i ; i < userBlocked.length;)
+              {
+                if (userBlocked[i].blocked_user_id != message.sender_user_id)
+                  i++;
+                else
+                  break;
+              }
+              if (i == userBlocked.length)
+              {
+                addMessage(message);
+              }
+          });
+          store.getters.getWebSocket.on('notifChat', async (msg: string, message: string)  => {
+            if (msg == 'users'){
+              const response = await axios.get(`/chat/users/${store.getters.getChanContext.chanel_chat_id}`, {headers});
+              store.commit('setWhat', 'UsersInChan');
+              store.commit("setUsers", response.data.users);
+              forceRender();
             }
-            if (i == userBlocked.length)
-                chatMessages.value.push(message);
-        });
-        socket.on('notifChat', async (msg: string, message: string)  => {
-          if (msg == 'users'){
-            const response = await axios.get(`/chat/users/${store.getters.getChanContext.chanel_chat_id}`, {headers});
-            store.commit('setWhat', 'UsersInChan');
-            store.commit("setUsers", response.data.users);
-            forceRender();
-          }
-          else if (msg == 'userContext'){
-            const response1 = await axios.get(`/chat/update/${store.getters.getChanContext.chanel_chat_id}`, {headers});
-            store.commit('setUserContext', response1.data.userContext);
-            store.commit('setWhat', 'UsersInChan');
-            if (response1.data.isKicked == true){
-              alert("You got kicked from this channel");
+            else if (msg == 'userContext'){
+              const response1 = await axios.get(`/chat/update/${store.getters.getChanContext.chanel_chat_id}`, {headers});
+              store.commit('setUserContext', response1.data.userContext);
+              store.commit('setWhat', 'UsersInChan');
+              if (response1.data.isKicked == true){
+                alert("You got kicked from this channel");
+                router.push('/dashBoardChat')
+                return ;
+              }
+              else if (response1.data.isBanned == true){
+                alert("You got banned from this channel");
+                router.push('/dashBoardChat')
+                return ;
+              }
+              forceRender();
+            }
+            else if(msg == 'privContext'){
+              alert(message);
               router.push('/dashBoardChat')
               return ;
             }
-            else if (response1.data.isBanned == true){
-              alert("You got banned from this channel");
+            else if (msg == 'deleteChan'){
+              alert(message);
               router.push('/dashBoardChat')
               return ;
             }
-            forceRender();
-          }
-          else if(msg == 'privContext'){
-            alert(message);
-            router.push('/dashBoardChat')
-            return ;
-          }
-          else if (msg == 'deleteChan'){
-            alert(message);
-            router.push('/dashBoardChat')
-            return ;
-          }
-          
-        })
-      } catch (error) {
-        store.commit('setError', error);
-        router.push('/error');
+            
+          })
+        } catch (error) {
+          store.commit('setError', error);
+          router.push('/error');
+        }
       }
     });
 
     onUnmounted(async () => {
       try {        
-        socket.emit('join', `${getChanelId()}`, false);
-        socket.off('join');
-        socket.off('chat');
-        socket.off('notifChat')
+        store.getters.getWebSocket.emit('join', `${getChanelId()}`, false);
+        store.getters.getWebSocket.off('join');
+        store.getters.getWebSocket.off('chat');
+        store.getters.getWebSocket.off('notifChat')
       } catch (error) {
         store.commit('setError', error);
         router.push('/error');
@@ -153,7 +169,10 @@ import router from "@/router";
             </div>
           </div>
         </div>
+        <!-- bottom -->
+      <a id="to-last-message"></a>
       </div>
+      <a href="#to-last-message"></a>
       <div id="prompt-container">
         <chatPrompt />
       </div>

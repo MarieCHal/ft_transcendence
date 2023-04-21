@@ -33,7 +33,12 @@
             }
             else if (store.getters.getMsg == "refused"){
                 alert('is not accepted')
-                 store.commit('setNameNotif', "");
+                store.commit('setNameNotif', "");
+                return ;
+            }
+            else if (store.getters.getMsg == "offLine") {
+                alert('The player is disconnected or offline')
+                store.commit('setNameNotif', "");
                 return ;
             }
         } catch (error) {
@@ -48,8 +53,11 @@
         <p v-if="store.getters.getMsg == 'refused' && store.getters.getMsg != null">
             {{ store.getters.getNameNotif }} refused your invite
         </p>
-        <p v-else-if="store.getters.getMsg != 'accepted' && store.getters.getMsg != null">
+        <p v-else-if="store.getters.getMsg != 'accepted' && store.getters.getMsg != 'offLine'">
             {{ store.getters.getNameNotif }} invites you to a party
+        </p>
+        <p v-else-if="store.getters.getMsg != 'accepted' && store.getters.getMsg == 'offLine'">
+            {{ store.getters.getNameNotif }} You cannot play!
         </p>
         <p v-else="store.getters.getMsg == 'accepted' && store.getters.getMsg != null">
             {{ store.getters.getNameNotif }} accepted your invite

@@ -31,7 +31,6 @@
                 let url = await getAvatar(store, response.data.user.user_id);
                 store.commit('setAvatar', url);
                 store.dispatch('initWebSocket');
-                
                 const headers = { Authorization: `Bearer ${store.getters.getToken}` };
                 const res = await axios.get("/chat/blocked", {headers});
                 store.commit('setUserBlocked', res.data);

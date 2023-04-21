@@ -7,44 +7,75 @@ import config from '@/config.js';
 
 const persistedState = createPersistedState({
   paths: [
-  'isToken',
-  'isDoubleAuth', 
-  'isId',
-  'isNickname',
-  'isAvatar',
-  'isBool',
-  'isCode',
-  'isBlockBool',
-  'isStatusCode',
-  'isTrigger',
-  'isWhat',
-  'isUserId',
-  'isAllUsers',
-  'isUsers',
-  'isOneUser',
-  'isUserContext',
-  'isUserBlocked',
-  'isUserAvatar',
-  'isArrayAvatar',//attention a lui
-  'isChanId',
-  'isChans',
-  'isChanContext',
-  'isChatHistory',
-  'isChatMessages',//attention a lui
-  'isNewMessage',//attention a lui
-  'isGoPlay',
-  'isRoom',
-  'isInvitePlay',
-  'isresultSocketOn',
-  'isBallX',
-  'isBallY',
-  'isScoreUser1',
-  'isScoreUser2',
-  'isUser1',
-  'isUser2',
-  'isInterval',
-  'isPlayer',
-  'isMe',
+    //self
+    'isToken', 
+    'isDoubleAuth',
+    'isId',
+    'isNickname',
+    'isAvatar',
+    'isMe',
+    'isQrCode',
+
+    //truc
+    'isBool',
+    'isCode',
+    'isBlockBool',
+    'isStatusCode',
+    'isTrigger',
+    'isWhat',
+    'isError',
+
+    //user
+    'isUserId',
+    'isMatchHistory',
+    'isAllUsers',
+    'isUsers',
+    'isOneUser',
+    'isUserContext',
+    'isUserBlocked',
+    'isUserAvatar',
+    'isArrayAvatar',
+    
+    //chan
+    'isChanId',
+    'isChans',
+    'isChanContext',
+    'isChatHistory',
+    
+    //chat
+    'isChatMessages',
+    'isNewMessage',
+
+    //pong
+    'isGoPlay',
+    'isRoom',
+    'isInvitePlay',
+    'isresultSocketOn',
+    'isBallX',
+    'isBallY',
+    'isScoreUser1',
+    'isScoreUser2',
+    'isUser1',
+    'isUser2',
+    'isInterval',
+    'isPlayer',
+    'isMatchmaking',
+    'isColorRect1',
+    'isColorRect2',
+    'isColorBall',
+    'isColorBackGround',
+    'isColorNet',
+    'isColorText',
+    'isPlayStart',
+
+    //notif
+    'isNameNotif',
+    'isName',
+    'isMsg',
+    'isInvite',
+    'isAcceptPlay',
+    'isStatus',
+    'isTheyQuit',
   ]});
 
 const store = createStore({
