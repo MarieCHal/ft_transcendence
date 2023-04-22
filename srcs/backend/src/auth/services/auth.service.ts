@@ -35,16 +35,15 @@ export class AuthService {
                 email: data.email,
                 }
             })
-            console.log("user: ", user);
             if (!user)                                                  // if the user never went on the website create a new one
             {
                 const newUser = await this.profileService.createProfile(data);
-                console.log("this is the new user:", newUser);
+                console.log("register this is the new user:", newUser);
                 return this.generateAccessToken(newUser)
             } 
             else
             {
-                console.log("this is the user:", user);
+                console.log("register this is the user:", user);
                 if (user.doubleAuth == true) {
                     return {
                         doubleAuth: true,

@@ -31,13 +31,11 @@ export class TwoFactorAuthenticationController {
     /** @summary used to authenticate if 2fa is enabled */
     @Post('authenticate')
     async authenticate(@Req() req: any) {
-        //console.log("req nickname: ", req.body.nickname, "req code: ", req.body.code);
         const user = await this.userRepository.findOne({
             where: {
                 nickname: req.body.nickname
             }
         })
-        //console.log("user: ", user);
         const isValid = this.twoFactorAuthenticationService.isTwoFactorAuthenticationCodeValid(req.body.code, user);
         if (!isValid) {
             throw new UnauthorizedException("Wrong authentication code");
@@ -56,7 +54,6 @@ export class TwoFactorAuthenticationController {
     /** @summary changes the state of the double Auth in the database (only if the code is valid) */
     @Post('change')
     async turnOnTwoFactorAuth( @Req() req: any) {
-        console.log("req user: ", req.user, "req code: ", req.body.code, "req double auth value: ", req.body.doubleAuth);
         if (req.body.doubleAuth == false)
         {
             await this.usersService.doubleAuth(req.user, req.body.doubleAuth);

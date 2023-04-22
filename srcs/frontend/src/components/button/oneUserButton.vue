@@ -23,7 +23,6 @@
     async function fetchData(){
         if(store.getters.getWhat === 'all'){
             const user = store.getters.getAllUsers.allUsers;
-            console.log("ALL USERSSSS: ", user);
             const length = user.length;
             for (let index = 0; index < length; index++) {
                 await pushAvatarUrl(user[index].user_user_id)

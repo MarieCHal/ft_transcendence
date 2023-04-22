@@ -15,11 +15,9 @@
   }
 
   if (getToken()){
-    console.log('coucou')
     store.dispatch('initWebSocket');
     if (!store.getters.getWebSocket){
       store.dispatch('initWebSocket');
-      console.log('coucou toi')
     }
   }
   

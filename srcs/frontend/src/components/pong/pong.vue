@@ -39,8 +39,6 @@
         if (store.getters.getWebSocket){       
             try {
                 store.getters.getWebSocket.on('otherNick', (user1: string, user2: string) =>{
-                    console.log("user1 =", user1)
-                    console.log("user2 =", user2)
                     if (user1 == store.getters.getNickname){
                         store.commit('setName', user2);
                         forceRender();
@@ -51,7 +49,6 @@
                     }
                 })    
                 store.getters.getWebSocket.on("init" ,(ballx: number, bally: number, user1: number, user2: number, player1: string, player2: string) => {
-                    console.log("init");
                     store.commit("setBallX", ballx)
                     store.commit("setBallY", bally)
                     store.commit("setUser1", user1)
@@ -85,7 +82,6 @@
                         store.commit("setRoom", player)
                     }
                 });
-                console.log("store.getters.getMatchmaking: ", store.getters.getMatchmaking);
                 store.getters.getWebSocket.emit('startgame', store.getters.getMatchmaking, store.getters.getName)
                 store.commit('setNameNotif', "")
                 store.getters.getWebSocket.on("game", (ballx: number, bally: number, user1: number, user2: number, score1: number, score2: number ) => {      

@@ -28,10 +28,6 @@ export class GameService {
                 return
         }
         this.listMatch.push(userId);
-        for (let i = 0; this.listMatch[i]; i++)
-        {
-            console.log("==================================== list matchmaking: ", this.listMatch[i]);
-        }
     }
 
     async initGame(userId1: number, userId2: number, roomId: string)
@@ -70,32 +66,31 @@ export class GameService {
     async matchMaking(userId: number) {
         if (userId == this.listMatch[0])
         {
-            //console.log("index 1: ", userId)
             let room = 'room' + userId
             return room;
         }
         else if (userId == this.listMatch[1])
         {
-            //console.log("index 2: ", userId)
             let room = 'room' + this.listMatch[0];
-            //let game = await this.findGame(room);
             await this.initGame(this.listMatch[0], userId, room)
             this.listMatch.splice(0, 2);
-            //game.player2 = userId;
-            ////console.log("game: ", game);
             return room;
         }
-        for (let i = 0; this.listMatch[i]; i++) {
-            console.log("=========================================== Match at index : ", i, "match: ", this.listMatch[i]);
+        for (let i = 0; this.listMatch[i]; i++)
+        {
+            console.log("list matchmaking: ", this.listMatch[i]);
         }
     }
 
     deleteMatch(userId: number) {
         for (let i = 0; this.listMatch[i]; i++) {
             if (userId == this.listMatch[i])
+            {
                 this.listMatch.splice(i, 1);
+                return 'Successfully removed from MatchMaking';
+            }
         }
-        return 'Successfully removed from MatchMaking';
+        return null;
     }
 
     newGame(roomId: string, user1: number, user2: number) {
@@ -108,8 +103,10 @@ export class GameService {
             if (this.gameList[i].room == roomId)
             {
                 this.gameList.splice(i, 1);
+                return ;
             }
         }
+        return null;
     }
 
     // resets the ball in the middle of the canvas
@@ -124,8 +121,6 @@ export class GameService {
     }
 
     async resetBallLeft(game: GameInterface) {
-        //game.player1 = 150;
-        //game.player2 = 150;
         game.posY1 = 150;
         game.posY2 = 150;
         game.ballX = 600/2;
@@ -160,15 +155,10 @@ export class GameService {
         }
     }
 
-    // player1 is on the left side and player 2 on the right side of the canevas
-    // 
     @Interval(1000/50)
     handleInterval() {
-        ////console.log('handleInterval');
         if (this.gameList.length > 0)
         {
-            //console.log(this.gameList.length)
-            ////console.log('updateGame');
             this.updateGame();
         }
     }
@@ -178,10 +168,8 @@ export class GameService {
         for (let i = 0; this.gameList[i]; i++) // find the game corresponding to the room
         {
             game = this.gameList[i];
-            // check for scores and reset
             if (game.ballX - game.bRadius <= 0) {
                 game.score2++;
-                //console.log("score for user 1");
                 this.resetBallright(game);
                 let server = this.socketService.getServer();
                 server.to(game.room).emit('init', 300, 200, 150, 150)
@@ -189,16 +177,14 @@ export class GameService {
             else if (game.ballX + game.bRadius >= 600)
             {
                 game.score1++;
-                //console.log("score for user 2");
                 this.resetBallLeft(game);
                 let server = this.socketService.getServer();
                 server.to(game.room).emit('init', 300, 200, 150, 150)
             }
     
-            // increases the position od the ball
             game.ballX += game.velocityX;
             game.ballY += game.velocityY;
-    
+
             // if velocity nananinana
             if (game.ballY + game.bRadius > 400 || game.ballY - game.bRadius < 0) {
                 game.velocityY = - game.velocityY;
@@ -231,7 +217,6 @@ export class GameService {
             }
             else //player2 
             {
-                ////console.log('else game')
                 coll = this.collision(game, 2);
                 if (coll) {
                     let collidePoint = (game.ballY - (game.posY2 + game.heigth2/2));
@@ -261,7 +246,6 @@ export class GameService {
         let game = this.findGame(roomId);
         if (!game)
             return ;
-        // updates the Y pos according to the userId passed as argument
         if (game.player1 == userId)
             game.posY1 = pos;
         else if (game.player2 == userId)
@@ -275,9 +259,28 @@ export class GameService {
             if (this.gameList[i].room == roomId)
             {
                 game = this.gameList[i];
+                return game;
             }
         }
-        return game;
+        return null;
+    }
+
+    findPlayerInGame(userId: number){
+        let game: GameInterface;
+        for (let i = 0; this.gameList[i]; i++) // find the game corresponding to the room
+        {
+            if (this.gameList[i].player1 == userId)
+            {
+                game = this.gameList[i];
+                return game;
+            }
+            else if (this.gameList[i].player2 == userId)
+            {
+                game = this.gameList[i];
+                return game;
+            }
+        }
+        return null;
     }
 
     async whoWon(roomId: string) { // return the id of the player that won
@@ -289,7 +292,6 @@ export class GameService {
             winner = game.player1;
         else 
             winner = game.player2;
-        //await this.gameStats(game, winner);
         await this.stopGame(roomId); // removes the game from the game list 
         return winner
     }

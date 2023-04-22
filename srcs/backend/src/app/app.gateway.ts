@@ -62,27 +62,59 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
       let user = await this.usersService.findOne(userToken.sub)
       if (!user) // if no user in database with user_id (extracted from token) disconnect socket
         client.disconnect()
-      let connected = this.socketService.getSocketID(user.user_id);
-      console.log(`${user.nickname} is in connection`)
-      if (connected == null)
+      else
       {
-        console.log("je suis dans connect nulll")
-        console.log(`${user.nickname}`)
-        this.socketService.setUser(client, user.user_id);
+        let connected = this.socketService.getSocketID(user.user_id);
+        console.log(`${user.nickname} is in connection`)
+        if (connected == null)
+        {
+          console.log("je suis dans connect nulll")
+          console.log(`${user.nickname}`)
+          this.socketService.setUser(client, user.user_id);
+        }
+        else {
+          console.log(`${user.nickname} Ma chaussette a ete remplcéeeeeee`);
+          this.socketService.removeUser(connected);
+          this.socketService.setUser(client, user.user_id);
+        }
+        await this.usersService.isActive(user, 1);
       }
-      else {
-        console.log(`${user.nickname} Ma chaussette a ete remplcéeeeeee`);
-        this.socketService.removeUser(connected);
-        this.socketService.setUser(client, user.user_id);
-      }
-      await this.usersService.isActive(user, 1);
     }
   
     async handleDisconnect(client: Socket) {
-
       const user = await this.socketService.getUser(client.id);
       const user1 = await this.usersService.isActive(user, 0); // the user is not any more active
       this.socketService.removeUser(client.id); // delete the socket from the lists of active users
+      let game = this.gameService.findPlayerInGame(user.user_id);
+      console.log(`${user.nickname} a perdu ses chaussettes`);
+      if (game != null)
+      {
+        console.log("I was in a gammeeeee");
+        console.log(game);
+        const winner = await this.gameService.gameStats(game);
+        this.gameService.stopGame(game.room);
+        this.server.to(client.id).emit('startgame', -1, false, true, 'You left the game');
+        let msg = `${user.nickname} a perdu ses chaussettes.`
+        client.broadcast.to(game.room).emit('startgame', -1, winner, true, msg); // message to the other user
+        this.server.in(game.room).socketsLeave(game.room);
+        for (let i = 0; this.rooms[i]; i++)
+        {
+          if (this.rooms[i] == game.room)
+          {  
+            this.rooms.splice(i, 1);
+          }
+        }
+      }
+      if (this.gameService.deleteMatch(user.user_id))
+      {
+        let room = 'room' + user.user_id;
+        this.server.in(room).socketsLeave(room);
+        for (let i = 0; this.rooms[i]; i++)
+        {
+          if (this.rooms[i] == room)
+            this.rooms.splice(i, 1);
+        }
+      }
     }
   
     @SubscribeMessage('join')   // used to listening to incoming messages.
@@ -142,7 +174,6 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
       let room: string
       if (payload[0] === false) // if it is a game from an invite 
       {
-        console.log("INVITEEEEEEEEEEEEE ")
         const other = await this.usersService.findNickname(payload[1])
         for (let i = 0; this.invite[i]; i++) // find the corresponding room in the list of invites
         {
@@ -160,7 +191,6 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
       {
         await this.gameService.addToList(user.user_id); // add to list matchmaking
         room = await this.gameService.matchMaking(user.user_id); // gives a room
-        console.log("MATCH MAKING ROOOOOOM ============================ ")
         console.log(room);
       }
 
@@ -224,7 +254,6 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
     @SubscribeMessage('game')
     async gameInfo(client: Socket, payload: any) {
       const user = await this.socketService.getUser(client.id);
-      //console.log('payload in game: ', payload);
       if (payload[1] == 'quit') // when quitting payload[0] = the room and payload[1] = key word 'quit'
       {
         if (!payload[0]) // meaning the match did not start yet 
@@ -238,7 +267,6 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
             {
               for (let i = 0; this.invite[i]; i++) // find the corresponding room in the list of invites
               {
-                console.log("INVITE:", this.invite[i])
                 if (this.invite[i].user1 == user.user_id && this.invite[i].user2 == other.user_id)
                 {
                   this.invite.splice(i, 1);
@@ -256,7 +284,6 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
             let room = 'room' + user.user_id;
             for (let i = 0; this.rooms[i]; i++)
             {
-              //console.log('room in quit game: ', this.rooms[i]);
               if (this.rooms[i] == room)
                 this.rooms.splice(i, 1);
             }
@@ -266,19 +293,21 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
         else { // the game already started
           const message = user.nickname + 'left the game'; 
           const game = this.gameService.findGame(payload[0]);
-          if (game.player1 == user.user_id)
-            game.score2 = 10;
-          else
-            game.score1 = 10;
-          this.gameService.stopGame(payload[0]);
-          const winner = await this.gameService.gameStats(game);
-          this.server.to(client.id).emit('startgame', -1, winner, true, 'You left the game'); // mess to the one that quit
-          client.broadcast.to(payload[0]).emit('startgame', -1, winner, true, message); // message to the other user
-          for (let i = 0; this.rooms[i]; i++)
+          if (game != null)
           {
-            //console.log('room in quit: ', this.rooms[i]);
-            if (this.rooms[i] == payload[0])
-              this.rooms.splice(i, 1);
+            if (game.player1 == user.user_id)
+              game.score2 = 10;
+            else
+              game.score1 = 10;
+            this.gameService.stopGame(payload[0]);
+            const winner = await this.gameService.gameStats(game);
+            this.server.to(client.id).emit('startgame', -1, winner, true, 'You left the game'); // mess to the one that quit
+            client.broadcast.to(payload[0]).emit('startgame', -1, winner, true, message); // message to the other user
+            for (let i = 0; this.rooms[i]; i++)
+            {
+              if (this.rooms[i] == payload[0])
+                this.rooms.splice(i, 1);
+            }
           }
         }
         this.server.in(payload[0]).socketsLeave(payload[0]);
@@ -289,7 +318,6 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
     /** emit 1: mess is the user's nickname, 2: an invite or response, 3: */
     @SubscribeMessage('notif') 
     async invitePlay(client: Socket, payload: any) {
-      //console.log("notif: ", payload);
       const user = await this.socketService.getUser(client.id);
       let mess: string
       mess = user.nickname;
@@ -303,7 +331,6 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
         }
         else
         {
-          //console.log("else");
           let roomID = this.socketService.getSocketID(other.user_id);
           this.server.to(roomID).emit('notif', mess, 'invite')
         }
@@ -315,8 +342,6 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
         if (payload[2] == 'positif') // if the response is positive
         {
           const other = await this.usersService.findNickname(payload[0])
-          //console.log("other in TREUUEEUEUUE: ", other);
-          //console.log("userr in TRUEUEUEUEU ", user);
           let name = 'invite-' + user.user_id + '-' + other.user_id; // create the room name and add it to the list of invite
           this.invite.push({
             user1: user.user_id,
@@ -334,9 +359,6 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
     
     @SubscribeMessage('dash')
     async dashBoard(client: Socket, payload: string) {
-      //console.log("dash: ", payload);
-      const user = await this.socketService.getUser(client.id);
-      //console.log("this is the user: ", user);
-      this.server.emit('dash', `${user.nickname} has emitted on dash`);
+      console.log("dash subscribeMess");
     }
 }

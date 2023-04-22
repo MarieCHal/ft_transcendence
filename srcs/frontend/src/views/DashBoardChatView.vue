@@ -11,17 +11,13 @@
     const socket = store.getters.getWebSocket;
     
     onMounted(() => {
-        console.log("avant")
         getDashboard();
        // if (!store.getters.getWebSocket)
          //   store.dispatch("initWebSocket");
         if (store.getters.getWebSocket){
-            console.log("alibabay, dans on")
             store.getters.getWebSocket.on('dash', async (message: any) => {
                 try{
                     const headers = {"Authorization": `Bearer ${store.getters.getToken}`};
-                    console.log("msg =", message);
-                    console.log("I am in dash");
                     const response = await axios.get('/chat/all', {headers});
                     store.commit('setChans', response.data);
                     store.commit('setChanId', 0);
@@ -32,7 +28,6 @@
                 }
             });
             store.getters.getWebSocket.emit('dash', 'depart');
-            console.log("salut les poulket")
         }
     });
     
@@ -143,7 +138,6 @@
     onUnmounted(async () => {
         if (store.getters.getWebSocket){
             try {        
-                console.log("alibabay, dans off")
                 store.getters.getWebSocket.off('dash') //a voir si obligatoire
             } catch (error) {
                 store.commit('setError', error);

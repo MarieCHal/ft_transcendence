@@ -5,7 +5,7 @@
     const router = useRouter();
     const socket = store.getters.getWebSocket;
     
-    function confirmNotif(){
+    const confirmNotif = async () => {
         try {            
             if (store.getters.getMsg == "invite"){
                 const userConfirmed = confirm("Voulez-vous jouer avec cette personne?")
@@ -33,7 +33,6 @@
                 router.push('/Play/start');
             }
             else if (store.getters.getMsg == "refused"){
-                alert('is not accepted')
                 store.commit('setNameNotif', "");
                 return ;
             }

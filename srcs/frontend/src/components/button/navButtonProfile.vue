@@ -2,8 +2,15 @@
     import { useStore } from "vuex"
     import router from '@/router'
     import axios from "axios";
+    import getAvatar from '../../getAvatar'
+    import { onMounted } from 'vue'
 
     const store = useStore();
+
+    onMounted(async () => {
+        let url = await getAvatar(store, store.getters.getId);
+        store.commit('setAvatar', url);
+    });
 
     async function clickCheckWhat(what: string){
         try {

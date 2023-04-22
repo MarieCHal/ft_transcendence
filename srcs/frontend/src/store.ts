@@ -3,20 +3,16 @@ import createPersistedState from 'vuex-persistedstate'
 import { io } from 'socket.io-client';
 import { ref } from 'vue';
 import router from './router';
-import config from '@/config.js';
 
 const persistedState = createPersistedState({
   paths: [
-    //self
     'isToken', 
     'isDoubleAuth',
     'isId',
     'isNickname',
-    'isAvatar',
+    //'isAvatar',
     'isMe',
     'isQrCode',
-
-    //truc
     'isBool',
     'isCode',
     'isBlockBool',
@@ -24,8 +20,6 @@ const persistedState = createPersistedState({
     'isTrigger',
     'isWhat',
     'isError',
-
-    //user
     'isUserId',
     'isMatchHistory',
     'isAllUsers',
@@ -34,19 +28,13 @@ const persistedState = createPersistedState({
     'isUserContext',
     'isUserBlocked',
     'isUserAvatar',
-    'isArrayAvatar',
-    
-    //chan
+    //'isArrayAvatar',
     'isChanId',
     'isChans',
     'isChanContext',
     'isChatHistory',
-    
-    //chat
     'isChatMessages',
     'isNewMessage',
-
-    //pong
     'isGoPlay',
     'isRoom',
     'isInvitePlay',
@@ -67,8 +55,6 @@ const persistedState = createPersistedState({
     'isColorNet',
     'isColorText',
     'isPlayStart',
-
-    //notif
     'isNameNotif',
     'isName',
     'isMsg',
@@ -304,8 +290,7 @@ const store = createStore({
       });
 
       webSocket.on('disconnect', () => {
-       // console.log('Socket disconnected');
-       // commit('setWebSocket', null);
+        console.log('Socket disconnected');
         localStorage.clear();
         store.replaceState({});
         store.commit('setToken', "");
@@ -322,10 +307,6 @@ const store = createStore({
           router.push('/Play');
           return ;
         }
-       /* commit('setInvite', invite); //es une invite ou un reponse
-        commit('setAcceptPlay', accept); //es accept ou refus
-        commit('setStatus', status);
-        commit('setTheyQuit', theyQuit); // si le joueur quit le jeu avant de jouer*/
       });
     },
   }

@@ -26,9 +26,6 @@ import DataSourceOptions from 'db/data-source';
 
 @Module({
   imports: [
-    /*ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', '../Front_end/dist'), 
-    }),*/
     ConfigModule.forRoot({isGlobal: true}), // load and parse .env and imports it (true)
     TypeOrmModule.forRoot({
             type: 'postgres', //type of database
@@ -56,15 +53,8 @@ import DataSourceOptions from 'db/data-source';
   ],
   controllers: [AppController],
   providers: [AppService,
-    /*{
-    provide: Server,
-    useValue: require('./main')
-  },*/ 
+
   AppGateway
-    /*{
-      provide: APP_GUARD,
-      useClass: JwtAuthGuard
-    }, */
   ],
   //exports: [AppGateway]
 })

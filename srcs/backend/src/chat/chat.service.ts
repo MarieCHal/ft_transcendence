@@ -33,7 +33,6 @@ export class ChatService {
     return chan;
    }
 
-   // to remove
     async getChannelInfo(chanelId: number) {
     const chan = await this.chatRepository
                         .createQueryBuilder('chat')
@@ -45,7 +44,7 @@ export class ChatService {
                         .leftJoinAndSelect('chat.owner', 'owner')
                         .where('chat.chat_id = :id', {id: chanelId})
                         .getOne()
-        console.log("this is the chanel: ", chan);
+        //console.log("this is the chanel: ", chan);
         return chan
     }
 
@@ -242,6 +241,8 @@ export class ChatService {
             server.to(room).emit('notifChat', 'deleteChan', `${user.nickname} deleted the channel`);
             return "channel succesfuly removed"
         }
+        let server: Server = this.socketService.getServer();
+        server.emit('dash', 'refreshdashboard');
         return 'you are not the owner of this channel'
     }
 
@@ -309,7 +310,8 @@ export class ChatService {
         
         let server: Server = this.socketService.getServer()
         const chan = await this.findOne(chanelId);
-        
+        if (!chan)
+            return 'No such Channel';
         const banned = await this.rolesService.isBanned(user, chanelId);
         let pwd = false;
         let isProtected = chan.isProtected;
@@ -339,13 +341,10 @@ export class ChatService {
                                     .of(newchan)
                                     .add(user)
             let room = chan.chat_id.toString();
-            console.log("room  = ", room)
             if (!server)
                 console.log("No server instance")
             else
                 server.to(room).emit('notifChat', 'users')      // emit to people in the room that they should refresh users
-            console.log("user: ", user)
-            console.log("result:", result)
         }
         return {
             isProtected,
@@ -358,8 +357,6 @@ export class ChatService {
     }
 
     async leaveChanel(user: Users, chanelId: number) {
-        console.log(user)
-
         const isInChan = await this.rolesService.isInChanel(user, chanelId)
         if (!isInChan)
             return `${user.nickname} is not part of this channel`;
@@ -368,10 +365,11 @@ export class ChatService {
                                     .leftJoinAndSelect('chat.users', 'users')
                                     .where('chat.chat_id = :chat_id', {chat_id: chanelId})
                                     .getOne()
-        console.log("chan nb user: ", chan.nb_users);
         if (chan.nb_users < 2)
         {
-            await this.chatRepository.remove(chan)
+            let server: Server = this.socketService.getServer();
+            server.emit('dash', 'refreshdashboard');
+            await this.chatRepository.remove(chan);
             return `${chan.name} has been deleted`;
         }
         if (chan.isDirect == true && chan.nb_users < 3)
@@ -380,25 +378,15 @@ export class ChatService {
             let server: Server = this.socketService.getServer();
             let room = chanelId.toString();
             server.to(room).emit('notifChat', 'privContext', `${user.nickname} left the channel`);
+            server.emit('dash', 'refreshdashboard')
             return `${chan.name} has been deleted`;
         }
         chan.nb_users--;
         if ((await this.rolesService.isOwner(user, chanelId)) == true)
         {
-            let newOwner: Users 
-            for(let i = 0; chan.users[i]; i++)
-            {
-                newOwner = chan.users[i];
-                if (chan.users[i] != user)
-                {
-                    chan.owner = newOwner;
-                    await this.newMessage(newOwner, chanelId, `I became owner cause ${user.nickname} left the channel :)`)
-                    break;
-                }
-            }
+            chan.owner = null;
         }
         let newChan = await this.chatRepository.save(chan);
-    
         if ((await this.rolesService.isAdmin(user, chanelId)) == true)
         {
             await this.chatRepository
@@ -415,27 +403,16 @@ export class ChatService {
 
         let server: Server = this.socketService.getServer();
         let room = newChan.chat_id.toString();
-        console.log("room: ", room);
         let socket = this.socketService.getSocket(user.user_id);
         if (socket)
             socket.leave(room);
         server.to(room).emit('notifChat', 'users')
-        /*for (let i = 0; chan.users[i]; i++) {
-            if (chan.users[i] != user)
-            {
-                let clientRoom = this.socketService.getSocketID(chan.users[i].user_id)
-                server.to(clientRoom).emit('notifChat', 'users')
-            }
-        }*/
         const result = await this.getChannelInfo(chanelId)
-        //console.log("chan infos after user leaving: ", result);
         const newUserChan = await this.getMyChans(user);
-        console.log("USER'S CHANNELLLLLLSLSLSLSL: ", newUserChan);
     }
 
     
     async toKick(user: Users, toBeKicked: number, chanelId: number) {
-        console.log("tokickkkkkkkk");
         const toKick = await this.userService.findOne(toBeKicked);
         const checkKick = await this.rolesService.isInChanel(toKick, chanelId);
         if (!checkKick)
@@ -542,7 +519,6 @@ export class ChatService {
                                     .select(['messages.text', 'messages.createdAtTime','sender.user_id', 'sender.nickname'])
                                     .getRawMany()
         }
-        console.log("history length: ", history.length, "hitory: ", history);
         if (history.length > 1)
         {
             for (let i = 0; history[i]; i++)
@@ -551,7 +527,6 @@ export class ChatService {
                 history[i].messages_createdAtTime = time.getHours() + ':' + time.getMinutes();
             }
         }
-        console.log("history: ", history);
         return {
             history
         }
@@ -567,6 +542,8 @@ export class ChatService {
                 chat_id: chanelId
             }
         })
+        if (!chanel)
+            return null;
         const Mess = new Message();
         Mess.chanel = chanel;
         Mess.sender = user;

@@ -4,7 +4,6 @@ import router from './router'
 import store from './store'
 import axios from 'axios'
 import './assets/main.scss'
-import config from '@/config.js';
 
 axios.defaults.baseURL = import.meta.env.VITE_APP_BASE_URL;
 
