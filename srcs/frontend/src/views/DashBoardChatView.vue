@@ -1,15 +1,34 @@
 <script setup lang="ts">
     import formChanCode from "@/components/form/formChanCode.vue"
     import { useStore } from "vuex"
-    import { onMounted } from 'vue'
+    import { onMounted, ref, onUnmounted } from 'vue';
     import { useRouter } from 'vue-router'
     import axios from 'axios'
     
-    const router = useRouter();
     const store = useStore();
+    const router = useRouter();
+    const componentKey = ref(0);
+    const socket = store.getters.getWebSocket;
     
     onMounted(() => {
         getDashboard();
+       // if (!store.getters.getWebSocket)
+         //   store.dispatch("initWebSocket");
+        if (store.getters.getWebSocket){
+            store.getters.getWebSocket.on('dash', async (message: any) => {
+                try{
+                    const headers = {"Authorization": `Bearer ${store.getters.getToken}`};
+                    const response = await axios.get('/chat/all', {headers});
+                    store.commit('setChans', response.data);
+                    store.commit('setChanId', 0);
+                    forceRender();
+                }catch (error: any){
+                    store.commit('setError', error);
+                    router.push('/error');
+                }
+            });
+            store.getters.getWebSocket.emit('dash', 'depart');
+        }
     });
     
     const getDashboard = async () => {
@@ -48,7 +67,11 @@
             router.push('/error'); 
         }
     }
-    
+
+    const forceRender = () => {
+      componentKey.value += 1;
+    }
+
     const quitChan = async (chan :any) =>{
         try {            
             const headers = {"Authorization": `Bearer ${store.getters.getToken}`};
@@ -94,6 +117,15 @@
       }
     }
 
+    const getPwd = () => {
+      if(store.getters.getUserContext){
+        return store.getters.getUserContext.pwd;
+      }
+      else{
+        return [];
+      }
+    }
+
     const getPrivChan = () => {
       if(store.getters.getChans){
         return store.getters.getChans.privMsg;
@@ -102,6 +134,18 @@
         return [];
       }
     }
+
+    onUnmounted(async () => {
+        if (store.getters.getWebSocket){
+            try {        
+                store.getters.getWebSocket.off('dash') //a voir si obligatoire
+            } catch (error) {
+                store.commit('setError', error);
+                router.push('/error');
+            }
+        }
+    });
+
 </script>
 
 <template>
@@ -121,7 +165,7 @@
             <div class="display">
                 <h1>My channel</h1>
                 <div class="liste-chan" v-for="(chanPublicJoined, index) in getMyChan()" :key="index">
-                    <button class="navButton" @click="clickChan(chanPublicJoined)">
+                    <button :key="componentKey" class="navButton" @click="clickChan(chanPublicJoined)">
                         {{ chanPublicJoined.chanel_name }}
                     </button>
                     <button class="navButton" @click="quitChan(chanPublicJoined)">
@@ -132,16 +176,16 @@
             <div class="display">
                 <h1>Other channel</h1>
                 <div class="liste-chan" v-for="(chanPublicNotJoined, index) in getChan()" :key="index">
-                    <button class="navButton" @click="clickChan(chanPublicNotJoined)">
+                    <button :key="componentKey" class="navButton" @click="clickChan(chanPublicNotJoined)">
                         {{ chanPublicNotJoined.chanel_name }}
                     </button>
-                    <formChanCode v-if="store.getters.getUserContext.pwd == true && store.getters.getChanId == chanPublicNotJoined.chanel_chat_id" />
+                    <formChanCode v-if="getPwd() == true && store.getters.getChanId == chanPublicNotJoined.chanel_chat_id" />
                 </div>
             </div>
             <div class="display">
                 <h1>PrivMsg</h1>
                 <div class="liste-chan" v-for="(chanPrivate, index) in getPrivChan()" :key="index">
-                    <button class="navButton" @click="clickChan(chanPrivate)">
+                    <button :key="componentKey" class="navButton" @click="clickChan(chanPrivate)">
                         {{ chanPrivate.users_nickname }}
                     </button>
                     <button class="navButton" @click="quitChan(chanPrivate)">
@@ -159,6 +203,7 @@
     flex-direction: column;
     align-items: center;
     padding: 1rem;
+    margin-top: 3rem;
 }
 .dashboard__section__createChan{
     display: flex;

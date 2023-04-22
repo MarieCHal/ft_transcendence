@@ -5,6 +5,7 @@
 
     const router = useRouter();
     const store = useStore();
+    const maxImg = 1024
     let nickname = store.getters.getNickname;
 
     function getAvatarStore(){
@@ -12,6 +13,11 @@
     }
     const fileUpload = async (event: any) => {
         const file = event.target.files[0];
+        if (file.size > maxImg * 1024) {
+            alert("L'image sélectionnée est trop grande. Veuillez choisir une image plus petite.");
+            event.target.value = ''; // Réinitialiser la valeur de l'entrée de fichier
+            return;
+        }
         const avatar = URL.createObjectURL(file);
         if (store.getters.getAvatar != avatar)
         {
@@ -42,10 +48,14 @@
                 const headers = {"Authorization": `Bearer ${store.getters.getToken}`};
                 const data = {nickname: nickname};
                 const response = await axios.post('profile/modify/nickname', data, {headers})
-                if (response.status == 201)
+                if (response.data == "Your nickname is changed")
                 {
+                    alert(response.data)
                     store.commit('setNickname', nickname);
                     router.push('/Profile/me')
+                }
+                else{
+                    alert(response.data.message)
                 }
             } catch (error: any) {
                 store.commit('setError', error);
@@ -65,7 +75,7 @@
                     <div class="select-button">
                         <img :src="getAvatarStore()" v-if="getAvatarStore()"/>
                     </div>
-                    <input accept="image/.jpeg,image/.png" type="file" ref="file" @change="fileUpload($event)"/>
+                    <input accept="image/.jpeg,image/.png" maxlength="500000" type="file" ref="file" @change="fileUpload($event)"/>
                 </label>
             </div>
             <div class="submit">

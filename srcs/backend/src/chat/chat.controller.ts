@@ -28,19 +28,29 @@ export class ChatController {
     /** @summary */
     @Get('update/:id')
     async updateChat(@Param('id') id: number, @Request() req: any) {
-        console.log('UPDATTTTEEEEEE');
+        let isBanned = await this.rolesService.isBanned(req.user, id);
+        if (isBanned == true)
+        {
+            return {
+                isBanned,
+                isKicked: false, 
+                userContext: null
+             }
+        }
         let isKicked = await this.rolesService.isInChanel(req.user, id)
         if (isKicked == false)
         {
             isKicked = true;
             return {
                 isKicked, 
+                isBanned: false,
                 userContext: null
              }
         }
         const userContext = await this.chatService.userContext(req.user, id);
         return {
             isKicked: false,
+            isBanned: false,
             userContext }
     }
 
@@ -51,7 +61,7 @@ export class ChatController {
         return await this.chatService.checkChanPwd(req.user, req.body.chanId, req.body.checkCode);
     }
 
-    
+  
     /** @summary changes the pwd of the channel (owner privilege) */
     @Post('pwd')
     async pwdChan(@Request() req: any)
@@ -65,7 +75,7 @@ export class ChatController {
         if (id === undefined) {
             return res.status(400).json({ message: `id in ${req.baseUrl} is undefined` });
         }
-        console.log("join id: ", id);
+
         return res.status(200).json(await this.chatService.deleteChan(req.user, id)); 
     }
 
@@ -78,17 +88,17 @@ export class ChatController {
 
     @Get('history/:id')
     async getHistory(@Param('id') id: any, @Request() req: any, @Response() res: any) {
-        //console.log('req.body: ')
+
         if (id === undefined) {
             return res.status(400).json({ message: `id in ${req.baseUrl} is undefined` });
         }
         return res.status(200).json(await this.chatService.getChanHistory(req.user, id));  
     }
 
-    // to remove
+
     @Post('message/:id')
     async createMess(@Param('id') id: any, @Request() req: any, @Response() res: any) {
-        //console.log('req.body: ')
+
         if (id === undefined) {
             return res.status(400).json({ message: `id in ${req.baseUrl} is undefined` });
         }
@@ -96,18 +106,6 @@ export class ChatController {
         //return await this.chatService.newMessage(req.user, id, req.body.text);
     }
 
-    // to remove
-    @Get('chanels/:id')
-    async getChans(@Param('id') id: any, @Request() req: any, @Response() res: any) {
-        //console.log('req.body: ')
-        if (id === undefined) {
-            return res.status(400).json({ message: `id in ${req.baseUrl} is undefined` });
-        }
-        console.log(req.user)
-        console.log("chanel id:", id);
-        return res.status(200).json(await this.chatService.getChannelInfo(id));  
-        //return await this.chatService.getChannelInfo(id);
-    }
 
     @Get('users/:id')
     async getAllUsers(@Param('id') id: any, @Request() req: any, @Response() res: any) {
@@ -121,41 +119,34 @@ export class ChatController {
 
     @Post('kick')
     async kickUser(@Request() req: any) {
-        console.log("kick: ", req.body);
         return await this.chatService.toKick(req.user, req.body.otherId, req.body.chanelId)
     }
 
     @Post('bann')
     async banUser(@Request() req: any) {
-        console.log("ban: ", req.body);
         return await this.chatService.toBan(req.user, req.body.otherId, req.body.chanelId)
     }
 
     @Post('mute')
     async muteUser(@Request() req: any) {
-        console.log("mute: ", req.body);
         return await this.rolesService.toMute(req.user, req.body.otherId, req.body.chanelId);
     }
 
     @Get('isMuted/:id')
     async getMuted(@Param('id') id: any, @Request() req: any, @Response() res: any) {
-        //console.log('req.body: ')
         if (id === undefined) {
             return res.status(400).json({ message: `id in ${req.baseUrl} is undefined` });
         }
         return res.status(200).json(await this.rolesService.isMuted(req.user, id))
-        // return this.rolesService.isMuted(req.user, id)
     }
 
     @Post('admin')
     async adminUser(@Request() req: any) {
-        console.log("admin: ", req.body);
         return await this.rolesService.toAdmin(req.user, req.body.otherId, req.body.chanelId)
     }
 
     @Post('block')
     async blockUser(@Request() req: any) {
-        console.log(req.body.otherId);
         return this.rolesService.blockUser(req.user, req.body.otherId);
     }
 

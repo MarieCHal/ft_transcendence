@@ -15,5 +15,8 @@
 </template>
 
 <style scoped lang="scss">
-
+.navButton:hover{
+	border: 1px solid aqua;
+	border-radius: 3px;   
+}
 </style>

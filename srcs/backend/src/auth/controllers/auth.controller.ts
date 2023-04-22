@@ -16,26 +16,6 @@ export class AuthController {
         private jwtService: JwtService,
         private readonly httpService: HttpService,) {}
 
-    // to remove
-    //@Public()
-    @Post('token')
-    async test(@Body() body: any) {
-        const payload = {username: 'marie', sub: body.id};
-        console.log(body.id);
-        return {
-            accessToken: this.jwtService.sign(payload),
-        };
-    }
-
-    // to remove
-    //@Public()
-    @Post('test')
-    async createUSer(@Body() body: any) {
-        console.log("test");
-        const newUSer = await this.profileService.createProfile(body);
-        console.log("newUser: ", newUSer);
-        return await this.authService.generateAccessToken(newUSer)
-    }
 
     /** @summary the code given by the 42 API is retrieved by the front in the redirect URL, combined with the secret the API gives an acces_token */
     @Post('wellcome')
@@ -54,7 +34,6 @@ export class AuthController {
           })
         )
       )
-    console.log("data: ", data);
     return this.authService.registerUser(data.access_token);
   }
 

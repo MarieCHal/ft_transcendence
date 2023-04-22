@@ -7,10 +7,14 @@
 </script>
 
 <template>
-    <customPong v-if="store.getters.getPlayStart == false"/>
-    <pong v-else/>
+    <div class="game">
+        <customPong v-if="store.getters.getPlayStart == false"/>
+        <pong v-else/>
+    </div>
 </template>
 
 <style scoped lang="scss">
-
+.game{
+    margin-top: 3rem;
+}
 </style>

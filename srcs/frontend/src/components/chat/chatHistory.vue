@@ -32,7 +32,7 @@
     border-radius: 10px;
     padding: 5px;
     margin: 2px;
-    height: 3rem;
+    height: auto;
 }
 .chat-myMsg{
     width: auto;
@@ -57,14 +57,18 @@
 #msg{
     width: auto;
     max-width: 360px;
-    color: #ccc;
+    color: white;
     word-wrap: break-word;
     overflow: hidden;
 }
 #date{
-  height: 0.7rem;
-  width: 2.5rem;
-  font-size: x-small;
-  color: rgb(150, 147, 147);
+    height: 0.7rem;
+    width: 2.5rem;
+    font-size: x-small;
+    color: rgb(5, 245, 221);
+    display: flex;
+    justify-content: end;
+    align-items: end;
+    margin-top: auto;
 }
 </style>

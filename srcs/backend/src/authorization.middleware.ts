@@ -24,7 +24,6 @@ export class AuthorizationMiddleware implements NestMiddleware{
            secret: this.configService.get('APP_SECRET')
          }
        );
-      //console.log("token in middleware: ", userToken)
       let user = await this.usersService.findOne(userToken.sub)      // get corresponding user
       if (!user)
          throw new UnauthorizedException;                            
@@ -41,7 +40,6 @@ export class AuthorizationMiddleware implements NestMiddleware{
       if (bodyFields.length > 0) { // if there are undefined files in the body the request will not be proceeded
          return res.status(400).json({ message: `Missing fields: ${bodyFields.join(', ')}` });
       }
-      console.log("NEXXXTT");
       next(); 
    }
 }

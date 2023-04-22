@@ -29,9 +29,6 @@ export class ProfileController {
 
     @Post('modify/nickname')
     async modifyNickanme(@Request()req: any) {
-        console.log("nickname");
-        console.log(req.user);
-        console.log(req.body.nickname)
         return await this.profileService.modifyNickname(req.body.nickname, req.user);
     }
 

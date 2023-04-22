@@ -34,13 +34,16 @@
 #msg{
     word-wrap: break-word;
     overflow: hidden;
-    background-color: darkkhaki;
+    color: white
 }
 #date{
     height: 0.7rem;
     width: 2.5rem;
-    background-color: darkcyan;
     font-size: x-small;
-    color: rgb(150, 147, 147);
+    color: rgb(5, 245, 221);
+    display: flex;
+    justify-content: end;
+    align-items: end;
+    margin-top: auto;
 }
 </style>

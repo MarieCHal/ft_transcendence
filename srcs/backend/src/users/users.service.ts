@@ -23,12 +23,10 @@ export class UsersService {
                         .getRawMany()
         console.log(users);
         const friends = await this.getFriends(user);
-        //const blocked = await this.getBlocked(user.user_id);
-        //console.log(friends);
+        
         return {
             allUsers: users,
             myFriends: friends,
-            //blocked: blocked
         }
     }
 
@@ -43,7 +41,6 @@ export class UsersService {
                             .where("friends.friend_two = :id", {id: user.user_id})
                             .andWhere("friends.status = :status", {status: true})
                             .getRawMany()
-        console.log("friends: ", friends);
         return friends        
     }
 
@@ -75,7 +72,6 @@ export class UsersService {
                                 .select(['user.nickname', 'user.user_id', 'user.isActive', 'stats'])
                                 .where('user.user_id = :id', {id: userId})
                                 .getRawOne()
-        //const matchHistory = await this.returnMatch(user)
         return user
     }
     
@@ -88,16 +84,12 @@ export class UsersService {
                                 .where('users.user_id = :user_id', {user_id: id})
                                 .getOne()
         
-        console.log("me: ", me);
-
         const friendRequests = await this.friendsRepository.createQueryBuilder('friends')
                                         .leftJoinAndSelect('friends.friend_one', 'user')
                                         .where("friends.status = :status", {status: false})
                                         .andWhere("friends.friend_two = :user_id", {user_id: id})
                                         .select(['user.user_id', 'user.nickname'])
                                         .getRawMany()
-
-        console.log(friendRequests);
         return {
             me,
             pending: friendRequests,
@@ -119,7 +111,6 @@ export class UsersService {
             let newDate = history[i].match_date;
             history[i].match_date = newDate.toLocaleDateString();
         }
-        console.log("history return: ", history)
         return history
     }
 
@@ -171,7 +162,6 @@ export class UsersService {
                         .andWhere('friends.friend_two = :friend_id', {friend_id: user.user_id})
                         .getOne()
         
-        console.log("friendReq in accept", pending);
         const newFriends = new Friends();
 
         newFriends.friend_one = user;

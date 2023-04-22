@@ -12,7 +12,7 @@ NAME		= ft_jgmtrans
 
 
 # COMMANDS
-DOCKER		=  docker compose -f ${DOCKER_DIR}  -p ${NAME}
+DOCKER		=  docker compose -f ${DOCKER_DIR} -p ${NAME}
 
 %:
 	@:

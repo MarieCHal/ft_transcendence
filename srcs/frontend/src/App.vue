@@ -5,14 +5,22 @@
   import  { useStore} from 'vuex'
     
   const store = useStore();
-  localStorage.clear();
-  store.replaceState({});
+  //localStorage.clear();
+  //store.replaceState({});
   
   function getToken() {
     const token = store.getters.getToken;
     if (token)
       return token;
   }
+
+  if (getToken()){
+    store.dispatch('initWebSocket');
+    if (!store.getters.getWebSocket){
+      store.dispatch('initWebSocket');
+    }
+  }
+  
 </script>
 
 <template>

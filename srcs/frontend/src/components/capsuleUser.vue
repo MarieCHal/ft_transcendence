@@ -34,16 +34,16 @@
         </div>
         <div class="info">
             <span>
-                nickname = {{ user.user_nickname }}
+                nickname: {{ user.user_nickname }}
             </span>
             <span>
-                nb parties = {{ user.stats_games }}
+                games: {{ user.stats_games }}
             </span>
             <span>
-                nb victoires = {{ user.stats_victories }}
+                victory: {{ user.stats_victories }}
             </span>
             <span>
-                nb defaites = {{ user.stats_defeats }}
+                defeats: {{ user.stats_defeats }}
             </span>
         </div>
     </div>    

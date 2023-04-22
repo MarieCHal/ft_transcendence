@@ -8,13 +8,10 @@ import { UsersService } from 'src/users/users.service';
 @Injectable({ scope: Scope.DEFAULT})
 export class SocketService {
 
-    //public socket: Server = null;
-    //@WebSocketServer() socket: Server;
     constructor(
         private usersService: UsersService
     ) {}
     private static socket: Server; // maybe not static
-    //private static usersSockets: {[Key: string]: Users;} = {} 
     
     private static usersSocketsID: {[Key: string]: number;} = {}            // key contains the socket'id and the user_id as value
     private static usersSockets: {[Key: number]: Socket;} = {}              // key is the user_id and the corresponding socket
@@ -38,7 +35,6 @@ export class SocketService {
     async getUser(key : string) : Promise<Users> {     // return the user corresonding to the socket.id
         
         const id = SocketService.usersSocketsID[key];
-        console.log("id in getUser: ", id);
         const user = await this.usersService.findOne(id);
         return user;
     }
@@ -48,7 +44,6 @@ export class SocketService {
         if (SocketService.usersSockets[userId])
         {
             let socketID = SocketService.usersSockets[userId].id;
-            console.log("socket id: ", socketID)
             return socketID;
         }
         return null;
@@ -58,31 +53,9 @@ export class SocketService {
         return SocketService.usersSockets[userId];
     }
 
-    /*setSocket(key: string, user: Users) {
-        SocketService.usersSockets[key] = user;
-    }*/
-
-    /*removeSocket(key: string) {
-        delete SocketService.usersSockets[key];
-    }*/
     removeUser(key: string) : void {
         const id = SocketService.usersSocketsID[key];
         delete SocketService.usersSocketsID[key];
         delete SocketService.usersSockets[id];
     }
-
-    /*async returnUserNotif(nickname: string, id: number ) : Promise<Users> {
-        //console.log("id: ", id, "nckname: ", nickname);
-        let user: Users;
-        if (nickname != null)
-            user = await this.usersService.findNickname(nickname);
-        else if (id != -1)
-            user = await this.usersService.findOne(id);
-        for (const key of Object.keys(SocketService.usersSocketsID))
-        {
-            if (SocketService.usersSocketsID[key] = user.user_id)
-                return user;
-        }
-        return null;
-    }*/
 }

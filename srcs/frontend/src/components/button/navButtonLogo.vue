@@ -14,7 +14,7 @@
 <style scoped lang="scss">
 
 #logo{
-    background-image: url('../../assets/42.png'), radial-gradient(ellipse at center, rgba(10, 197, 244, 0.2) 0%, rgba(17, 245, 234, 0.8) 350%, rgba(0, 0, 0, 1) 100%);
+    background-image: url('../../assets/42.png');
     height: 50px;
     width: 100px;
     background-size: cover;
@@ -24,6 +24,5 @@
     max-height: 40px;
     min-width: 55px;
     min-height: 40px;
-    box-shadow: 0 0 20px  #06FFFF;
 }
 </style>

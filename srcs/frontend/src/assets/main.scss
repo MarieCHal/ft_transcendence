@@ -79,8 +79,11 @@ table {
 	cursor: pointer;
 }
 .navButton:hover{
-	color: rgb(189, 187, 187);
+	color: rgb(255, 255, 255);
 }
 ::placeholder{
 	color:aqua;
-  }
+}
+input{
+	color: white;
+}

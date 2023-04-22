@@ -6,44 +6,62 @@ import router from './router';
 
 const persistedState = createPersistedState({
   paths: [
-  'isToken',
-  'isDoubleAuth', 
-  'isId',
-  'isNickname',
-  'isAvatar',
-  'isBool',
-  'isCode',
-  'isBlockBool',
-  'isStatusCode',
-  'isTrigger',
-  'isWhat',
-  'isUserId',
-  'isAllUsers',
-  'isUsers',
-  'isOneUser',
-  'isUserContext',
-  'isUserBlocked',
-  'isUserAvatar',
-  'isArrayAvatar',//attention a lui
-  'isChanId',
-  'isChans',
-  'isChanContext',
-  'isChatHistory',
-  'isChatMessages',//attention a lui
-  'isNewMessage',//attention a lui
-  'isGoPlay',
-  'isRoom',
-  'isInvitePlay',
-  'isresultSocketOn',
-  'isBallX',
-  'isBallY',
-  'isScoreUser1',
-  'isScoreUser2',
-  'isUser1',
-  'isUser2',
-  'isInterval',
-  'isPlayer',
-  'isMe',
+    'isToken', 
+    'isDoubleAuth',
+    'isId',
+    'isNickname',
+    //'isAvatar',
+    'isMe',
+    'isQrCode',
+    'isBool',
+    'isCode',
+    'isBlockBool',
+    'isStatusCode',
+    'isTrigger',
+    'isWhat',
+    'isError',
+    'isUserId',
+    'isMatchHistory',
+    'isAllUsers',
+    'isUsers',
+    'isOneUser',
+    'isUserContext',
+    'isUserBlocked',
+    'isUserAvatar',
+    //'isArrayAvatar',
+    'isChanId',
+    'isChans',
+    'isChanContext',
+    'isChatHistory',
+    'isChatMessages',
+    'isNewMessage',
+    'isGoPlay',
+    'isRoom',
+    'isInvitePlay',
+    'isresultSocketOn',
+    'isBallX',
+    'isBallY',
+    'isScoreUser1',
+    'isScoreUser2',
+    'isUser1',
+    'isUser2',
+    'isInterval',
+    'isPlayer',
+    'isMatchmaking',
+    'isColorRect1',
+    'isColorRect2',
+    'isColorBall',
+    'isColorBackGround',
+    'isColorNet',
+    'isColorText',
+    'isPlayStart',
+    'isNameNotif',
+    'isName',
+    'isMsg',
+    'isInvite',
+    'isAcceptPlay',
+    'isStatus',
+    'isTheyQuit',
   ]});
 
 const store = createStore({
@@ -259,7 +277,8 @@ const store = createStore({
   },
   actions: {
     initWebSocket({ commit }) {
-      const webSocket = io(import.meta.env.VITE_APP_BASE_URL, {
+      const webSocket = io({
+        path: "/api/socket.io",
         auth: {
           token: store.getters.getToken,
         }
@@ -272,7 +291,11 @@ const store = createStore({
 
       webSocket.on('disconnect', () => {
         console.log('Socket disconnected');
-        commit('setWebSocket', null);
+        localStorage.clear();
+        store.replaceState({});
+        store.commit('setToken', "");
+        store.commit('setDoubleAuth', {isDoubleAuth: false});
+        router.push('/');
       });
       //invite: boolean, accept: boolean, status: boolean, theyQuit: boolean
       webSocket.on('notif', (nickname: string, msg: string) =>{
@@ -284,10 +307,6 @@ const store = createStore({
           router.push('/Play');
           return ;
         }
-       /* commit('setInvite', invite); //es une invite ou un reponse
-        commit('setAcceptPlay', accept); //es accept ou refus
-        commit('setStatus', status);
-        commit('setTheyQuit', theyQuit); // si le joueur quit le jeu avant de jouer*/
       });
     },
   }

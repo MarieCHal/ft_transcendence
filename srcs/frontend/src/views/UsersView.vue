@@ -52,11 +52,13 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-top: 3rem;
 }
 .navUser{
     display: flex;
     justify-content: center;
     margin-bottom: 2rem;
+    height: 1.25rem;
 }
 .userDisplay{
     display: flex;

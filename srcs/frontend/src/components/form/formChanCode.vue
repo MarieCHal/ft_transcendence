@@ -43,6 +43,7 @@
 <style scoped lang="scss">
 input{
     border: 1px solid #06FFFF;
+    color: white;
     border-radius: 3px;
 }
 </style>
