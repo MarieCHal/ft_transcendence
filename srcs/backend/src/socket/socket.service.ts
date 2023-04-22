@@ -38,7 +38,7 @@ export class SocketService {
     async getUser(key : string) : Promise<Users> {     // return the user corresonding to the socket.id
         
         const id = SocketService.usersSocketsID[key];
-        console.log("id in getUser: ", id);
+        //console.log("id in getUser: ", id);
         const user = await this.usersService.findOne(id);
         return user;
     }

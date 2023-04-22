@@ -85,6 +85,7 @@
                         store.commit("setRoom", player)
                     }
                 });
+                console.log("store.getters.getMatchmaking: ", store.getters.getMatchmaking);
                 store.getters.getWebSocket.emit('startgame', store.getters.getMatchmaking, store.getters.getName)
                 store.commit('setNameNotif', "")
                 store.getters.getWebSocket.on("game", (ballx: number, bally: number, user1: number, user2: number, score1: number, score2: number ) => {      

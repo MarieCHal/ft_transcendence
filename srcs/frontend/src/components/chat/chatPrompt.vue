@@ -11,7 +11,7 @@
     const sendMessage = () => {
       try {        
         if (store.getters.getUserContext.muted){
-          alert("YOU ARE MUTED")
+          alert("YOU ARE MUTED FOR 30 sec!!!")
           return ;
         }
         if (socket){

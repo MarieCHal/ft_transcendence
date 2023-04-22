@@ -140,9 +140,9 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
     async startGame(client: Socket, payload: any) { 
       const user = await this.socketService.getUser(client.id);
       let room: string
-      //console.log("payload in startgame: ", payload);
       if (payload[0] === false) // if it is a game from an invite 
       {
+        console.log("INVITEEEEEEEEEEEEE ")
         const other = await this.usersService.findNickname(payload[1])
         for (let i = 0; this.invite[i]; i++) // find the corresponding room in the list of invites
         {
@@ -160,6 +160,8 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
       {
         await this.gameService.addToList(user.user_id); // add to list matchmaking
         room = await this.gameService.matchMaking(user.user_id); // gives a room
+        console.log("MATCH MAKING ROOOOOOM ============================ ")
+        console.log(room);
       }
 
       client.join(room); // add the player to the room

@@ -30,7 +30,7 @@ export class GameService {
         this.listMatch.push(userId);
         for (let i = 0; this.listMatch[i]; i++)
         {
-            //console.log("list matchmaking: ", this.listMatch[i]);
+            console.log("==================================== list matchmaking: ", this.listMatch[i]);
         }
     }
 
@@ -77,13 +77,16 @@ export class GameService {
         else if (userId == this.listMatch[1])
         {
             //console.log("index 2: ", userId)
-            let room = 'room' + this.listMatch[0]
+            let room = 'room' + this.listMatch[0];
             //let game = await this.findGame(room);
             await this.initGame(this.listMatch[0], userId, room)
             this.listMatch.splice(0, 2);
             //game.player2 = userId;
             ////console.log("game: ", game);
             return room;
+        }
+        for (let i = 0; this.listMatch[i]; i++) {
+            console.log("=========================================== Match at index : ", i, "match: ", this.listMatch[i]);
         }
     }
 
@@ -205,12 +208,9 @@ export class GameService {
             // check on which side the ball is 
             if (game.ballX <= 300) // plyer1
             {
-                ////console.log('if game')
                 // the ball is on the left side 
                 coll = this.collision(game, 1);
-                //coll = false
                 if (coll) {
-                    ////console.log("if game collision true ")
                     let collidePoint = (game.ballY - (game.posY1 + game.heigth1/2));
                     collidePoint = collidePoint/(game.heigth1/2);
     

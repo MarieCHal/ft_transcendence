@@ -21,7 +21,7 @@
                     socket.emit('notif', store.getters.getNameNotif, "reponse", "negatif");
                     store.commit('setAcceptPlay', false);
                     store.commit('setNameNotif', "");
-                    alert('the user not accepted');
+                    alert('You declined the invite');
                     return ;
                 }
             }
@@ -29,6 +29,7 @@
                 store.commit('setName', store.getters.getNameNotif);
                 store.commit('setNameNotif', "");
                 store.commit('setMsg', null);
+                store.commit('setMatchmaking', false);
                 router.push('/Play/start');
             }
             else if (store.getters.getMsg == "refused"){
